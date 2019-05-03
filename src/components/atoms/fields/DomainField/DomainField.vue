@@ -1,0 +1,64 @@
+<template>
+  <b-field v-bind="$attrs">
+    <b-field
+        class="has-margin-bottom-0"
+        :type="$attrs.type"
+    >
+      <b-select
+        v-model="protocol"
+        placeholder="Protocol"
+      >
+        <option>https://</option>
+        <option>http://</option>
+      </b-select>
+      <b-input
+        v-model="domain"
+        placeholder="docker.omotenashi.today"
+        expanded
+      ></b-input>
+    </b-field>
+  </b-field>
+</template>
+
+<script>
+export default {
+  name: 'DomainField',
+  props: {
+    value: {
+      type: String,
+      default: null,
+    },
+  },
+  data() {
+    return {
+      protocol: 'https://',
+      domain: null,
+    };
+  },
+  watch: {
+    value: {
+      immediate: true,
+      handler(value) {
+        if (value && value.includes('://')) {
+          const [protocol, domain] = value.split('://');
+          this.protocol = `${protocol}://`;
+          this.domain = domain;
+        }
+      },
+    },
+    domainUrl(value) {
+      this.$emit('input', value);
+    },
+  },
+  computed: {
+    domainUrl() {
+      const url = this.protocol + this.domain;
+      return url || null;
+    },
+  },
+};
+</script>
+
+<style scoped>
+
+</style>

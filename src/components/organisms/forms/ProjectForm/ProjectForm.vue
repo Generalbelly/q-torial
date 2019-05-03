@@ -1,0 +1,295 @@
+<template>
+    <div>
+        <form-section-layout>
+            <template slot="title">
+                Basic
+            </template>
+            <template slot="description">
+                The domain is where users will actually visit.
+            </template>
+            <template slot="form">
+                <validatable-text-field
+                    label="Name"
+                    name="Name"
+                    rules="required"
+                    :value="name"
+                    @input="$emit('update:name', $event)"
+                ></validatable-text-field>
+                <validatable-domain-field
+                    label="Domain"
+                    name="Domain"
+                    rules="required"
+                    v-model="domainUrl"
+                >
+                </validatable-domain-field>
+            </template>
+        </form-section-layout>
+        <form-section-layout>
+            <template slot="title">
+                Tutorials
+            </template>
+            <template slot="description">
+                Set rules for tutorials. You can override them at tutorial-level.
+            </template>
+            <template slot="form">
+                <tutorial-setting-fields
+                    :value="tutorial_settings"
+                    @input="$emit('update:tutorial_settings', $event)"
+                ></tutorial-setting-fields>
+            </template>
+        </form-section-layout>
+        <form-section-layout v-if="id">
+            <template slot="title">
+                Google Analytics
+            </template>
+            <template slot="description">
+                We send data such as how many steps users complete, how often those users use your website/webapp, etc., on your behalf to your connected Google Analytics account.
+            </template>
+            <template slot="form">
+                <div v-if="googleOAuthEntity">
+                    <div v-if="googleAnalyticsPropertyEntity && googleAnalyticsPropertyEntity.id && googleAnalyticsAccountOptions.length === 0">
+                        <columns>
+                            <column>
+                                <b-tag
+                                  size="is-small"
+                                  class="is-success-200 has-margin-right-4"
+                                >
+                                    Connected
+                                </b-tag>
+                                <pen-icon
+                                    class="has-margin-right-3 has-cursor-pointer"
+                                    size="is-small"
+                                    @click="$emit('click:ga-property-edit', id)"
+                                ></pen-icon>
+                                <trash-icon
+                                    class="has-cursor-pointer"
+                                    size="is-small"
+                                    @click="$emit('click:ga-delete', googleOAuthEntity)"
+                                >
+                                </trash-icon>
+                            </column>
+                        </columns>
+                        <columns>
+                            <column class="is-half label">
+                                Property ID
+                            </column>
+                            <column>
+                                {{ googleAnalyticsPropertyEntity.property_id }}
+                            </column>
+                        </columns>
+                        <columns>
+                            <column class="is-half label">
+                                Property Name
+                            </column>
+                            <column>
+                                {{ googleAnalyticsPropertyEntity.property_name }}
+                            </column>
+                        </columns>
+                    </div>
+                    <b-message v-else type="is-success">
+                        <p class="has-margin-bottom-4">
+                            Next step is to select a Google Analytics account and a web property.
+                        </p>
+                        <div>
+                            <start-selecting-google-analytics-property-button
+                                v-if="googleAnalyticsAccountOptions.length === 0"
+                                @click="$emit('click:ga-property-edit', id)"
+                                class="is-success-200"
+                            >
+                            </start-selecting-google-analytics-property-button>
+                            <div v-else>
+                                <validatable-select-field
+                                    :items="googleAnalyticsAccountOptions"
+                                    v-model="googleAnalyticsAccountId"
+                                    label="Account"
+                                    placeholder="Select account"
+                                    name="Account"
+                                    rules="required"
+                                    horizontal
+                                ></validatable-select-field>
+                                <validatable-select-field
+                                    v-if="googleAnalyticsAccount"
+                                    :items="googleAnalyticsWebPropertyOptions"
+                                    style="white-space: nowrap;"
+                                    label="Property"
+                                    placeholder="Select property"
+                                    v-model="googleAnalyticsWebPropertyId"
+                                    name="Property"
+                                    rules="required"
+                                    horizontal
+                                ></validatable-select-field>
+                            </div>
+                        </div>
+                    </b-message>
+                </div>
+                <div
+                    v-else
+                    class="connect-google-analytics-button"
+                >
+                    <connect-google-analytics-button
+                        @click="$emit('click:ga-connect', $event)"
+                    ></connect-google-analytics-button>
+                </div>
+            </template>
+        </form-section-layout>
+    </div>
+</template>
+
+<script>
+import ValidatableTextField from '../../../molecules/fields/ValidatableTextField';
+import ValidatableDomainField from '../../../molecules/fields/ValidatableDomainField';
+import TrashIcon from '../../../atoms/icons/TrashIcon';
+import SubHeading from '../../../atoms/BaseSubHeading';
+import ConnectGoogleAnalyticsButton from '../../../atoms/buttons/ConnectGoogleAnalyticsButton';
+import GoogleAnalyticsPropertyEntity from '../../../atoms/Entities/GoogleAnalyticsPropertyEntity';
+import StartSelectingGoogleAnalyticsPropertyButton from '../../../atoms/buttons/StartSelectingGoogleAnalyticsPropertyButton';
+import ValidatableSelectField from '../../../molecules/fields/ValidatableSelectField';
+import PenIcon from '../../../atoms/icons/PenIcon/PenIcon';
+import Columns from '../../../atoms/BaseColumns/BaseColumns';
+import Column from '../../../atoms/BaseColumn/BaseColumn';
+import TutorialSettingFields from '../../../molecules/fields/TutorialSettingFields';
+import FormSectionLayout from '../../../layouts/FormSectionLayout/FormSectionLayout';
+
+export default {
+  name: 'ProjectForm',
+  components: {
+    FormSectionLayout,
+    TutorialSettingFields,
+    Column,
+    Columns,
+    PenIcon,
+    ValidatableSelectField,
+    StartSelectingGoogleAnalyticsPropertyButton,
+    ConnectGoogleAnalyticsButton,
+    SubHeading,
+    TrashIcon,
+    ValidatableDomainField,
+    ValidatableTextField,
+  },
+  props: {
+    id: {
+      type: String,
+      default: null,
+    },
+    name: {
+      type: String,
+      default: null,
+    },
+    protocol: {
+      type: String,
+      default: null,
+    },
+    domain: {
+      type: String,
+      default: null,
+    },
+    oauth_entities: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+    google_analytics_property_entities: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+    googleAnalyticsAccounts: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+    tutorial_settings: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+  },
+  data() {
+    return {
+      appName: process.env.APP_NAME,
+      googleAnalyticsAccountId: null,
+      googleAnalyticsWebPropertyId: null,
+    };
+  },
+  computed: {
+    domainUrl: {
+      get() {
+        return this.protocol && this.domain ? `${this.protocol}://${this.domain}` : null;
+      },
+      set(newValue) {
+        const splitedDomainUrl = newValue.split('://');
+        this.$emit('update:protocol', splitedDomainUrl[0]);
+        this.$emit('update:domain', splitedDomainUrl[1]);
+      },
+    },
+    googleOAuthEntity() {
+      return this.oauth_entities.find(entity => entity.service === 'google_analytics');
+    },
+    googleAnalyticsPropertyEntity() {
+      if (this.google_analytics_property_entities.length > 0) {
+        return this.google_analytics_property_entities[0];
+      }
+      return null;
+    },
+    googleAnalyticsAccountOptions() {
+      return this.googleAnalyticsAccounts.map(account => ({
+        text: account.name,
+        value: account.id,
+      }));
+    },
+    googleAnalyticsAccount() {
+      if (!this.googleAnalyticsAccountId) return null;
+      return this.googleAnalyticsAccounts.find(account => account.id === this.googleAnalyticsAccountId);
+    },
+    googleAnalyticsWebPropertyOptions() {
+      if (!this.googleAnalyticsAccount) {
+        return [];
+      }
+      return this.googleAnalyticsAccount.webProperties.map(property => ({
+        text: property.name,
+        value: property.id,
+      }));
+    },
+    googleAnalyticsWebProperty() {
+      if (this.googleAnalyticsAccount && this.googleAnalyticsWebPropertyId) {
+        return this.googleAnalyticsAccount.webProperties.find(
+          property => property.id === this.googleAnalyticsWebPropertyId,
+        );
+      }
+      return null;
+    },
+  },
+  watch: {
+    googleAnalyticsWebProperty(value) {
+      if (value) {
+        const googleAnalyticsPropertyEntity = new GoogleAnalyticsPropertyEntity({
+          ...this.googleAnalyticsPropertyEntity,
+          account_id: this.googleAnalyticsAccount.id,
+          account_name: this.googleAnalyticsAccount.name,
+          property_id: value.id,
+          property_name: value.name,
+          website_url: value.websiteUrl,
+        });
+        this.$emit('update:google_analytics_property_entities', [googleAnalyticsPropertyEntity]);
+      }
+    },
+  },
+  methods: {
+
+  },
+};
+</script>
+
+<style scoped>
+    .connect-google-analytics-button {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+</style>

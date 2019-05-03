@@ -1,0 +1,3 @@
+import EmailVerificationLinkExpiredMessage from './EmailVerificationLinkExpiredMessage';
+
+export default EmailVerificationLinkExpiredMessage;
