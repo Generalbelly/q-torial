@@ -55,7 +55,18 @@ export default {
       this.innerPassword = value;
     },
   },
+  mounted() {
+    window.addEventListener('keyup', this.onKeyup);
+  },
+  beforeDestroy() {
+    window.removeEventListener('keyup', this.onKeyup);
+  },
   methods: {
+    onKeyup(e) {
+      if (e.keyCode === 13) {
+        this.onClickSignUp();
+      }
+    },
     async onClickSignUp() {
       const isValid = await this.$refs.observer.validate();
       if (isValid) {

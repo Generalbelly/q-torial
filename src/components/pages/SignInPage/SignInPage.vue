@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import chromeExtension from '../../../chromeExtension';
 import firebase from '../../../firebase';
 import SignInTemplate from '../../templates/SignInTemplate';
 
@@ -14,20 +13,17 @@ export default {
   components: {
     SignInTemplate,
   },
-  async created() {
-    const response = await chromeExtension.getLastAction();
-    if (response === 'REDIRECT_USER') {
-      console.log('call signOut from Signin');
-      firebase.signOut();
-    }
-  },
   methods: {
     async onClickSignIn({ email, password }) {
       try {
         await firebase.signIn(email, password);
-        console.log('redirection');
-        if (this.$route.query && this.$route.query.redirect) {
-          this.$router.push(this.$route.query.redirect);
+        const { redirect = null } = this.$route.query;
+        if (redirect) {
+          if (redirect.startsWith('http')) {
+            window.location.href = redirect;
+          } else {
+            this.$router.push(redirect);
+          }
         } else {
           this.$router.push({
             name: 'projects.index',

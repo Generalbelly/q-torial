@@ -8,53 +8,13 @@ export default {
     firebase.initializeApp(config);
     firebase.auth().useDeviceLanguage();
   },
-  handleAuthError(error) {
-    let field = null;
-    let message = '';
-    switch (error.code) {
-      case 'auth/email-already-in-use':
-        field = 'email';
-        message = 'The email is already registered';
-        break;
-      case 'auth/invalid-email':
-        field = 'email';
-        message = 'The email is not valid.';
-        break;
-      case 'auth/weak-password':
-        field = 'password';
-        message = 'The password is not strong enough.';
-        break;
-      case 'auth/user-not-found':
-        field = 'email';
-        message = 'We couldn\'t find an account with the email.';
-        break;
-      case 'auth/wrong-password':
-        field = 'password';
-        message = 'The password is incorrect.';
-        break;
-      case 'auth/invalid-action-code':
-      case 'auth/expired-action-code':
-        field = 'general';
-        message = 'The link you followed has already expired.';
-        break;
-      default:
-        field = 'general';
-        message = error.message;
-    }
-    console.log(error);
-    store.dispatch('setServerSideErrors', {
-      [field]: message,
-    });
-  },
   async signUp(email, password) {
     await firebase.auth().createUserWithEmailAndPassword(email, password);
   },
   async signIn(email, password) {
     await firebase.auth().signInWithEmailAndPassword(email, password);
     console.log('signIn');
-    chromeExtension.signIn(email, password).catch((response) => {
-      console.log(response);
-    });
+    chromeExtension.signIn(email, password);
   },
   async signOut() {
     await firebase.auth().signOut();

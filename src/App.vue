@@ -1,7 +1,7 @@
 <template>
   <div>
     <the-navbar
-      v-if="userEntity && userEntity.emailVerified"
+      v-if="shouldShowNavbar"
       :navItems="navItems"
       @click:sign-out="signOut"
     ></the-navbar>
@@ -124,7 +124,6 @@ export default {
           to: { name: 'tags.show', params: { id: this.userKey } },
         },
       ],
-      mainMinHeight: '',
     };
   },
   computed: {
@@ -136,6 +135,12 @@ export default {
     ...mapGetters([
       'userKey',
     ]),
+    shouldShowNavbar() {
+      if (this.$route.name === 'sign-in' || this.$route.name === 'sign-up') {
+        return false;
+      }
+      return this.userEntity && this.userEntity.emailVerified;
+    },
   },
   watch: {
     serverSideErrors() {
@@ -149,11 +154,8 @@ export default {
     this.checkIfExtensionInstalled();
   },
   methods: {
-    checkIfExtensionInstalled() {
-      chromeExtension.getVersion()
-        .then((response) => {
-          this.showExtensionLink = !!response;
-        });
+    async checkIfExtensionInstalled() {
+      this.showExtensionLink = await chromeExtension.getVersion();
     },
     showSnackbar(message = 'Oops! Something went wrong.') {
       this.$snackbar.open({
@@ -162,12 +164,10 @@ export default {
         message,
       });
     },
-    signOut(e) {
-      console.log('call from App.vue', e);
-      firebase.signOut().then(() => {
-        this.$router.push({
-          name: 'sign-in',
-        });
+    async signOut() {
+      await firebase.signOut();
+      this.$router.push({
+        name: 'sign-in',
       });
     },
   },

@@ -1,30 +1,33 @@
-const SIGN_UP = 'SIGN_UP';
+const SIGN_IN = 'SIGN_IN';
 const SIGN_OUT = 'SIGN_OUT';
-const GET_LAST_ACTION = 'GET_LAST_ACTION';
-const GET_VERSION = 'GET_VERSION';
+const GET_EXT_VERSION = 'GET_EXT_VERSION';
 
+let version = null;
 export default {
-  sendMessage(message) {
+  sendMessage(message, force = false) {
     return new Promise((resolve, reject) => {
       try {
-        if (chrome) {
+        console.log(version);
+        if (version || force) {
           chrome.runtime.sendMessage(
             process.env.VUE_APP_CHROME_EXTENSION_ID, message,
             (response) => {
               resolve(response);
             },
           );
+        } else {
+          resolve(null);
         }
-      } catch (error) {
-        reject(error);
+      } catch (e) {
+        reject(e);
       }
     });
   },
   async signIn(email, password) {
     try {
       await this.sendMessage({
-        action: SIGN_UP,
-        meta: {
+        action: SIGN_IN,
+        data: {
           email,
           password,
         },
@@ -38,28 +41,25 @@ export default {
       return this.sendMessage({
         action: SIGN_OUT,
       });
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
-  },
-  async getLastAction() {
-    try {
-      return this.sendMessage({
-        action: GET_LAST_ACTION,
-      });
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      console.log(e);
       return false;
     }
   },
   async getVersion() {
     try {
-      return this.sendMessage({
-        action: GET_VERSION,
-      });
-    } catch (error) {
-      console.log(error);
+      const response = await this.sendMessage({
+        action: GET_EXT_VERSION,
+      }, true);
+      console.log(response);
+      if (response) {
+        version = response.message;
+      } else {
+        version = null;
+      }
+      return version;
+    } catch (e) {
+      console.log(e);
       return false;
     }
   },
