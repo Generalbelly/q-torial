@@ -1,42 +1,42 @@
 <template>
-    <div>
-        <div class="parameter__labels">
-            <base-label>Key</base-label>
-            <base-label>Value</base-label>
-        </div>
-        <div
-            v-for="(p, pIndex) in inputValue"
-            :key="pIndex"
-            class="parameter__input"
-        >
-            <validatable-text-field
-                :value="p.key"
-                @input="updateParameter(pIndex, { key: $event} )"
-                rules="required"
-                name="parameter key"
-                class="is-marginless"
-            ></validatable-text-field>
-            <validatable-text-field
-                :value="p.value"
-                @input="updateParameter(pIndex, { value: $event })"
-                rules="required"
-                name="parameter value"
-                class="is-marginless"
-            ></validatable-text-field>
-            <trash-icon
-                class="has-cursor-pointer"
-                @click="deleteParameter(pIndex)"
-            ></trash-icon>
-        </div>
-        <div class="has-margin-top-1">
-            <base-button
-                @click="addParameter"
-                is-text
-            >
-                Add parameter
-            </base-button>
-        </div>
+  <div>
+    <div class="parameter__labels">
+      <base-label>Key</base-label>
+      <base-label>Value</base-label>
     </div>
+    <div
+      v-for="(p, pIndex) in inputValue"
+      :key="pIndex"
+      class="parameter__input"
+    >
+      <validatable-text-field
+        :value="p.key"
+        @input="updateParameter(pIndex, { key: $event} )"
+        rules="required"
+        name="parameter key"
+        class="is-marginless"
+      />
+      <validatable-text-field
+        :value="p.value"
+        @input="updateParameter(pIndex, { value: $event })"
+        rules="required"
+        name="parameter value"
+        class="is-marginless"
+      />
+      <trash-icon
+        class="has-cursor-pointer"
+        @click="deleteParameter(pIndex)"
+      />
+    </div>
+    <div class="has-margin-top-1">
+      <base-button
+        @click="addParameter"
+        is-text
+      >
+        Add parameter
+      </base-button>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -103,16 +103,16 @@ export default {
 </script>
 
 <style scoped>
-    .parameter__labels {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        margin-top: 10px;
-    }
-    .parameter__input {
-        display: grid;
-        grid-template-columns: 1fr 1fr auto;
-        grid-column-gap: .5em;
-        align-items: center;
-        margin-bottom: 10px;
-    }
+  .parameter__labels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 10px;
+  }
+  .parameter__input {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    grid-column-gap: .5em;
+    align-items: center;
+    margin-bottom: 10px;
+  }
 </style>

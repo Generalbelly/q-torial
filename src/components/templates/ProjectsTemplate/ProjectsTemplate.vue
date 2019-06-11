@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import SearchField from '../../atoms/fields/SearchField';
+import SearchField from '../../molecules/fields/SearchField';
 import AddButton from '../../atoms/buttons/AddButton';
 import IndexPageLayout from '../../layouts/IndexPageLayout';
 import ProjectTable from '../../organisms/ProjectTable';

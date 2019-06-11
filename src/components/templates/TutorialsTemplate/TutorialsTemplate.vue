@@ -32,7 +32,7 @@
 
 <script>
 import DataTable from '../../molecules/DataTable/DataTable';
-import SearchField from '../../atoms/fields/SearchField/SearchField';
+import SearchField from '../../molecules/fields/SearchField/SearchField';
 import AddButton from '../../atoms/buttons/AddButton/AddButton';
 import Heading from '../../atoms/BaseHeading/BaseHeading';
 

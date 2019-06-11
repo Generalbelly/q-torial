@@ -1,13 +1,12 @@
 const SIGN_IN = 'SIGN_IN';
 const SIGN_OUT = 'SIGN_OUT';
-const GET_EXT_VERSION = 'GET_EXT_VERSION';
+const VERSION = 'VERSION';
 
 let version = null;
 export default {
   sendMessage(message, force = false) {
     return new Promise((resolve, reject) => {
       try {
-        console.log(version);
         if (version || force) {
           chrome.runtime.sendMessage(
             process.env.VUE_APP_CHROME_EXTENSION_ID, message,
@@ -26,7 +25,7 @@ export default {
   async signIn(email, password) {
     try {
       await this.sendMessage({
-        action: SIGN_IN,
+        command: SIGN_IN,
         data: {
           email,
           password,
@@ -39,7 +38,7 @@ export default {
   async signOut() {
     try {
       return this.sendMessage({
-        action: SIGN_OUT,
+        command: SIGN_OUT,
       });
     } catch (e) {
       console.log(e);
@@ -49,7 +48,7 @@ export default {
   async getVersion() {
     try {
       const response = await this.sendMessage({
-        action: GET_EXT_VERSION,
+        command: VERSION,
       }, true);
       console.log(response);
       if (response) {

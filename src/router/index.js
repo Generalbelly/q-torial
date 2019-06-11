@@ -11,18 +11,18 @@ const router = new VueRouter({
   routes,
 });
 
-const routing = (to, from, next, user) => {
+const routing = (to, from, next, userData = null) => {
   const requireAuth = to.matched.some(route => route.meta.requireAuth);
-  const userEntity = user ? new UserEntity(user) : null;
-  if (userEntity && user.emailVerified) {
-    if (to.name === 'sign-in' || to.name === 'sign-up') {
+  const user = userData ? new UserEntity(userData) : null;
+  if (user && user.emailVerified) {
+    if (to.name === 'sign-in' || to.name === 'sign-up' || to.name === 'email.verify') {
       next({
         name: 'projects.index',
       });
     } else {
       next();
     }
-  } else if (userEntity && !userEntity.emailVerified) {
+  } else if (user && !user.emailVerified) {
     if (to.name === 'email.verify') {
       next();
     } else {

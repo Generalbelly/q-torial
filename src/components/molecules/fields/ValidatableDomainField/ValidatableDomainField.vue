@@ -1,22 +1,23 @@
 <template>
-    <validation-provider
-        :name="name"
-        :rules="innerRules"
-    >
-        <domain-field
-            v-bind="$attrs"
-            slot-scope="{ errors, valid }"
-            :message="errors"
-            v-model="inputValue"
-            :type="getType(errors, valid)"
-        ></domain-field>
-    </validation-provider>
+  <validation-provider
+    :name="name"
+    :rules="innerRules"
+    ref="provider"
+  >
+    <domain-field
+      v-bind="$attrs"
+      slot-scope="{ errors, valid }"
+      :message="errors"
+      v-model="inputValue"
+      :type="getType(errors, valid)"
+    />
+  </validation-provider>
 </template>
 
 <script>
 import { Validator, ValidationProvider } from 'vee-validate';
 import validatable from '../../../mixins/validatable';
-import DomainField from '../../../atoms/fields/DomainField';
+import DomainField from '../DomainField';
 
 Validator.extend('domain', (value, args) => {
   const exceptions = args;

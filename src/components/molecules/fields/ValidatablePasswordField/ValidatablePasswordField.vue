@@ -11,18 +11,20 @@
       :message="errors"
       v-model="inputValue"
       :type="getType(errors, valid)"
-    ></password-field>
+    />
   </validation-provider>
 </template>
 
 <script>
 import { ValidationProvider } from 'vee-validate';
 import validatable from '../../../mixins/validatable';
-import PasswordField from '../../../atoms/fields/PasswordField/PasswordField';
+import PasswordField from '../PasswordField';
 
 export default {
   name: 'ValidatablePasswordField',
-  mixins: [validatable],
+  mixins: [
+    validatable
+  ],
   props: {
     value: {
       type: String,

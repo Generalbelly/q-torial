@@ -10,14 +10,14 @@
       :message="errors"
       v-model="inputValue"
       :type="getType(errors, valid)"
-    ></email-field>
+    />
   </validation-provider>
 </template>
 
 <script>
 import { ValidationProvider } from 'vee-validate';
 import validatable from '../../../mixins/validatable';
-import EmailField from '../../../atoms/fields/EmailField/EmailField';
+import EmailField from '../EmailField';
 
 export default {
   name: 'ValidatableEmailField',

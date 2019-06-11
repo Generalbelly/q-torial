@@ -52,7 +52,7 @@
 </template>
 <script>
 import Heading from '../../atoms/BaseHeading';
-import SearchField from '../../atoms/fields/SearchField';
+import SearchField from '../../molecules/fields/SearchField';
 import AddButton from '../../atoms/buttons/AddButton';
 import DataTable from '../../molecules/DataTable';
 import PenIcon from '../../atoms/icons/PenIcon';
