@@ -3,7 +3,7 @@
     v-bind="$props"
     v-on="$listeners"
   >
-    <slot v-bind="$attrs"></slot>
+    <slot v-bind="$attrs" />
   </b-field>
 </template>
 
@@ -43,7 +43,7 @@ export default {
     },
     position: {
       type: String,
-      default: null,
+      default: 'is-centered',
     },
     addons: {
       type: Boolean,
