@@ -13,25 +13,23 @@ export default {
   props: {
     type: {
       type: [String, Object],
-      default: null,
+      default: undefined,
     },
     label: {
       type: String,
-      default: null,
+      default: undefined,
     },
     labelFor: {
       type: String,
-      default: null,
+      default: undefined,
     },
     customClass: {
       type: String,
-      default: null,
+      default: undefined,
     },
     messages: {
       type: [String, Array, Object],
-      default() {
-        return [];
-      },
+      default: undefined,
     },
     grouped: {
       type: Boolean,
@@ -43,7 +41,7 @@ export default {
     },
     position: {
       type: String,
-      default: 'is-centered',
+      default: undefined,
     },
     addons: {
       type: Boolean,
