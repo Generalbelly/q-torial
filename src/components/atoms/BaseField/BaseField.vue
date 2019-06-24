@@ -27,7 +27,7 @@ export default {
       type: String,
       default: undefined,
     },
-    messages: {
+    message: {
       type: [String, Array, Object],
       default: undefined,
     },
