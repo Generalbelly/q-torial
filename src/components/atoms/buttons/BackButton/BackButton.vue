@@ -1,9 +1,6 @@
 <template>
-  <button
-    class="button is-neutral-100"
-    @click="$emit('click')"
-  >
-      Back
+  <button type="is-neutral-100" @click="$emit('click')">
+    Back
   </button>
 </template>
 
@@ -13,6 +10,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

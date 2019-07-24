@@ -1,9 +1,5 @@
 <template>
-  <validation-provider
-    :name="name"
-    :rules="rules"
-    ref="provider"
-  >
+  <validation-provider :name="name" :rules="rules" ref="provider">
     <select-field
       v-model="inputValue"
       v-bind="$attrs"
@@ -22,9 +18,7 @@ import SelectField from '../SelectField';
 
 export default {
   name: 'ValidatableSelectField',
-  mixins: [
-    validatable
-  ],
+  mixins: [validatable],
   props: {
     value: {
       type: String,
@@ -54,11 +48,8 @@ export default {
         return this.$emit('input', newValue);
       },
     },
-
   },
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

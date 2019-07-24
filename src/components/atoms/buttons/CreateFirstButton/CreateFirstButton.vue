@@ -1,24 +1,20 @@
 <template>
-    <button
-        class="button is-accent-500"
-        @click="$emit('click')"
-    >
-        <rocket-icon></rocket-icon>
-        <span><slot>Create your first item</slot></span>
-    </button>
+  <base-button type="is-accent-500" @click="$emit('click')" icon-left="rocket">
+    <slot>
+      Create your first item
+    </slot>
+  </base-button>
 </template>
 
 <script>
-import RocketIcon from '../../icons/RocketIcon';
+import BaseButton from '../../BaseButton/BaseButton';
 
 export default {
   name: 'CreateFirstButton',
   components: {
-    RocketIcon,
+    BaseButton,
   },
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

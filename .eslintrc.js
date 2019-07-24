@@ -12,25 +12,25 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'import/extensions': {
-      'js': 'never',
-      'vue': 'never',
+      js: 'never',
+      vue: 'never',
     },
-    "no-param-reassign": [
-      "error",
+    'no-param-reassign': [
+      'error',
       {
-        "props": true,
-        "ignorePropertyModificationsFor": [
-          "state",
-          "acc",
-          "e",
-          "ctx",
-          "req",
-          "request",
-          "res",
-          "response",
-          "$scope"
-        ]
-      }
+        props: true,
+        ignorePropertyModificationsFor: [
+          'state',
+          'acc',
+          'e',
+          'ctx',
+          'req',
+          'request',
+          'res',
+          'response',
+          '$scope',
+        ],
+      },
     ],
   },
   parserOptions: {

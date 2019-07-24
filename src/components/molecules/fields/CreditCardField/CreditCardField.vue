@@ -1,11 +1,7 @@
 <template>
   <base-field v-bind="$attrs">
     <template v-slot:default="slotProps">
-      <base-input
-        icon="credit-card"
-        v-bind="slotProps"
-        v-on="$listeners"
-      />
+      <base-input icon="credit-card" v-bind="slotProps" v-on="$listeners" />
     </template>
   </base-field>
 </template>
@@ -23,6 +19,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -1,10 +1,6 @@
 <template>
   <div class="field">
-    <base-radio
-      v-bind="$attrs"
-      v-on="$listeners"
-    >
-    </base-radio>
+    <base-radio v-bind="$attrs" v-on="$listeners"> </base-radio>
   </div>
 </template>
 
@@ -19,6 +15,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

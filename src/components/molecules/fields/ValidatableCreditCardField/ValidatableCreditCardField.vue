@@ -1,9 +1,5 @@
 <template>
-  <validation-provider
-    :name="name"
-    :rules="rules"
-    ref="provider"
-  >
+  <validation-provider :name="name" :rules="rules" ref="provider">
     <credit-card-field
       v-bind="$attrs"
       slot-scope="{ errors, valid }"
@@ -21,9 +17,7 @@ import CreditCardField from '../CreditCardField';
 
 export default {
   name: 'ValidatableCreditCardField',
-  mixins: [
-    validatable,
-  ],
+  mixins: [validatable],
   props: {
     value: {
       type: String,
@@ -47,6 +41,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

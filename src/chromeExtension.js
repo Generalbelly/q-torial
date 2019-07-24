@@ -50,7 +50,6 @@ export default {
       const response = await this.sendMessage({
         command: VERSION,
       }, true);
-      console.log(response);
       if (response) {
         version = response.message;
       } else {
@@ -58,7 +57,6 @@ export default {
       }
       return version;
     } catch (e) {
-      console.log(e);
       return false;
     }
   },

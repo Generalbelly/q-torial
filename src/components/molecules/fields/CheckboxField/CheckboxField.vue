@@ -1,10 +1,7 @@
 <template>
   <div class="field">
-    <base-checkbox
-      v-bind="$attrs"
-      v-on="$listeners"
-    >
-      <slot></slot>
+    <base-checkbox v-bind="$attrs" v-on="$listeners">
+      <slot />
     </base-checkbox>
   </div>
 </template>
@@ -20,6 +17,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

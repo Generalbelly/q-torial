@@ -22,9 +22,7 @@ import PasswordField from '../PasswordField';
 
 export default {
   name: 'ValidatablePasswordField',
-  mixins: [
-    validatable
-  ],
+  mixins: [validatable],
   props: {
     value: {
       type: String,
@@ -57,6 +55,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

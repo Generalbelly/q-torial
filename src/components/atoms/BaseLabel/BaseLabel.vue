@@ -1,14 +1,10 @@
 <template>
-    <label
-        class="label"
-        :class="size"
-    >
-        <slot></slot>
-    </label>
+  <label class="label" :class="size">
+    <slot></slot>
+  </label>
 </template>
 
 <script>
-
 export default {
   name: 'BaseLabel',
   props: {

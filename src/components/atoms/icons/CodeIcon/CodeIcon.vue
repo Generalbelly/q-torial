@@ -1,15 +1,18 @@
 <template>
-    <b-icon
-        icon="code"
-        v-bind="$attrs"
-        @click.native="$emit('click')"
-    >
-    </b-icon>
+  <base-icon
+    icon="code"
+    v-bind="$attrs"
+    @click="$emit('click', $event)"
+  >
+  </base-icon>
 </template>
 
 <script>
+import BaseIcon from '../BaseIcon';
+
 export default {
   name: 'CodeIcon',
+  components: { BaseIcon },
 };
 </script>
 

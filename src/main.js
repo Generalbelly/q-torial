@@ -7,6 +7,7 @@ import '../sass/main.scss';
 import Vue from 'vue';
 import Buefy from 'buefy';
 import VeeValidate from 'vee-validate';
+import './vee-validate';
 import store from './store';
 import router from './router';
 import App from './App.vue';

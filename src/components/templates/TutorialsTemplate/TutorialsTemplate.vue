@@ -1,61 +1,84 @@
 <template>
-    <div>
-        <heading>Tutorials</heading>
-        <div class="level has-margin-bottom-5">
-            <div class="level-left">
-                <search-field
-                    :value="query"
-                    @input="$emit('change:query', $event)"
-                    search-button-class="is-primary-050"
-                    @click:search="$emit('click:search')"
-                ></search-field>
-            </div>
-            <div class="level-right">
-                <add-button
-                    @click="$emit('click:add')"
-                    class="is-primary"
-                ></add-button>
-            </div>
-        </div>
-        <data-table
-            :pagination="pagination"
-            :data="tutorialEntities"
-            :columns="columns"
-            :loading="isLoading"
-            :total="total"
-            @change:pagination="$emit('change:pagination', $event)"
-            @select="$emit('select', $event)"
-        >
-        </data-table>
-    </div>
+  <div>
+    <index-page-layout
+      key="table"
+      title="Tutorials"
+    >
+      <template v-slot:search>
+        <search-field
+          :value="query"
+          @input="$emit('change:query', $event)"
+          search-button-class="is-primary-050"
+          @click:search="$emit('click:search')"
+        />
+      </template>
+      <template v-slot:add>
+        <add-button @click="onClickAdd" class="is-primary" />
+      </template>
+      <template v-slot:table>
+        <tutorial-table
+          :data="tutorials"
+          :loading="loading"
+          :loadable="loadable"
+          :order-by="orderBy"
+          :total="total"
+          @sort="$emit('sort', $event)"
+          @select="$emit('select', $event)"
+          @click:create-first-tutorial="onClickAdd"
+          @click:show-more="$emit('click:show-more', $event)"
+          @click:edit="$emit('click:edit', $event)"
+          @click:delete="$emit('click:delete', $event)"
+        />
+      </template>
+    </index-page-layout>
+    <base-modal
+      :active="shouldShowCreateTutorialForm"
+      @click:cancel="shouldShowCreateTutorialForm=false"
+    >
+      <template v-slot:content>
+        <validation-observer ref="tutorialForm">
+          <create-tutorial-form
+            :name.sync="innerTutorial.name"
+            :build-url.sync="innerTutorial.buildUrl"
+          />
+        </validation-observer>
+      </template>
+      <template v-slot:primary-action-button>
+        <create-button @click="onClickCreate" />
+      </template>
+    </base-modal>
+  </div>
 </template>
 
 <script>
-import DataTable from '../../molecules/DataTable/DataTable';
-import SearchField from '../../molecules/fields/SearchField/SearchField';
-import AddButton from '../../atoms/buttons/AddButton/AddButton';
-import Heading from '../../atoms/BaseHeading/BaseHeading';
+import { ValidationObserver } from 'vee-validate';
+import TutorialTable from '../../organisms/TutorialTable';
+import IndexPageLayout from '../../molecules/layouts/IndexPageLayout';
+import SearchField from '../../molecules/fields/SearchField';
+import AddButton from '../../atoms/buttons/AddButton';
+import BaseModal from '../../molecules/BaseModal';
+import TutorialEntity from '../../atoms/Entities/TutorialEntity';
+import CreateTutorialForm from '../../organisms/forms/CreateTutorialForm/CreateTutorialForm';
+import CreateButton from '../../atoms/buttons/CreateButton/CreateButton';
 
 export default {
   name: 'TutorialsTemplate',
   components: {
-    Heading,
+    CreateButton,
+    CreateTutorialForm,
+    ValidationObserver,
+    BaseModal,
     AddButton,
     SearchField,
-    DataTable,
+    IndexPageLayout,
+    TutorialTable,
   },
   props: {
     query: {
       type: String,
       default: null,
     },
-    pagination: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
-    tutorialEntities: {
+    tutorials: {
       type: Array,
       default() {
         return [];
@@ -65,45 +88,39 @@ export default {
       type: Number,
       default: 0,
     },
-    isLoading: {
+    loading: {
       type: Boolean,
       default: false,
+    },
+    loadable: {
+      type: Boolean,
+      default: false,
+    },
+    orderBy: {
+      type: Array,
+      default() {
+        return [];
+      },
     },
   },
   data() {
     return {
-      columns: [
-        {
-          field: 'name',
-          label: 'Name',
-          sortable: true,
-        },
-        // {
-        //     field: 'description',
-        //     label: 'Description',
-        //     sortable: true,
-        // },
-        {
-          field: 'path_in_text',
-          label: 'Path',
-          sortable: false,
-        },
-        {
-          field: 'query',
-          label: 'Parameters',
-          sortable: false,
-        },
-        {
-          field: 'created_at',
-          label: 'Created at',
-          sortable: true,
-        },
-      ],
+      shouldShowCreateTutorialForm: false,
+      innerTutorial: new TutorialEntity(),
     };
+  },
+  methods: {
+    async onClickCreate() {
+      const valid = await this.$refs.tutorialForm.validate();
+      if (valid) {
+        this.$emit('add:tutorial', this.innerTutorial);
+      }
+    },
+    onClickAdd() {
+      this.shouldShowCreateTutorialForm = true;
+    },
   },
 };
 </script>
 
-<style scoped>
-
-</style>
+<style></style>

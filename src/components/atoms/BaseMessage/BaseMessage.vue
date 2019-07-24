@@ -1,10 +1,7 @@
 <template>
-    <b-message
-        v-bind="$attrs"
-        :active="active"
-    >
-        <slot></slot>
-    </b-message>
+  <b-message v-bind="$attrs" v-on="$listeners" :active="active">
+    <slot />
+  </b-message>
 </template>
 
 <script>
@@ -19,6 +16,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

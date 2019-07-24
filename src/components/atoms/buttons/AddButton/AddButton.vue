@@ -1,25 +1,24 @@
 <template>
-    <base-button
-        class="is-primary"
-        @click="$emit('click')"
-    >
-        <plus-icon></plus-icon>
-        <span>
-            <slot>Add</slot>
-        </span>
-    </base-button>
+  <base-button
+    type="is-primary"
+    @click="$emit('click', $event)"
+    icon-left="plus"
+    icon-pack="fa"
+    v-bind="$attrs"
+  >
+    <slot>Add</slot>
+  </base-button>
 </template>
 
 <script>
-import PlusIcon from '../../icons/PlusIcon';
 import BaseButton from '../../BaseButton';
 
 export default {
   name: 'AddButton',
-  components: { BaseButton, PlusIcon },
+  components: {
+    BaseButton,
+  },
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

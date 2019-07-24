@@ -1,53 +1,53 @@
 import Entity from './Entity';
-import TutorialStepEntity from './TutorialStepEntity';
-import ProjectEntity from './ProjectEntity';
+import { validateUrlPath } from './PathOperators';
+import { has } from '../../../utils';
 
 export default class TutorialEntity extends Entity {
   name = null
 
   description = null
 
-  operator = null
+  domain = null
 
-  depth = 0
+  pathOperator = 'EQUALS'
 
-  path = null
-
-  query = null
+  pathValue = null
 
   parameters = []
 
-  last_time_used_at = null
+  settings = {
+    once: true,
+  }
 
-  settings = {}
+  buildUrl = null
 
-  project_id = null
-
-  projectEntity = null
-
-  tutorialStepEntities = []
+  isActive = false
 
   constructor(data = {}) {
     super();
-    const {
-      tutorialStepEntities = [],
-      path = null,
-      projectEntity = null,
-      ...props
-    } = data;
+    this.fill(data);
+  }
 
-    this.fill(props);
+  toPlainObject() {
+    const privateProperty = [
+      'createdAtAsDateString',
+      'updatedAtAsDateString',
+      'createdAt',
+      'updatedAt',
+    ];
+    const object = {};
+    Object.keys(this).forEach((propertyName) => {
+      if (
+        !privateProperty.includes(propertyName)
+        && has.call(this, propertyName)
+      ) {
+        object[propertyName] = this[propertyName];
+      }
+    });
+    return object;
+  }
 
-    if (!path) {
-      const { pathname } = window.location;
-      this.path = pathname;
-      this.depth = pathname === '/' ? 0 : pathname.split('/').length - 1;
-    }
-    if (tutorialStepEntities) {
-      this.tutorialStepEntities = tutorialStepEntities.map(e => new TutorialStepEntity(e));
-    }
-    if (projectEntity) {
-      this.projectEntity = new ProjectEntity(projectEntity);
-    }
+  couldBeShownOn(urlPath) {
+    return validateUrlPath(this.pathOperator, this.pathValue, urlPath);
   }
 }

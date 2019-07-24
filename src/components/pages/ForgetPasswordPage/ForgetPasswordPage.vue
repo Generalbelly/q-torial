@@ -51,7 +51,7 @@ export default {
       await this.$store.dispatch('setServerSideErrors', {
         [field]: errorMessage,
       });
-    }
+    },
   },
 };
 </script>

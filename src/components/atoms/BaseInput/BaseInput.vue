@@ -1,8 +1,5 @@
 <template>
-  <b-input
-    v-bind="$attrs"
-    v-on="$listeners"
-  />
+  <b-input v-bind="$attrs" v-on="$listeners" />
 </template>
 
 <script>

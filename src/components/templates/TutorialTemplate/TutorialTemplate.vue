@@ -1,125 +1,90 @@
 <template>
     <div>
-        <b-loading
-            is-full-page
-            :active="isLoading"
-        ></b-loading>
-        <template v-if="tutorialEntity">
-            <breadcrumb :items="breadcrumb"></breadcrumb>
-            <heading>{{ tutorialEntity.id ?  tutorialEntity.name : 'New Tutorial' }}</heading>
-            <validation-observer ref="observer">
-<!--                <tutorial-form-->
-<!--                    slot-scope="{invalid}"-->
-<!--                    :id="innerTutorialEntity.id"-->
-<!--                    :name="innerTutorialEntity.name"-->
-<!--                    :path="innerTutorialEntity.path"-->
-<!--                    :description="innerTutorialEntity.description"-->
-<!--                    :parameters="innerTutorialEntity.parameters"-->
-<!--                    @update:name="onTutorialUpdate('name', $event)"-->
-<!--                    @update:description="onTutorialUpdate('description', $event)"-->
-<!--                    @update:steps="onTutorialUpdate('steps', $event)"-->
-<!--                    @update:parameters="onTutorialUpdate('parameters', $event)"-->
-<!--                    @update:path="onTutorialUpdate('path', $event)"-->
-<!--                >-->
-<!--                </tutorial-form>-->
-            </validation-observer>
-            <grouped-buttons-layout is-right>
-                <back-button
-                    @click="onCancel"
-                ></back-button>
-                <save-button
-                    @click="onSave"
-                ></save-button>
-            </grouped-buttons-layout>
-        </template>
+      <base-loading is-full-page :active="loading" />
+      <template v-if="tutorial">
+        <base-heading>
+          {{ innerTutorial.name }}
+        </base-heading>
+        <validation-observer ref="observer">
+          <tutorial-form
+            :id="innerTutorial.id"
+            :name.sync="innerTutorial.name"
+            :description.sync="innerTutorial.description"
+            :path-value.sync="innerTutorial.pathValue"
+            :path-operator.sync="innerTutorial.pathOperator"
+            :parameters.sync="innerTutorial.parameters"
+            :domain.sync="innerTutorial.domain"
+          />
+        </validation-observer>
+        <grouped-buttons-layout is-right>
+            <back-button
+                @click="onCancel"
+            ></back-button>
+            <save-button
+                @click="onSave"
+            ></save-button>
+        </grouped-buttons-layout>
+      </template>
     </div>
 </template>
 
 <script>
 import { ValidationObserver } from 'vee-validate';
 import TutorialEntity from '../../atoms/Entities/TutorialEntity';
-import Heading from '../../atoms/BaseHeading';
 import SaveButton from '../../atoms/buttons/SaveButton';
 import BackButton from '../../atoms/buttons/BackButton';
-import Breadcrumb from '../../molecules/Breadcrumb';
-import GroupedButtonsLayout from '../../layouts/GroupedButtonsLayout';
+import GroupedButtonsLayout from '../../molecules/layouts/GroupedButtonsLayout';
+import TutorialForm from '../../organisms/forms/TutorialForm/TutorialForm';
+import BaseLoading from '../../atoms/BaseLoading/BaseLoading';
+import BaseHeading from '../../atoms/BaseHeading/BaseHeading';
 
 export default {
   name: 'TutorialTemplate',
   components: {
+    BaseHeading,
+    BaseLoading,
+    TutorialForm,
     GroupedButtonsLayout,
-    Breadcrumb,
     BackButton,
     SaveButton,
-    Heading,
     ValidationObserver,
   },
   props: {
-    breadcrumb: {
-      type: Array,
-      default() {
-        return [];
-      },
+    tutorial: {
+      type: Object,
+      default: null,
     },
-    isLoading: {
+    loading: {
       type: Boolean,
       default: false,
-    },
-    tutorialEntity: {
-      type: Object,
-      default() {
-        return new TutorialEntity();
-      },
     },
   },
   data() {
     return {
-      innerTutorialEntity: new TutorialEntity(),
-      showDeleteDialog: false,
+      innerTutorial: new TutorialEntity(),
     };
   },
   watch: {
-    tutorialEntity: {
+    tutorial: {
       immediate: true,
       handler(value) {
         if (value) {
-          this.innerTutorialEntity = new TutorialEntity({ ...value });
+          this.innerTutorial = value;
+        } else {
+          this.innerTutorial = new TutorialEntity();
         }
       },
     },
-    showDeleteDialog(value) {
-      if (value) {
-        this.$dialog.confirm({
-          title: `Delete ${this.tutorialEntity.name}`,
-          message: 'You are about to delete this tutorial.',
-          onConfirm: this.onDelete,
-          onCancel: () => { this.showDeleteDialog = false; },
-          type: 'is-danger',
-        });
-      }
-    },
   },
   methods: {
-    onSave() {
-      this.$refs.observer.validate()
-        .then((result) => {
-          if (result) this.$emit('click:save', this.innerTutorialEntity);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    async onSave() {
+      const isValid = await this.$refs.observer.validate();
+      if (isValid) {
+        this.$emit('update:tutorial', this.innerTutorial);
+      }
     },
     onCancel() {
-      this.$emit('click:cancel', this.innerTutorialEntity);
-    },
-    onDelete() {
-      this.$emit('click:delete', this.innerTutorialEntity);
-    },
-    onTutorialUpdate(key, value) {
-      this.innerTutorialEntity = new TutorialEntity({
-        ...this.innerTutorialEntity,
-        [key]: value,
-      });
+      this.$emit('click:cancel', this.innerTutorial);
     },
   },
 };

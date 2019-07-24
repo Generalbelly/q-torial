@@ -1,8 +1,5 @@
 <template>
-  <b-checkbox
-    v-bind="$attrs"
-    v-on="$listeners"
-  >
+  <b-checkbox v-bind="$attrs" v-on="$listeners">
     <slot />
   </b-checkbox>
 </template>

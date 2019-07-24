@@ -9,6 +9,7 @@
 
 <script>
 import BaseButton from '../../BaseButton';
+
 export default {
   name: 'SignInButton',
   components: { BaseButton },

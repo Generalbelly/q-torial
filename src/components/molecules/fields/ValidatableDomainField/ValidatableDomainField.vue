@@ -1,9 +1,5 @@
 <template>
-  <validation-provider
-    :name="name"
-    :rules="innerRules"
-    ref="provider"
-  >
+  <validation-provider :name="name" :rules="innerRules" ref="provider">
     <domain-field
       v-bind="$attrs"
       slot-scope="{ errors, valid }"
@@ -15,16 +11,9 @@
 </template>
 
 <script>
-import { Validator, ValidationProvider } from 'vee-validate';
+import { ValidationProvider } from 'vee-validate';
 import validatable from '../../../mixins/validatable';
 import DomainField from '../DomainField';
-
-Validator.extend('domain', (value, args) => {
-  const exceptions = args;
-  if (exceptions.includes(value)) return true;
-  const re = /^https?:\/\/(([A-Za-z0-9][A-Za-z0-9-]{1,61}[A-Za-z0-9]|[A-Za-z0-9]{1,63})\.)+[A-Za-z]+$/;
-  return !!re.exec(value);
-}, {});
 
 export default {
   name: 'ValidatableDomainField',
@@ -57,11 +46,8 @@ export default {
     innerRules() {
       return `${this.rules}|domain:${this.exceptionDomains.join(',')}`;
     },
-
   },
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

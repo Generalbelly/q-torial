@@ -1,7 +1,7 @@
 <template>
-    <div class="subtitle">
-        <slot></slot>
-    </div>
+  <div class="subtitle">
+    <slot></slot>
+  </div>
 </template>
 
 <script>
@@ -10,6 +10,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

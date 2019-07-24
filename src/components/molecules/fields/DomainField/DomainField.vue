@@ -1,17 +1,10 @@
 <template>
   <base-field v-bind="$attrs">
-    <base-select
-      v-model="protocol"
-      placeholder="Protocol"
-    >
+    <base-select v-model="protocol" placeholder="Protocol">
       <option>https://</option>
       <option>http://</option>
     </base-select>
-    <base-input
-      v-model="domain"
-      placeholder="docker.omotenashi.today"
-      expanded
-    >
+    <base-input v-model="domain" placeholder="example.com" expanded>
     </base-input>
   </base-field>
 </template>
@@ -20,12 +13,13 @@
 import BaseSelect from '../../../atoms/BaseSelect';
 import BaseInput from '../../../atoms/BaseInput';
 import BaseField from '../../../atoms/BaseField';
+
 export default {
   name: 'DomainField',
   components: {
     BaseField,
     BaseInput,
-    BaseSelect
+    BaseSelect,
   },
   data() {
     return {
@@ -53,12 +47,10 @@ export default {
       },
       set(newValue) {
         this.$emit('input', newValue);
-      }
+      },
     },
   },
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

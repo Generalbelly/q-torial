@@ -6,6 +6,7 @@
 
 <script>
 import BaseHeading from '../BaseHeading';
+
 export default {
   name: 'ErrorHeading',
   components: { BaseHeading },

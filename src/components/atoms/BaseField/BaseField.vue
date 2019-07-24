@@ -1,8 +1,5 @@
 <template>
-  <b-field
-    v-bind="$props"
-    v-on="$listeners"
-  >
+  <b-field v-bind="$props" v-on="$listeners">
     <slot v-bind="$attrs" />
   </b-field>
 </template>

@@ -1,15 +1,18 @@
 <template>
-    <b-icon
+    <base-icon
         icon="trash"
         v-bind="$attrs"
-        @click.native="$emit('click')"
+        @click.native="$emit('click', $event)"
     >
-    </b-icon>
+    </base-icon>
 </template>
 
 <script>
+import BaseIcon from '../BaseIcon';
+
 export default {
   name: 'TrashIcon',
+  components: { BaseIcon },
 };
 </script>
 

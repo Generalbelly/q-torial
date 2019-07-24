@@ -1,126 +1,87 @@
 <template>
-    <tutorials-template
-        :project-entity="projectEntity"
-        :is-loading="isRequesting"
-        :breadcrumb="breadcrumb"
-        @click:save="onSave"
-        @click:cancel="onCancel"
-        @click:delete="onDelete"
-        @click:ga-connect="onClickGAConnect"
-        @click:ga-delete="onClickGADelete"
-        @click:ga-property-edit="onClickGAPropetyEdit"
-    >
-    </tutorials-template>
+  <tutorials-template
+    :query="searchQuery"
+    :loading="requesting"
+    :loadable="loadable"
+    :tutorials="tutorials"
+    :order-by="orderBy"
+    @add:tutorial="onAddTutorial"
+    @change:query="onChangeQuery"
+    @click:search="onChangeQuery"
+    @click:show-more="onClickShowMore"
+    @sort="onSort"
+    @click:delete="onClickDelete"
+    @click:edit="onClickEdit"
+  />
 </template>
-
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex';
+import { mapState, mapActions } from 'vuex';
+import { debounce } from 'debounce';
 import TutorialsTemplate from '../../templates/TutorialsTemplate';
+import { QUERY_LIMIT } from '../../../utils/constants';
 
 export default {
   name: 'TutorialsPage',
   components: {
     TutorialsTemplate,
   },
-  props: {
-    id: {
-      type: String,
-      default: null,
-    },
-  },
-  data() {
-    return {
-      breadcrumb: [],
-    };
-  },
   computed: {
-    ...mapState('project', [
-      'projectEntity',
-      'requestState',
-    ]),
-    ...mapGetters('project', [
-      'isRequesting',
+    loadable() {
+      return !this.allFetched && this.tutorials.length >= QUERY_LIMIT;
+    },
+    ...mapState('tutorial', [
+      'tutorials',
+      'searchQuery',
+      'requesting',
+      'allFetched',
+      'orderBy',
     ]),
   },
   created() {
-    if (this.id) {
-      this.getProject({
-        id: this.id,
-      }).then(() => {
-        this.breadcrumb = [
-          {
-            text: 'Projects',
-            to: '/projects',
-            exact: true,
-          },
-          {
-            text: this.projectEntity.name,
-            to: this.projectEntity.id,
-            exact: true,
-            isActive: true,
-          },
-        ];
-      });
-    }
+    this.listTutorials();
   },
   methods: {
-    ...mapActions('project', [
-      'addProject',
-      'updateProject',
-      'getProject',
-      'deleteProject',
-      'deleteOAuth',
-      'listGoogleAnalyticsAccounts',
+    ...mapActions('tutorial', [
+      'listTutorials',
+      'addTutorial',
+      'deleteTutorial',
+      'sortTutorials',
     ]),
-    onSave(projectEntity) {
-      if (projectEntity.id) {
-        this.updateProject({
-          data: projectEntity,
-          id: projectEntity.id,
+    async onSort(orderBy) {
+      if (this.loadable) {
+        this.listTutorials({
+          orderBy,
         });
       } else {
-        this.addProject({
-          data: projectEntity,
-        }).then(() => {
-          this.$router.push({
-            name: 'projects.show',
-            params: {
-              id: this.projectEntity.id,
-            },
-          });
-        });
+        this.sortTutorials(orderBy);
       }
     },
-    onDelete(projectEntity) {
-      this.deleteProject({
-        id: projectEntity.id,
-      }).then(() => {
-        this.$router.push({
-          name: 'projects.index',
-        });
-      });
+    onClickShowMore() {
+      this.listTutorials();
     },
-    onCancel() {
+    onClickEdit(tutorial) {
       this.$router.push({
-        name: 'projects.index',
+        name: 'tutorials.show',
+        params: {
+          id: tutorial.id,
+        },
       });
     },
-    onClickGAConnect() {
-      window.location.href = `/oauths/google-analytics/redirect?id=${this.projectEntity.id}`;
+    onClickDelete(tutorial) {
+      this.deleteTutorial(tutorial.toPlainObject());
     },
-    onClickGADelete(oauthEntity) {
-      this.deleteOAuth({
-        id: oauthEntity.id,
+    onChangeQuery: debounce(function (query) {
+      this.listTutorials({
+        searchQuery: query,
       });
-    },
-    onClickGAPropetyEdit(projectId) {
-      this.listGoogleAnalyticsAccounts({
-        id: projectId,
+    }, 500),
+    async onAddTutorial(tutorial) {
+      const data = tutorial.toPlainObject();
+      await this.addTutorial({
+        data,
       });
+      window.open(tutorial.buildUrl, '_blank');
     },
   },
 };
 </script>
-
-<style scoped>
-</style>

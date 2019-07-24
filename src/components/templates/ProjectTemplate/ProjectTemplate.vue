@@ -50,7 +50,7 @@ import BackButton from '../../atoms/buttons/BackButton';
 import DeleteButton from '../../atoms/buttons/DeleteButton';
 import Breadcrumb from '../../molecules/Breadcrumb';
 import FadeTransition from '../../atoms/transitions/BaseFadeTransition';
-import GroupedButtonsLayout from '../../layouts/GroupedButtonsLayout';
+import GroupedButtonsLayout from '../../molecules/layouts/GroupedButtonsLayout';
 
 export default {
   name: 'ProjectTemplate',

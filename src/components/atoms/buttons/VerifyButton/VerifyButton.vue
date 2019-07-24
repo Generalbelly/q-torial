@@ -9,6 +9,7 @@
 
 <script>
 import BaseButton from '../../BaseButton';
+
 export default {
   name: 'VerifyButton',
   components: { BaseButton },

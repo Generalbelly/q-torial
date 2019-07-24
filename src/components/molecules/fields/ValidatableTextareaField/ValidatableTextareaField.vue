@@ -1,9 +1,5 @@
 <template>
-  <validation-provider
-    :name="name"
-    :rules="rules"
-    ref="provider"
-  >
+  <validation-provider :name="name" :rules="rules" ref="provider">
     <textarea-field
       v-bind="$attrs"
       slot-scope="{ errors, valid }"
@@ -45,6 +41,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

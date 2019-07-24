@@ -23,12 +23,12 @@
                 :to="item.to"
                 :key="item.text"
               >
-                <b-icon
+                <base-icon
                   :icon="item.icon"
                   :class="item.iconClass"
                   size="is-small"
                 >
-                </b-icon>
+                </base-icon>
                 <span>{{ item.text }}</span>
               </router-link>
             </template>
@@ -55,10 +55,12 @@ import BaseNavbarBrand from '../../../atoms/BaseNavbarBrand';
 import BaseNavbarMenu from '../../../atoms/BaseNavbarMenu';
 import BaseNavbarStart from '../../../atoms/BaseNavbarStart';
 import BaseNavbarEnd from '../../../atoms/BaseNavbarEnd';
+import BaseIcon from '../../../atoms/icons/BaseIcon/BaseIcon';
 
 export default {
   name: 'TheNavbar',
   components: {
+    BaseIcon,
     BaseNavbarEnd,
     BaseNavbarStart,
     BaseNavbarMenu,

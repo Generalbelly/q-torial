@@ -26,7 +26,7 @@ export default {
           }
         } else {
           this.$router.push({
-            name: 'projects.index',
+            name: 'tutorials.index',
           });
         }
       } catch (e) {

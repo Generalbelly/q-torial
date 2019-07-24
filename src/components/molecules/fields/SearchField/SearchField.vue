@@ -1,5 +1,5 @@
 <template>
-  <base-field v-bind="$attrs">
+  <base-field v-bind="$attrs" addons>
     <template v-slot:default="slotProps">
       <base-input
         type="search"

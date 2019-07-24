@@ -1,23 +1,21 @@
 <template>
-    <button
-        class="button is-primary"
-        @click="$emit('click')"
-    >
-        <b-icon
-            pack="fas"
-            icon="save"
-        >
-        </b-icon>
-        <span>Save</span>
-    </button>
+  <base-button
+    class="button is-primary"
+    @click="$emit('click')"
+    icon-left="save"
+    icon-pack="fas"
+  >
+    Save
+  </base-button>
 </template>
 
 <script>
+import BaseButton from '../../BaseButton/BaseButton';
+
 export default {
   name: 'SaveButton',
+  components: { BaseButton },
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

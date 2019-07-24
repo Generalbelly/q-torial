@@ -44,7 +44,7 @@ export default {
       try {
         await firebase.applyActionCode(this.code);
         this.$router.push({
-          name: 'projects.index',
+          name: 'tutorials.index',
         });
       } catch (e) {
         this.handleError(e);

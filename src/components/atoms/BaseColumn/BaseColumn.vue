@@ -1,9 +1,7 @@
 <template>
-    <div
-        class="column"
-    >
-        <slot></slot>
-    </div>
+  <div class="column">
+    <slot></slot>
+  </div>
 </template>
 
 <script>
@@ -12,6 +10,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="navbar-menu"
-    :class="isActive ? 'is-active' : ''"
-  >
+  <div class="navbar-menu" :class="isActive ? 'is-active' : ''">
     <slot></slot>
   </div>
 </template>

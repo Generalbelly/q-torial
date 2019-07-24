@@ -1,8 +1,5 @@
 <template>
-  <validation-provider
-    :name="name"
-    :rules="rules"
-  >
+  <validation-provider :name="name" :rules="rules">
     <autocomplete-field
       v-bind="$attrs"
       slot-scope="{ errors, valid }"
@@ -15,10 +12,7 @@
         :slot="slot"
         slot-scope="scope"
       >
-        <slot
-          :name="slot"
-          v-bind="scope"
-        />
+        <slot :name="slot" v-bind="scope" />
       </template>
     </autocomplete-field>
   </validation-provider>
@@ -57,11 +51,8 @@ export default {
         return this.$emit('input', newValue);
       },
     },
-
   },
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

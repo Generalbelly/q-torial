@@ -49,7 +49,7 @@
 <script>
 import SearchField from '../../molecules/fields/SearchField';
 import AddButton from '../../atoms/buttons/AddButton';
-import IndexPageLayout from '../../layouts/IndexPageLayout';
+import IndexPageLayout from '../../molecules/layouts/IndexPageLayout';
 import ProjectTable from '../../organisms/ProjectTable';
 import Modal from '../../molecules/Modal';
 import ProjectEntity from '../../atoms/Entities/ProjectEntity';

@@ -1,12 +1,17 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/firestore';
 import store from './store';
 import chromeExtension from './chromeExtension';
 
+export const { FieldValue } = firebase.firestore;
+
+let db = null;
 export default {
   init(config) {
     firebase.initializeApp(config);
     firebase.auth().useDeviceLanguage();
+    db = firebase.firestore();
   },
   async signUp(email, password) {
     await firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -45,5 +50,8 @@ export default {
   async resetPassword(code, password) {
     await firebase.auth().verifyPasswordResetCode(code);
     await firebase.auth().confirmPasswordReset(code, password);
+  },
+  getDB() {
+    return db;
   },
 };

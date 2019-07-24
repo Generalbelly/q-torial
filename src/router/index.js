@@ -17,7 +17,7 @@ const routing = (to, from, next, userData = null) => {
   if (user && user.emailVerified) {
     if (to.name === 'sign-in' || to.name === 'sign-up' || to.name === 'email.verify') {
       next({
-        name: 'projects.index',
+        name: 'tutorials.index',
       });
     } else {
       next();

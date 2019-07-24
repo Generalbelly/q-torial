@@ -1,10 +1,7 @@
 <template>
   <base-field v-bind="$attrs">
     <template v-slot:default="slotProps">
-      <base-select
-        v-bind="slotProps"
-        v-on="$listeners"
-      >
+      <base-select v-bind="slotProps" v-on="$listeners">
         <option
           v-for="(option, optionIndex) in items"
           :key="optionIndex"
@@ -38,6 +35,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

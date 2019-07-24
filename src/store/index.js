@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-// import modules from './modules';
+import { vuexfireMutations } from 'vuexfire';
+import modules from './modules';
 import {
   SET_ERROR_CODE,
   SET_USER,
@@ -13,10 +14,10 @@ Vue.use(Vuex);
 
 const getters = {
   userKey(state) {
-    return state.userEntity ? state.userEntity.uuid : null;
+    return state.user ? state.user.uuid : null;
   },
   email(state) {
-    return state.userEntity ? state.userEntity.email : null;
+    return state.user ? state.user.email : null;
   },
   emailVerificationLinkSent(state) {
     return state.auth.emailVerificationLinkSent;
@@ -30,14 +31,14 @@ const mutations = {
   [SET_ERROR_CODE](state, code) {
     state.errorCode = code;
   },
-  [SET_USER](state, userEntity) {
-    if (userEntity) {
-      state.userEntity = new UserEntity({
-        ...state.userEntity,
-        ...userEntity,
+  [SET_USER](state, user) {
+    if (user) {
+      state.user = new UserEntity({
+        ...state.user,
+        ...user,
       });
     } else {
-      state.userEntity = null;
+      state.user = null;
     }
   },
   [SET_SERVER_SIDE_ERRORS](state, payload) {
@@ -49,11 +50,12 @@ const mutations = {
       ...payload,
     };
   },
+  ...vuexfireMutations,
 };
 
 const actions = {
-  setUser({ commit }, userEntity) {
-    commit(SET_USER, userEntity);
+  setUser({ commit }, user) {
+    commit(SET_USER, user);
   },
   setServerSideErrors({ commit }, payload) {
     commit(SET_SERVER_SIDE_ERRORS, payload);
@@ -71,7 +73,7 @@ const actions = {
 };
 
 const state = {
-  userEntity: null,
+  user: null,
   errorCode: null,
   serverSideErrors: {},
   auth: {
@@ -85,6 +87,6 @@ export default new Vuex.Store({
   getters,
   mutations,
   actions,
-  // modules,
-  // strict: process.env.NODE_ENV !== 'production',
+  modules,
+  strict: process.env.NODE_ENV !== 'production',
 });

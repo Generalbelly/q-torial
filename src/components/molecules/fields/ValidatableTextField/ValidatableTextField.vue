@@ -1,9 +1,5 @@
 <template>
-  <validation-provider
-    :name="name"
-    :rules="rules"
-    ref="provider"
-  >
+  <validation-provider :name="name" :rules="rules" ref="provider">
     <text-field
       v-bind="$attrs"
       slot-scope="{ errors, valid }"
@@ -41,11 +37,8 @@ export default {
         return this.$emit('input', newValue);
       },
     },
-
   },
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
