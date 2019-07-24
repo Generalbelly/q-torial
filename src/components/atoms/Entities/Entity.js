@@ -17,8 +17,15 @@ export default class Entity {
 
   fill(data = {}) {
     Object.keys(data).forEach((field) => {
+      console.log(field)
       if (has.call(this, field)) {
-        this[field] = data[field];
+        if (field === 'createdAt') {
+          this.createdAtAsDateString = data.createdAt.toDate().toLocaleString();
+        } else if (field === 'updatedAt') {
+          this.updatedAtAsDateString = data.updatedAt.toDate().toLocaleString();
+        } else {
+          this[field] = data[field];
+        }
       }
     });
   }

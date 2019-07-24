@@ -3,7 +3,7 @@
     :query="searchQuery"
     :loading="requesting"
     :loadable="loadable"
-    :tutorials="tutorials"
+    :tutorials="innerTutorials"
     :order-by="orderBy"
     @add:tutorial="onAddTutorial"
     @change:query="onChangeQuery"
@@ -19,6 +19,7 @@ import { mapState, mapActions } from 'vuex';
 import { debounce } from 'debounce';
 import TutorialsTemplate from '../../templates/TutorialsTemplate';
 import { QUERY_LIMIT } from '../../../utils/constants';
+import TutorialEntity from '../../atoms/Entities/TutorialEntity';
 
 export default {
   name: 'TutorialsPage',
@@ -28,6 +29,9 @@ export default {
   computed: {
     loadable() {
       return !this.allFetched && this.tutorials.length >= QUERY_LIMIT;
+    },
+    innerTutorials() {
+      return this.tutorials.length > 0 ? this.tutorials.map(tutorial => new TutorialEntity(tutorial)) : [];
     },
     ...mapState('tutorial', [
       'tutorials',
