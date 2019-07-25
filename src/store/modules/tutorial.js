@@ -7,6 +7,7 @@ import {
   SET_REQUESTING,
   UPDATE_ORDER_BY,
   UPDATE_SEARCH_QUERY,
+  SORT_TUTORIALS,
 } from '../mutation-types';
 
 export const mutations = {
@@ -25,6 +26,16 @@ export const mutations = {
     state.orderBy = orderBy;
     state.tutorials = [];
   },
+  [SORT_TUTORIALS](state, payload) {
+    const [field, direction] = payload
+    state.tutorials = [...state.tutorials].sort((a, b) => {
+      if (a[field] === b[field]) return 0;
+      if (direction === 'desc') {
+        return a[field] < b[field] ? 1 : -1;
+      }
+      return a[field] > b[field] ? 1 : -1;
+    });
+  },
   [SELECT_TUTORIAL](state, payload) {
     const { id } = payload;
     state.selectedTutorialID = id;
@@ -36,10 +47,12 @@ const actions = {
   listTutorials: firestoreAction(
     async (
       {
-        bindFirestoreRef, state, rootState, commit,
+        bindFirestoreRef, unbindFirestoreRef, state, rootState, commit,
       },
       payload = {},
     ) => {
+      unbindFirestoreRef('tutorial');
+
       const { searchQuery = null, orderBy = ['createdAt', 'desc'] } = payload;
       commit(SET_REQUESTING, true);
 
@@ -93,8 +106,28 @@ const actions = {
       }
     },
   ),
-  selectTutorial: async ({ commit }, payload) => {
-    commit(SELECT_TUTORIAL, payload);
+  selectTutorial: async({ commit, state, unbindFirestoreRef, dispatch }, payload) => {
+    if (state.tutorials.length === 0) {
+      await dispatch('getTutorial', payload);
+    } else {
+      commit(SELECT_TUTORIAL, payload);
+    }
+  },
+  getTutorial: firestoreAction(async ({ commit, rootState, bindFirestoreRef }, payload) => {
+    const snapshot = await firebase
+      .getDB()
+      .collection('users')
+      .doc(rootState.user.uid)
+      .collection('tutorials')
+      .doc(payload.id);
+    await bindFirestoreRef('tutorial', snapshot, {
+      maxRefDepth: 1,
+      reset: true,
+    });
+    commit(SELECT_TUTORIAL, state.tutorial);
+  }),
+  sortTutorials({ commit }, payload) {
+    commit(SORT_TUTORIALS, payload);
   },
   addTutorial: firestoreAction(({ commit, rootState }, payload) => new Promise(async (resolve) => {
     commit(SET_REQUESTING, true);
@@ -159,6 +192,7 @@ const state = {
   requesting: false,
   searchQuery: '',
   orderBy: ['createdAt', 'desc'],
+  tutorial: null,
   tutorials: [],
   selectedTutorialID: null,
   serverSideErrors: {},
@@ -166,11 +200,11 @@ const state = {
 
 const getters = {
   // eslint-disable-next-line no-shadow
-  tutorial(state) {
+  selectedTutorial(state) {
     if (state.selectedTutorialID) {
       const tutorial = state.tutorials.find(
         t => t.id === state.selectedTutorialID,
-      );
+      ) || state.tutorial;
       if (!tutorial) return null;
       return {
         ...tutorial,

@@ -1,6 +1,6 @@
 <template>
-  <base-button class="button" @click="$emit('click')">
-    <span>Confirm</span>
+  <base-button @click="$emit('click', $event)">
+    Confirm
   </base-button>
 </template>
 

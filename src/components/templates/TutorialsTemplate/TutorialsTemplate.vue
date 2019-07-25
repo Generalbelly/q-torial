@@ -23,7 +23,6 @@
           :order-by="orderBy"
           :total="total"
           @sort="$emit('sort', $event)"
-          @select="$emit('select', $event)"
           @click:create-first-tutorial="onClickAdd"
           @click:show-more="$emit('click:show-more', $event)"
           @click:edit="$emit('click:edit', $event)"

@@ -1,12 +1,14 @@
 <template>
-  <button type="is-neutral-100" @click="$emit('click')">
+  <base-button type="is-neutral-100" @click="$emit('click', $event)">
     Back
-  </button>
+  </base-button>
 </template>
 
 <script>
+import BaseButton from '../../BaseButton/BaseButton';
 export default {
   name: 'BackButton',
+  components: { BaseButton },
 };
 </script>
 

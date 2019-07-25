@@ -1,7 +1,7 @@
 <template>
   <base-button
     class="button is-primary"
-    @click="$emit('click')"
+    @click="$emit('click', $event)"
     icon-left="save"
     icon-pack="fas"
   >

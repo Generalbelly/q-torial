@@ -4,8 +4,7 @@
       <option>https://</option>
       <option>http://</option>
     </base-select>
-    <base-input v-model="domain" placeholder="example.com" expanded>
-    </base-input>
+    <base-input v-model="domain" placeholder="example.com" expanded />
   </base-field>
 </template>
 

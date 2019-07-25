@@ -17,7 +17,6 @@ export default class Entity {
 
   fill(data = {}) {
     Object.keys(data).forEach((field) => {
-      console.log(field)
       if (has.call(this, field)) {
         if (field === 'createdAt') {
           this.createdAtAsDateString = data.createdAt.toDate().toLocaleString();

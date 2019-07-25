@@ -1,30 +1,28 @@
 <template>
     <div>
       <base-loading is-full-page :active="loading" />
-      <template v-if="tutorial">
-        <base-heading>
-          {{ innerTutorial.name }}
-        </base-heading>
-        <validation-observer ref="observer">
-          <tutorial-form
-            :id="innerTutorial.id"
-            :name.sync="innerTutorial.name"
-            :description.sync="innerTutorial.description"
-            :path-value.sync="innerTutorial.pathValue"
-            :path-operator.sync="innerTutorial.pathOperator"
-            :parameters.sync="innerTutorial.parameters"
-            :domain.sync="innerTutorial.domain"
-          />
-        </validation-observer>
-        <grouped-buttons-layout is-right>
-            <back-button
-                @click="onCancel"
-            ></back-button>
-            <save-button
-                @click="onSave"
-            ></save-button>
-        </grouped-buttons-layout>
-      </template>
+      <base-heading>
+        {{ innerTutorial.name }}
+      </base-heading>
+      <validation-observer ref="observer">
+        <tutorial-form
+          :id="innerTutorial.id"
+          :name.sync="innerTutorial.name"
+          :description.sync="innerTutorial.description"
+          :path-value.sync="innerTutorial.pathValue"
+          :path-operator.sync="innerTutorial.pathOperator"
+          :parameters.sync="innerTutorial.parameters"
+          :domain.sync="innerTutorial.domain"
+        />
+      </validation-observer>
+      <grouped-buttons-layout is-right class="has-margin-top-5">
+          <back-button
+              @click="onCancel"
+          ></back-button>
+          <save-button
+              @click="onSave"
+          ></save-button>
+      </grouped-buttons-layout>
     </div>
 </template>
 

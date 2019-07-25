@@ -54,7 +54,7 @@ export default {
     ...mapState([
       'errorCode',
       'serverSideErrors',
-      'userEntity',
+      'user',
     ]),
     ...mapGetters([
       'userKey',
@@ -63,7 +63,7 @@ export default {
       if (this.$route.name === 'sign-in' || this.$route.name === 'sign-up') {
         return false;
       }
-      return this.userEntity && this.userEntity.emailVerified;
+      return this.user && this.user.emailVerified;
     },
   },
   watch: {

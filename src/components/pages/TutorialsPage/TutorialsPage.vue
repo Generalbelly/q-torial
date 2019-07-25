@@ -31,7 +31,11 @@ export default {
       return !this.allFetched && this.tutorials.length >= QUERY_LIMIT;
     },
     innerTutorials() {
-      return this.tutorials.length > 0 ? this.tutorials.map(tutorial => new TutorialEntity(tutorial)) : [];
+      return this.tutorials.length > 0
+        ? this.tutorials.map(tutorial => new TutorialEntity({
+          ...tutorial,
+          id: tutorial.id,
+        })) : [];
     },
     ...mapState('tutorial', [
       'tutorials',
@@ -50,6 +54,7 @@ export default {
       'addTutorial',
       'deleteTutorial',
       'sortTutorials',
+      'selectTutorial',
     ]),
     async onSort(orderBy) {
       if (this.loadable) {
@@ -64,6 +69,7 @@ export default {
       this.listTutorials();
     },
     onClickEdit(tutorial) {
+      this.selectTutorial(tutorial);
       this.$router.push({
         name: 'tutorials.show',
         params: {

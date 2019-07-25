@@ -19,8 +19,6 @@
     <base-columns>
       <base-column>
         <select-field :items="pathOperators" v-model="innerPathOperator" />
-      </base-column>
-      <base-column>
         <validatable-text-field
           v-model="innerPathValue"
           name="url path"
@@ -44,6 +42,7 @@
         <checkbox-field v-model="domainRequired">
           Only apply for the following domain
         </checkbox-field>
+        <base-label>Domain</base-label>
         <validatable-domain-field
           name="domain"
           v-model="innerDomain"
@@ -62,10 +61,14 @@ import BaseColumn from '../../../atoms/BaseColumn';
 import SelectField from '../../../molecules/fields/SelectField';
 import ParameterFields from '../../../molecules/fields/ParameterFields';
 import ValidatableDomainField from '../../../molecules/fields/ValidatableDomainField/ValidatableDomainField';
+import GroupedFieldLayout from '../../../molecules/layouts/GroupedFieldLayout/GroupedFieldLayout';
+import BaseLabel from '../../../atoms/BaseLabel/BaseLabel';
 
 export default {
   name: 'TutorialForm',
   components: {
+    BaseLabel,
+    GroupedFieldLayout,
     ValidatableDomainField,
     ParameterFields,
     SelectField,

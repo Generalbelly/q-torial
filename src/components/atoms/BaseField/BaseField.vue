@@ -42,7 +42,7 @@ export default {
     },
     addons: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     horizontal: {
       type: Boolean,

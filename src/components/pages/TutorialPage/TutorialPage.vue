@@ -1,12 +1,13 @@
 <template>
   <tutorial-template
-    :tutorial="tutorial"
+    :tutorial="selectedTutorial"
     :loading="requesting"
     @update:tutorial="updateTutorial"
+    @click:cancel="onClickCancel"
   />
 </template>
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import TutorialTemplate from '../../templates/TutorialTemplate';
 
 export default {
@@ -15,12 +16,30 @@ export default {
     TutorialTemplate,
   },
   computed: {
-    ...mapState(['requesting', 'user', 'tutorial']),
+    ...mapState('tutorial', [
+      'requesting',
+    ]),
+    ...mapGetters('tutorial', [
+      'selectedTutorial',
+    ]),
+  },
+  mounted() {
+    if (!this.tutorial) {
+      this.selectTutorial({
+        id: this.$route.params.id,
+      });
+    }
   },
   methods: {
-    ...mapActions([
+    ...mapActions('tutorial', [
       'updateTutorial',
+      'selectTutorial',
     ]),
+    onClickCancel() {
+      this.$router.push({
+        name: 'tutorials.index',
+      });
+    }
   },
 };
 </script>
