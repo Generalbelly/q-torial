@@ -1,36 +1,36 @@
 <template>
-  <div>
-    <validatable-text-field
-      label="Tutorial Name"
-      v-model="innerName"
-      placeholder="First timers"
-      name="tutorial name"
-      rules="required"
-    />
-    <textarea-field
-      label="Tutorial Description"
-      v-model="innerDescription"
-      placeholder="Tutorial for first time customers."
-      name="tutorial description"
-    />
-    <div class="label">
-      Start this tutorial for a user visiting the following conditions.
+  <div class="form">
+    <div>
+      <validatable-text-field
+        label="Tutorial Name"
+        v-model="innerName"
+        placeholder="First timers"
+        name="tutorial name"
+        rules="required"
+      />
     </div>
-    <base-columns>
-      <base-column>
-        <div class="url-path">
-          <select-field :items="pathOperators" v-model="innerPathOperator" />
-          <validatable-text-field
-            v-model="innerPathValue"
-            name="url path"
-            :rules="innerPathOperator === 'ALL' ? '' : 'required'"
-            expanded
-          />
-        </div>
-      </base-column>
-    </base-columns>
-    <base-columns>
-      <base-column>
+    <div>
+      <textarea-field
+        label="Tutorial Description"
+        v-model="innerDescription"
+        placeholder="Tutorial for first time customers."
+        name="tutorial description"
+      />
+    </div>
+    <div class="form__condition-field">
+      <span class="label">
+        Start this tutorial for a user visiting the following conditions.
+      </span>
+      <div class="url-path">
+        <select-field :items="pathOperators" v-model="innerPathOperator" />
+        <validatable-text-field
+          v-model="innerPathValue"
+          name="url path"
+          :rules="innerPathOperator === 'ALL' ? '' : 'required'"
+          expanded
+        />
+      </div>
+      <div>
         <checkbox-field v-model="parametersRequired">
           with parameters
         </checkbox-field>
@@ -38,10 +38,8 @@
           v-show="parametersRequired"
           v-model="innerParameters"
         />
-      </base-column>
-    </base-columns>
-    <base-columns>
-      <base-column>
+      </div>
+      <div>
         <checkbox-field v-model="domainRequired">
           Only apply for the following domain
         </checkbox-field>
@@ -54,8 +52,8 @@
             />
           </div>
         </base-fade-transition>
-      </base-column>
-    </base-columns>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -222,6 +220,12 @@ export default {
 };
 </script>
 <style scoped>
+  .form > div + div {
+    margin-top: 40px;
+  }
+  .form__condition-field > div + div {
+    margin-top: 15px;
+  }
   .url-path {
     display: grid;
     grid-template-columns: auto 1fr;
