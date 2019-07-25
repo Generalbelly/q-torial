@@ -10,16 +10,12 @@
     >
       <router-view />
     </the-main>
-
-    <!--<extension-install-banner class="banner has-background-white-ter" v-if="showExtensionLink"></extension-install-banner>-->
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex';
 import firebase from './firebase';
-import { UNAUTHORIZED_401, UNAUTHORIZED_419, INTERNAL_SERVER_ERROR } from './utils/constants';
-// import ExtensionInstallBanner from './components/organisms/ExtensionInstallBanner';
 import chromeExtension from './chromeExtension';
 import TheNavbar from './components/organisms/global/TheNavbar';
 import TheMain from './components/organisms/global/TheMain';

@@ -1,7 +1,7 @@
 <template>
-    <transition name="fade">
-        <slot></slot>
-    </transition>
+  <transition name="fade" mode="out-in">
+    <slot />
+  </transition>
 </template>
 
 <script>

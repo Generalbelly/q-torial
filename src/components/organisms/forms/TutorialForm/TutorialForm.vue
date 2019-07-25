@@ -18,12 +18,15 @@
     </div>
     <base-columns>
       <base-column>
-        <select-field :items="pathOperators" v-model="innerPathOperator" />
-        <validatable-text-field
-          v-model="innerPathValue"
-          name="url path"
-          :rules="innerPathOperator === 'ALL' ? '' : 'required'"
-        />
+        <div class="url-path">
+          <select-field :items="pathOperators" v-model="innerPathOperator" />
+          <validatable-text-field
+            v-model="innerPathValue"
+            name="url path"
+            :rules="innerPathOperator === 'ALL' ? '' : 'required'"
+            expanded
+          />
+        </div>
       </base-column>
     </base-columns>
     <base-columns>
@@ -42,11 +45,15 @@
         <checkbox-field v-model="domainRequired">
           Only apply for the following domain
         </checkbox-field>
-        <base-label>Domain</base-label>
-        <validatable-domain-field
-          name="domain"
-          v-model="innerDomain"
-        />
+        <base-fade-transition>
+          <div v-show="domainRequired">
+            <base-label>Domain</base-label>
+            <validatable-domain-field
+              name="domain"
+              v-model="innerDomain"
+            />
+          </div>
+        </base-fade-transition>
       </base-column>
     </base-columns>
   </div>
@@ -60,13 +67,20 @@ import BaseColumns from '../../../atoms/BaseColumns';
 import BaseColumn from '../../../atoms/BaseColumn';
 import SelectField from '../../../molecules/fields/SelectField';
 import ParameterFields from '../../../molecules/fields/ParameterFields';
-import ValidatableDomainField from '../../../molecules/fields/ValidatableDomainField/ValidatableDomainField';
-import GroupedFieldLayout from '../../../molecules/layouts/GroupedFieldLayout/GroupedFieldLayout';
+import ValidatableDomainField from '../../../molecules/fields/ValidatableDomainField';
+import GroupedFieldLayout from '../../../molecules/layouts/GroupedFieldLayout';
 import BaseLabel from '../../../atoms/BaseLabel/BaseLabel';
+import BaseField from '../../../atoms/BaseField/BaseField';
+import BaseFadeTransition from '../../../atoms/transitions/BaseFadeTransition';
+import BaseFadeTransitionGroup
+  from '../../../atoms/transitions/BaseFadeTransitionGroup';
 
 export default {
   name: 'TutorialForm',
   components: {
+    BaseFadeTransitionGroup,
+    BaseFadeTransition,
+    BaseField,
     BaseLabel,
     GroupedFieldLayout,
     ValidatableDomainField,
@@ -207,4 +221,9 @@ export default {
   },
 };
 </script>
-<style scoped></style>
+<style scoped>
+  .url-path {
+    display: grid;
+    grid-template-columns: auto 1fr;
+  }
+</style>

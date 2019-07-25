@@ -1,11 +1,9 @@
 <template>
-    <main
-        class="container"
-    >
-        <base-fade-transition>
-            <slot></slot>
-        </base-fade-transition>
-    </main>
+  <main class="container">
+    <base-fade-transition>
+      <slot />
+    </base-fade-transition>
+  </main>
 </template>
 
 <script>
