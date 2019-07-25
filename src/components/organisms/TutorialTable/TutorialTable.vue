@@ -22,12 +22,10 @@
       </b-table-column>
       <b-table-column label="Actions">
         <pen-icon
-          size="is-small"
           class="has-margin-right-3 has-cursor-pointer"
           @click.stop="$emit('click:edit', props.row)"
         />
         <trash-icon
-          size="is-small"
           class="has-cursor-pointer"
           @click.stop="$emit('click:delete', props.row)"
         />
