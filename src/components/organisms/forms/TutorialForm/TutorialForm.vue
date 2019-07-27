@@ -22,13 +22,19 @@
         Start this tutorial for a user visiting the following conditions.
       </span>
       <div class="url-path">
-        <select-field :items="pathOperators" v-model="innerPathOperator" />
-        <validatable-text-field
-          v-model="innerPathValue"
-          name="url path"
-          :rules="innerPathOperator === 'ALL' ? '' : 'required'"
-          expanded
-        />
+        <div class="url-path__operator">
+          <select-field
+            :items="pathOperators"
+            v-model="innerPathOperator"
+          />
+        </div>
+        <div class="url-path__value">
+          <validatable-text-field
+            v-model="innerPathValue"
+            name="url path"
+            :rules="innerPathOperator === 'ALL' ? '' : 'required'"
+          />
+        </div>
       </div>
       <div>
         <checkbox-field v-model="parametersRequired">
@@ -61,31 +67,20 @@ import CheckboxField from '../../../molecules/fields/CheckboxField';
 import TextareaField from '../../../molecules/fields/TextareaField';
 import ValidatableTextField from '../../../molecules/fields/ValidatableTextField';
 import PathOperators from '../../../atoms/Entities/PathOperators';
-import BaseColumns from '../../../atoms/BaseColumns';
-import BaseColumn from '../../../atoms/BaseColumn';
 import SelectField from '../../../molecules/fields/SelectField';
 import ParameterFields from '../../../molecules/fields/ParameterFields';
 import ValidatableDomainField from '../../../molecules/fields/ValidatableDomainField';
-import GroupedFieldLayout from '../../../molecules/layouts/GroupedFieldLayout';
 import BaseLabel from '../../../atoms/BaseLabel/BaseLabel';
-import BaseField from '../../../atoms/BaseField/BaseField';
 import BaseFadeTransition from '../../../atoms/transitions/BaseFadeTransition';
-import BaseFadeTransitionGroup
-  from '../../../atoms/transitions/BaseFadeTransitionGroup';
 
 export default {
   name: 'TutorialForm',
   components: {
-    BaseFadeTransitionGroup,
     BaseFadeTransition,
-    BaseField,
     BaseLabel,
-    GroupedFieldLayout,
     ValidatableDomainField,
     ParameterFields,
     SelectField,
-    BaseColumn,
-    BaseColumns,
     CheckboxField,
     TextareaField,
     ValidatableTextField,
@@ -228,6 +223,27 @@ export default {
   }
   .url-path {
     display: grid;
+    grid-template-areas:
+      "operator value"
+      "help help";
     grid-template-columns: auto 1fr;
+  }
+  .url-path__value {
+    grid-area: value;
+  }
+  .url-path__operator {
+    grid-area: operator;
+  }
+  .url-path__value >>> p.help {
+    grid-area: help;
+  }
+  @media screen and (max-width: 768px){
+    .url-path {
+      grid-template-areas:
+        "operator"
+        "value"
+        "help";
+      grid-template-columns: 100%;
+    }
   }
 </style>

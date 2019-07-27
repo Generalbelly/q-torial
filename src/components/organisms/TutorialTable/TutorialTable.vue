@@ -35,8 +35,8 @@
 </template>
 <script>
 import BaseTable from '../../molecules/BaseTable';
-import PenIcon from '../../atoms/icons/PenIcon/PenIcon';
-import TrashIcon from '../../atoms/icons/TrashIcon/TrashIcon';
+import PenIcon from '../../atoms/icons/PenIcon';
+import TrashIcon from '../../atoms/icons/TrashIcon';
 
 export default {
   name: 'TutorialTable',
