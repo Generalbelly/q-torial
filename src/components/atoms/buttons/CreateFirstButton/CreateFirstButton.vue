@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import BaseButton from '../../BaseButton/BaseButton';
+import BaseButton from '../../BaseButton';
 
 export default {
   name: 'CreateFirstButton',

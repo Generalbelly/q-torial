@@ -16,14 +16,26 @@
       placeholder="https://example.com/path1"
       :rules="{url: {require_protocol: true }}"
     />
+    <base-message
+      active
+      type="is-warning"
+      class="has-margin-top-5"
+      has-icon
+    >
+      Have you installed our chrome extension?<br />
+      If not, here's the <a href="test">link</a> to it.<br />
+      It is required to build tutorials.
+    </base-message>
   </div>
 </template>
 <script>
 import ValidatableTextField from '../../../molecules/fields/ValidatableTextField';
+import BaseMessage from '../../../atoms/BaseMessage';
 
 export default {
   name: 'CreateTutorialForm',
   components: {
+    BaseMessage,
     ValidatableTextField,
   },
   props: {

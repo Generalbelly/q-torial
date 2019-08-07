@@ -3,7 +3,7 @@
     :query="searchQuery"
     :loading="requesting"
     :loadable="loadable"
-    :tutorials="innerTutorials"
+    :tutorials="tutorials"
     :order-by="orderBy"
     @add:tutorial="onAddTutorial"
     @change:query="onChangeQuery"
@@ -29,13 +29,6 @@ export default {
   computed: {
     loadable() {
       return !this.allFetched && this.tutorials.length >= QUERY_LIMIT;
-    },
-    innerTutorials() {
-      return this.tutorials.length > 0
-        ? this.tutorials.map(tutorial => new TutorialEntity({
-          ...tutorial,
-          id: tutorial.id,
-        })) : [];
     },
     ...mapState('tutorial', [
       'tutorials',
@@ -78,7 +71,9 @@ export default {
       });
     },
     onClickDelete(tutorial) {
-      this.deleteTutorial(tutorial.toPlainObject());
+      this.deleteTutorial({
+        data: tutorial.toPlainObject(),
+      });
     },
     onChangeQuery: debounce(function (query) {
       this.listTutorials({
@@ -86,9 +81,8 @@ export default {
       });
     }, 500),
     async onAddTutorial(tutorial) {
-      const data = tutorial.toPlainObject();
       await this.addTutorial({
-        data,
+        data: tutorial.toPlainObject(),
       });
       window.open(tutorial.buildUrl, '_blank');
     },

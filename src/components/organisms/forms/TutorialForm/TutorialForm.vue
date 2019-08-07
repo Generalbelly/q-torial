@@ -26,6 +26,7 @@
           <select-field
             :items="pathOperators"
             v-model="innerPathOperator"
+            expanded
           />
         </div>
         <div class="url-path__value">
@@ -51,9 +52,9 @@
         </checkbox-field>
         <base-fade-transition>
           <div v-show="domainRequired">
-            <base-label>Domain</base-label>
             <validatable-domain-field
               name="domain"
+              label="Domain"
               v-model="innerDomain"
             />
           </div>

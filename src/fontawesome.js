@@ -19,6 +19,9 @@ import {
   faEye,
   faEnvelope,
   faKey,
+  faInfoCircle,
+  faExclamationTriangle,
+  faChartBar,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -49,4 +52,7 @@ library.add(
   faEye,
   faEnvelope,
   faKey,
+  faInfoCircle,
+  faExclamationTriangle,
+  faChartBar,
 );

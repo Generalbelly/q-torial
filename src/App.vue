@@ -16,7 +16,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import firebase from './firebase';
-import chromeExtension from './chromeExtension';
+// import chromeExtension from './chromeExtension';
 import TheNavbar from './components/organisms/global/TheNavbar';
 import TheMain from './components/organisms/global/TheMain';
 
@@ -29,19 +29,22 @@ export default {
   },
   data() {
     return {
-      showExtensionLink: false,
+      // showExtensionLink: false,
       navItems: [
         {
           icon: 'book',
-          iconClass: 'has-text-primary',
           text: 'Tutorials',
           to: { name: 'tutorials.index' },
         },
         {
           icon: 'code',
-          iconClass: 'has-text-primary',
           text: 'Tag',
           to: { name: 'tags.show', params: { id: this.userKey } },
+        },
+        {
+          icon: 'chart-bar',
+          text: 'Google Analytics',
+          to: { name: 'oauths.index' },
         },
       ],
     };
@@ -70,13 +73,13 @@ export default {
       return [];
     },
   },
-  mounted() {
-    this.checkIfExtensionInstalled();
-  },
+  // mounted() {
+  //   this.checkIfExtensionInstalled();
+  // },
   methods: {
-    async checkIfExtensionInstalled() {
-      this.showExtensionLink = await chromeExtension.getVersion();
-    },
+    // async checkIfExtensionInstalled() {
+    //   this.showExtensionLink = await chromeExtension.getVersion();
+    // },
     showSnackbar(message = 'Oops! Something went wrong.') {
       this.$snackbar.open({
         position: 'is-top',

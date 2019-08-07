@@ -1,0 +1,27 @@
+import Entity from './Entity';
+
+export default class GAEntity extends Entity {
+    accountId = null
+
+    accountName = null
+
+    propertyId = null
+
+    propertyName = null
+
+    websiteUrl = null
+
+    constructor(data = {}) {
+      super();
+      this.fill(data);
+    }
+
+    toPlainObject() {
+      return super.toPlainObject([
+        'createdAtAsDateString',
+        'updatedAtAsDateString',
+        'createdAt',
+        'updatedAt',
+      ]);
+    }
+}

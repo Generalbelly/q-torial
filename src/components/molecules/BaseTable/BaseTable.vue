@@ -30,7 +30,7 @@
       :slot="slot"
       slot-scope="scope"
     >
-      <slot :name="slot" v-bind="scope"> </slot>
+      <slot :name="slot" v-bind="scope" />
     </template>
   </b-table>
 </template>

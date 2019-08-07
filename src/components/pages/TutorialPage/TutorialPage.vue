@@ -2,7 +2,7 @@
   <tutorial-template
     :tutorial="selectedTutorial"
     :loading="requesting"
-    @update:tutorial="updateTutorial"
+    @update:tutorial="onUpdateTutorial"
     @click:cancel="onClickCancel"
   />
 </template>
@@ -35,6 +35,11 @@ export default {
       'updateTutorial',
       'selectTutorial',
     ]),
+    onUpdateTutorial(tutorial) {
+      this.updateTutorial({
+        data: tutorial.toPlainObject(),
+      });
+    },
     onClickCancel() {
       this.$router.push({
         name: 'tutorials.index',

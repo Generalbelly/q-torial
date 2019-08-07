@@ -19,13 +19,12 @@
           <base-navbar-start>
             <template v-for="item in navItems">
               <router-link
-                :class="routerLinkClass('/projects')"
+                :class="routerLinkClass(item.to)"
                 :to="item.to"
                 :key="item.text"
               >
                 <base-icon
                   :icon="item.icon"
-                  :class="item.iconClass"
                   size="is-small"
                 >
                 </base-icon>
@@ -83,10 +82,11 @@ export default {
     };
   },
   methods: {
-    routerLinkClass(path) {
+    routerLinkClass(to) {
+      const prefix = to.name.split('.')[0];
       return {
-        'has-text-primary': this.$route.path.includes(path),
-        'has-text-grey-light': !this.$route.path.includes(path),
+        'has-text-primary': this.$route.name ? this.$route.name.startsWith(prefix) : false,
+        'has-text-primary-100': this.$route.name ? !this.$route.name.startsWith(prefix) : false,
         'navbar-item': true,
       };
     },
@@ -95,8 +95,8 @@ export default {
 </script>
 
 <style scoped>
-    .navbar-item >>> .icon {
-        margin-left: -.25em;
-        margin-right: .25em;
-    }
+  .navbar-item >>> .icon {
+      margin-left: -.25em;
+      margin-right: .25em;
+  }
 </style>
