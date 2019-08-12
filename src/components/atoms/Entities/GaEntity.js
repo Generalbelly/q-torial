@@ -1,13 +1,23 @@
 import Entity from './Entity';
 
-export default class OauthEntity extends Entity {
-  service = null
+export default class GaEntity extends Entity {
+  id = null
 
   email = null
 
   refreshToken = null
 
   accessToken = null
+
+  accountId = null;
+
+  accountName = null;
+
+  propertyId = null;
+
+  propertyName = null;
+
+  // websiteUrl = null;
 
   constructor(data = {}) {
     super();

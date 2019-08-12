@@ -1,13 +1,15 @@
 <template>
   <validation-provider :name="name" :rules="rules" ref="provider">
-    <select-field
-      v-model="inputValue"
-      v-bind="$attrs"
-      :items="items"
-      slot-scope="{ errors, valid }"
-      :message="errors"
-      :type="getType(errors, valid)"
-    />
+    <div slot-scope="{ errors, valid }">
+      <input hidden v-model="fakeValue" />
+      <select-field
+        v-bind="$attrs"
+        :message="errors"
+        :value="value"
+        @input="$emit('input', $event)"
+        :type="getType(errors, valid)"
+      />
+    </div>
   </validation-provider>
 </template>
 
@@ -24,31 +26,24 @@ export default {
       type: String,
       default: null,
     },
-    placeholder: {
-      type: String,
-      default: null,
-    },
-    items: {
-      type: Array,
-      default() {
-        return [];
-      },
-    },
   },
   components: {
     SelectField,
     ValidationProvider,
   },
-  computed: {
-    inputValue: {
-      get() {
-        return this.value;
-      },
-      set(newValue) {
-        return this.$emit('input', newValue);
+  data() {
+    return {
+      fakeValue: null,
+    };
+  },
+  watch: {
+    value: {
+      immediate: true,
+      handler(value) {
+        this.fakeValue = value;
       },
     },
-  },
+  }
 };
 </script>
 

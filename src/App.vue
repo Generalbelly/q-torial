@@ -44,7 +44,7 @@ export default {
         {
           icon: 'chart-bar',
           text: 'Google Analytics',
-          to: { name: 'oauths.index' },
+          to: { name: 'gas.index' },
         },
       ],
     };
@@ -59,7 +59,7 @@ export default {
       'userKey',
     ]),
     shouldShowNavbar() {
-      if (this.$route.name === 'sign-in' || this.$route.name === 'sign-up') {
+      if (this.$route.name === 'sign-in' || this.$route.name === 'sign-up' || this.$route.name === 'gas.show') {
         return false;
       }
       return this.user && this.user.emailVerified;

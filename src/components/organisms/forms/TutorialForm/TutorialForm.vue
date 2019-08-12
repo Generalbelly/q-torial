@@ -50,15 +50,11 @@
         <checkbox-field v-model="domainRequired">
           Only apply for the following domain
         </checkbox-field>
-        <base-fade-transition>
-          <div v-show="domainRequired">
-            <validatable-domain-field
-              name="domain"
-              label="Domain"
-              v-model="innerDomain"
-            />
-          </div>
-        </base-fade-transition>
+        <validatable-domain-field
+          name="domain"
+          label="Domain"
+          v-model="innerDomain"
+        />
       </div>
     </div>
   </div>

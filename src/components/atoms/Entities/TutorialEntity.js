@@ -1,7 +1,10 @@
 import Entity from './Entity';
 import { validateUrlPath } from './PathOperators';
+import GaEntity from './GaEntity';
 
 export default class TutorialEntity extends Entity {
+  id = null
+
   name = null
 
   description = null
@@ -21,6 +24,8 @@ export default class TutorialEntity extends Entity {
   buildUrl = null
 
   isActive = false
+
+  ga = new GaEntity();
 
   constructor(data = {}) {
     super();

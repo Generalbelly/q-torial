@@ -19,9 +19,9 @@ export const DELETE_TUTORIAL = 'DELETE_TUTORIAL';
 export const SELECT_TUTORIAL = 'SELECT_TUTORIAL';
 export const SORT_TUTORIALS = 'SORT_TUTORIALS';
 
-export const ADD_OAUTH = 'ADD_OAUTH';
-export const DELETE_OAUTH = 'DELETE_OAUTH';
-export const SORT_OAUTHS = 'SORT_OAUTHS';
-
 export const SELECT_GA = 'SELECT_GA';
 export const SORT_GAS = 'SORT_GAS';
+export const ADD_GA = 'ADD_GA';
+export const UPDATE_GA = 'UPDATE_GA';
+export const DELETE_GA = 'DELETE_GA';
+export const SET_GA_ACCOUNTS = 'SET_GA_ACCOUNTS';

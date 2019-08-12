@@ -1,8 +1,6 @@
-import { firestoreAction } from 'vuexfire';
 import firebase, {
   FieldValue,
   convertDocToObject,
-  convertDocumentsToArray,
 } from '../../firebase';
 
 import { QUERY_LIMIT } from '../../utils/constants';
@@ -132,21 +130,6 @@ const actions = {
   selectTutorial: async ({ commit, state, getters }, payload) => {
     commit(SET_REQUESTING, true);
     commit(SELECT_TUTORIAL, payload);
-    // if (state.selectedTutorialID) {
-    //   const snapshot = await firebase
-    //     .getDB()
-    //     .collection('users')
-    //     .doc(rootState.user.uid)
-    //     .collection('tutorials')
-    //     .doc(state.selectedTutorialID)
-    //     .collection('steps')
-    //     .orderBy('order', 'asc')
-    //     .get();
-    //   commit(UPDATE_TUTORIAL, {
-    //     ...getters.tutorial,
-    //     steps: convertDocumentsToArray(snapshot),
-    //   });
-    // }
     commit(SET_REQUESTING, false);
   },
   sortTutorials({ commit }, payload) {
@@ -273,7 +256,6 @@ const state = {
   requesting: false,
   searchQuery: '',
   orderBy: ['createdAt', 'desc'],
-  tutorial: null,
   tutorials: [],
   selectedTutorialID: null,
   serverSideErrors: {},
