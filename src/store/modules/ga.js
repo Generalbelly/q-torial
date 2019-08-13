@@ -215,7 +215,7 @@ const state = {
 
 const getters = {
   // eslint-disable-next-line no-shadow
-  selectedGa(state) {
+  ga(state) {
     if (state.selectedGaID) {
       const ga = state.gas.find(g => g.id === state.selectedGaID);
       return ga || null;

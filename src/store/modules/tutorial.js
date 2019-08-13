@@ -271,7 +271,7 @@ const state = {
 
 const getters = {
   // eslint-disable-next-line no-shadow
-  selectedTutorial(state) {
+  tutorial(state) {
     if (state.selectedTutorialID) {
       const tutorial = state.tutorials.find(t => t.id === state.selectedTutorialID);
       return tutorial || null;

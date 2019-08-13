@@ -1,6 +1,6 @@
 <template>
   <tutorial-template
-    :tutorial="selectedTutorial"
+    :tutorial="tutorial"
     :loading="requesting"
     @update:tutorial="onUpdateTutorial"
     @click:cancel="onClickCancel"
@@ -20,7 +20,7 @@ export default {
       'requesting',
     ]),
     ...mapGetters('tutorial', [
-      'selectedTutorial',
+      'tutorial',
     ]),
   },
   mounted() {

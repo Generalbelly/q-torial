@@ -1,6 +1,6 @@
 <template>
   <ga-template
-    :ga="selectedGa"
+    :ga="ga"
     :loading="requesting"
     :google-analytics-accounts="googleAnalyticsAccounts"
     @update:ga="onUpdateGa"
@@ -23,7 +23,7 @@ export default {
       'requesting',
     ]),
     ...mapGetters('ga', [
-      'selectedGa',
+      'ga',
     ]),
   },
   watch: {
