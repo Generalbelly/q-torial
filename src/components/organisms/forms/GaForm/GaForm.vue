@@ -14,19 +14,10 @@
       <validatable-select-field
         :disabled="googleAnalyticsAccount === null"
         :items="googleAnalyticsWebPropertyOptions"
-        label="Property"
+        label="Property Name (Website Url)"
         placeholder="Select property"
         v-model="innerPropertyId"
         name="Property"
-        rules="required"
-      />
-    </div>
-    <div>
-      <validatable-text-field
-        label="Name (optional)"
-        v-model="innerName"
-        placeholder="My website"
-        name="Name"
         rules="required"
       />
     </div>

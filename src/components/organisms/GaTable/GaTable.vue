@@ -8,14 +8,17 @@
     @click:show-more="$emit('click:show-more')"
   >
     <template slot-scope="props">
-      <b-table-column label="Name">
-        {{ props.row.name }}
-      </b-table-column>
       <b-table-column label="Account Name">
-        {{ props.row.accountName }}
+        {{ props.row.accountName || '未選択' }}
       </b-table-column>
-      <b-table-column label="Property Name">
-        {{ props.row.propertyName }}
+      <b-table-column label="Account ID">
+        {{ props.row.accountId || '未選択' }}
+      </b-table-column>
+      <b-table-column label="Property Name (Website Url)">
+        {{ props.row.propertyName || '未選択' }}
+      </b-table-column>
+      <b-table-column label="Property ID">
+        {{ props.row.propertyId || '未選択' }}
       </b-table-column>
       <b-table-column label="Actions">
         <pen-icon

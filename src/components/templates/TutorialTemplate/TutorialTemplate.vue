@@ -67,7 +67,7 @@ export default {
       immediate: true,
       handler(value) {
         if (value) {
-          this.innerTutorial = value;
+          this.innerTutorial = new TutorialEntity(value);
         } else {
           this.innerTutorial = new TutorialEntity();
         }

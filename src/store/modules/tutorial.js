@@ -179,61 +179,69 @@ const actions = {
     });
     commit(SET_REQUESTING, false);
   },
-  updateTutorial: async ({ commit, state, rootState }, payload) => {
-    commit(SET_REQUESTING, true);
-    const { saveSteps = false, saveTutorial = true, data } = payload;
-    const { id, steps, ...fields } = data;
+  updateTutorial({ commit, state, rootState }, payload) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        commit(SET_REQUESTING, true);
+        const { saveSteps = false, saveTutorial = true, data } = payload;
+        const { id, steps, ...fields } = data;
 
-    const batch = firebase.getDB().batch();
+        const batch = firebase.getDB().batch();
 
-    const tutorialRef = await firebase
-      .getDB()
-      .collection('users')
-      .doc(rootState.user.uid)
-      .collection('tutorials')
-      .doc(id);
+        const tutorialRef = await firebase
+          .getDB()
+          .collection('users')
+          .doc(rootState.user.uid)
+          .collection('tutorials')
+          .doc(id);
 
-    if (saveTutorial) {
-      batch.update(tutorialRef, {
-        ...fields,
-        updatedAt: FieldValue.serverTimestamp(),
-      });
-    }
-
-    const savedSteps = [];
-    if (saveSteps) {
-      steps.forEach(({ id = null, ...stepFields }, index) => {
-        const orderAttachedStep = {
-          ...stepFields,
-          order: index,
-        };
-        let stepRef;
-        if (id) {
-          stepRef = tutorialRef.collection('steps').doc(id);
-          batch.update(stepRef, {
-            ...orderAttachedStep,
-            updatedAt: FieldValue.serverTimestamp(),
-          });
-        } else {
-          stepRef = tutorialRef.collection('steps').doc();
-          batch.set(stepRef, {
-            ...orderAttachedStep,
-            createdAt: FieldValue.serverTimestamp(),
+        if (saveTutorial) {
+          batch.update(tutorialRef, {
+            ...fields,
             updatedAt: FieldValue.serverTimestamp(),
           });
         }
-        savedSteps.push({
-          ...orderAttachedStep,
-          id: stepRef.id,
+
+        const savedSteps = [];
+        if (saveSteps) {
+          steps.forEach(({ id = null, ...stepFields }, index) => {
+            const orderAttachedStep = {
+              ...stepFields,
+              order: index,
+            };
+            let stepRef;
+            if (id) {
+              stepRef = tutorialRef.collection('steps').doc(id);
+              batch.update(stepRef, {
+                ...orderAttachedStep,
+                updatedAt: FieldValue.serverTimestamp(),
+              });
+            } else {
+              stepRef = tutorialRef.collection('steps').doc();
+              batch.set(stepRef, {
+                ...orderAttachedStep,
+                createdAt: FieldValue.serverTimestamp(),
+                updatedAt: FieldValue.serverTimestamp(),
+              });
+            }
+            savedSteps.push({
+              ...orderAttachedStep,
+              id: stepRef.id,
+            });
+          });
+        }
+        await batch.commit();
+        commit(UPDATE_TUTORIAL, {
+          ...data,
+          steps: savedSteps,
         });
-      });
-    }
-    await batch.commit();
-    commit(UPDATE_TUTORIAL, {
-      ...data,
-      steps: savedSteps,
-    });
-    commit(SET_REQUESTING, false);
+        commit(SET_REQUESTING, false);
+        resolve();
+      } catch (e) {
+        console.error(e);
+        reject(e);
+      }
+    })
   },
   deleteTutorial: async ({ commit, state, rootState }, payload = {}) => {
     commit(SET_REQUESTING, true);
@@ -265,14 +273,8 @@ const getters = {
   // eslint-disable-next-line no-shadow
   selectedTutorial(state) {
     if (state.selectedTutorialID) {
-      const tutorial = state.tutorials.find(
-        t => t.id === state.selectedTutorialID,
-      ) || state.tutorial;
-      if (!tutorial) return null;
-      return {
-        ...tutorial,
-        id: tutorial.id,
-      };
+      const tutorial = state.tutorials.find(t => t.id === state.selectedTutorialID);
+      return tutorial || null;
     }
     return null;
   },

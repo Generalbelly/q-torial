@@ -1,8 +1,6 @@
 <template>
     <base-modal
       active
-      @click:confirm="onClickConfirm"
-      @click:cancel="onClickCancel"
     >
       <template v-slot:content>
         <base-loading is-full-page :active="loading" />
@@ -20,14 +18,16 @@
             :google-analytics-accounts="googleAnalyticsAccounts"
           />
         </validation-observer>
-<!--        <grouped-buttons-layout is-right class="has-margin-top-5">-->
-<!--            <back-button-->
-<!--                @click="onClickCancel"-->
-<!--            ></back-button>-->
-<!--            <save-button-->
-<!--                @click="onClickConfirm"-->
-<!--            ></save-button>-->
-<!--        </grouped-buttons-layout>-->
+      </template>
+      <template v-slot:secondary-action-button>
+        <back-button
+          @click="onClickCancel"
+        ></back-button>
+      </template>
+      <template v-slot:primary-action-button>
+        <save-button
+          @click="onClickConfirm"
+        ></save-button>
       </template>
     </base-modal>
 </template>
@@ -81,7 +81,7 @@ export default {
       immediate: true,
       handler(value) {
         if (value) {
-          this.innerGa = value;
+          this.innerGa = new GaEntity(value);
         } else {
           this.innerGa = new GaEntity();
         }

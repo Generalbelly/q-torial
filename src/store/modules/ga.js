@@ -138,7 +138,6 @@ const actions = {
       commit(SET_REQUESTING, true);
       try {
         const response = await gapi.queryAccounts(id);
-        console.log(response.data);
         commit(SET_GA_ACCOUNTS, response.data);
         commit(SELECT_GA, payload);
         commit(SET_REQUESTING, false);
@@ -218,17 +217,8 @@ const getters = {
   // eslint-disable-next-line no-shadow
   selectedGa(state) {
     if (state.selectedGaID) {
-      console.log(state.gas);
-      console.log(state.selectedGaID);
-      const ga = state.gas.find(
-        g => g.id === state.selectedGaID,
-      ) || state.ga;
-      console.log(ga);
-      if (!ga) return null;
-      return {
-        ...ga,
-        id: ga.id,
-      };
+      const ga = state.gas.find(g => g.id === state.selectedGaID);
+      return ga || null;
     }
     return null;
   },

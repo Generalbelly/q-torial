@@ -14,15 +14,9 @@ export default class Entity {
   // deletedAtAsDateString = null
 
   fill(data = {}) {
-    Object.keys(data).forEach((field) => {
+    Object.keys(data).forEach(field => {
       if (has.call(this, field)) {
-        if (field === 'createdAt' && data.createdAt.toDate) {
-          this.createdAtAsDateString = data.createdAt.toDate().toLocaleString();
-        } else if (field === 'updatedAt' && data.updatedAt.toDate) {
-          this.updatedAtAsDateString = data.updatedAt.toDate().toLocaleString();
-        } else {
-          this[field] = data[field];
-        }
+        this[field] = data[field]
       }
     });
   }
