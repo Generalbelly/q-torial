@@ -122,7 +122,10 @@ const actions = {
     }
 
     query = query.limit(QUERY_LIMIT);
-    const snapshot = await query.get();
+    let snapshot = await query.get({ source: 'cache' });
+    if (snapshot.empty) {
+      snapshot = await query.get({ source: 'server' });
+    }
     snapshot.docs.forEach((doc) => {
       commit(ADD_GA, convertDocToObject(doc));
     });
@@ -166,25 +169,33 @@ const actions = {
       }
     });
   },
-  updateGa: async ({ commit, state, rootState }, payload) => {
-    commit(SET_REQUESTING, true);
-    const { data } = payload;
-    const { id, ...fields } = data;
+  updateGa({ commit, state, rootState }, payload) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        commit(SET_REQUESTING, true);
+        const { data } = payload;
+        const { id, ...fields } = data;
 
-    const batch = firebase.getDB().batch();
+        const batch = firebase.getDB().batch();
 
-    await firebase
-      .getDB()
-      .collection('users')
-      .doc(rootState.user.uid)
-      .collection('gas')
-      .doc(id)
-      .update({
-        ...fields,
-        updatedAt: FieldValue.serverTimestamp(),
-      });
-    commit(UPDATE_GA, data);
-    commit(SET_REQUESTING, false);
+        await firebase
+          .getDB()
+          .collection('users')
+          .doc(rootState.user.uid)
+          .collection('gas')
+          .doc(id)
+          .update({
+            ...fields,
+            updatedAt: FieldValue.serverTimestamp(),
+          });
+        commit(UPDATE_GA, data);
+        commit(SET_REQUESTING, false);
+        resolve();
+      } catch (e) {
+        console.error(e);
+        reject(e)
+      }
+    })
   },
   deleteGa: async ({ commit, state, rootState }, payload = {}) => {
     commit(SET_REQUESTING, true);

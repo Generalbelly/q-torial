@@ -50,12 +50,24 @@
         <checkbox-field v-model="domainRequired">
           Only apply for the following domain
         </checkbox-field>
-        <validatable-domain-field
-          name="domain"
-          label="Domain"
-          v-model="innerDomain"
-        />
+        <base-fade-transition>
+          <div v-show="domainRequired">
+            <validatable-domain-field
+              name="domain"
+              label="Domain"
+              v-model="innerDomain"
+            />
+          </div>
+        </base-fade-transition>
       </div>
+    </div>
+    <div>
+      <select-field
+        v-model="innerGaId"
+        :items="gasOptions"
+        label="Sending data to the following Google Analytics (account / web property)"
+        placeholder="Select Google Analytics Web Property to connect."
+      />
     </div>
   </div>
 </template>
@@ -112,6 +124,16 @@ export default {
     domain: {
       type: String,
       default: null,
+    },
+    gaId: {
+      type: String,
+      default: null,
+    },
+    gas: {
+      type: Array,
+      default() {
+        return [];
+      },
     },
   },
   data() {
@@ -172,6 +194,20 @@ export default {
       set(newValue) {
         this.$emit('update:domain', newValue);
       },
+    },
+    innerGaId: {
+      get() {
+        return this.gaId;
+      },
+      set(newValue) {
+        this.$emit('update:ga-id', newValue);
+      },
+    },
+    gasOptions() {
+      return this.gas.map(ga => ({
+        text: `${ga.accountName} / ${ga.propertyName}`,
+        value: ga.id,
+      }));
     },
   },
   watch: {

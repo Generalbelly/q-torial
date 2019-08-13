@@ -117,7 +117,11 @@ const actions = {
     }
 
     query = query.limit(QUERY_LIMIT);
-    const snapshot = await query.get();
+
+    let snapshot = await query.get({ source: 'cache' });
+    if (snapshot.empty) {
+      snapshot = await query.get({ source: 'server' });
+    }
     snapshot.docs.forEach((doc) => {
       commit(ADD_TUTORIAL, convertDocToObject(doc));
     });

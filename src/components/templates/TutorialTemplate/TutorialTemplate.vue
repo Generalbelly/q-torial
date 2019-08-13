@@ -13,6 +13,8 @@
           :path-operator.sync="innerTutorial.pathOperator"
           :parameters.sync="innerTutorial.parameters"
           :domain.sync="innerTutorial.domain"
+          :ga-id.sync="innerTutorial.gaId"
+          :gas="gas"
         />
       </validation-observer>
       <grouped-buttons-layout is-right class="has-margin-top-5">
@@ -55,6 +57,12 @@ export default {
     loading: {
       type: Boolean,
       default: false,
+    },
+    gas: {
+      type: Array,
+      default() {
+        return [];
+      },
     },
   },
   data() {

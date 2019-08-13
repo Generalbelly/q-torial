@@ -33,6 +33,7 @@ export default {
     firebase.auth().useDeviceLanguage();
     functions = firebase.functions();
     db = firebase.firestore();
+    db.enablePersistence({ synchronizeTabs: true });
   },
   async signUp(email, password) {
     await firebase.auth().createUserWithEmailAndPassword(email, password);

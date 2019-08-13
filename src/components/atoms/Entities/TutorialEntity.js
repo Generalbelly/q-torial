@@ -25,7 +25,7 @@ export default class TutorialEntity extends Entity {
 
   isActive = false
 
-  ga = new GaEntity();
+  gaId = null;
 
   constructor(data = {}) {
     super();

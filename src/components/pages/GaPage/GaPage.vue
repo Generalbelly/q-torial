@@ -44,9 +44,12 @@ export default {
       'updateGa',
       'selectGa',
     ]),
-    onUpdateGa(ga) {
-      this.updateGa({
+    async onUpdateGa(ga) {
+      await this.updateGa({
         data: ga.toPlainObject(),
+      });
+      this.$router.push({
+        name: 'gas.index',
       });
     },
     onClickCancel() {

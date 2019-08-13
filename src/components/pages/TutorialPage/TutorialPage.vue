@@ -2,6 +2,7 @@
   <tutorial-template
     :tutorial="tutorial"
     :loading="requesting"
+    :gas="gas"
     @update:tutorial="onUpdateTutorial"
     @click:cancel="onClickCancel"
   />
@@ -22,22 +23,36 @@ export default {
     ...mapGetters('tutorial', [
       'tutorial',
     ]),
+    ...mapState('ga', [
+      'gas',
+    ]),
   },
-  mounted() {
+  async created() {
     if (!this.tutorial) {
+      await this.listTutorials();
       this.selectTutorial({
         id: this.$route.params.id,
       });
     }
+    if (this.gas.length === 0) {
+      this.listGas();
+    }
   },
   methods: {
+    ...mapActions('ga', [
+      'listGas',
+    ]),
     ...mapActions('tutorial', [
       'updateTutorial',
       'selectTutorial',
+      'listTutorials',
     ]),
-    onUpdateTutorial(tutorial) {
-      this.updateTutorial({
+    async onUpdateTutorial(tutorial) {
+      await this.updateTutorial({
         data: tutorial.toPlainObject(),
+      });
+      this.$router.push({
+        name: 'tutorials.index',
       });
     },
     onClickCancel() {
