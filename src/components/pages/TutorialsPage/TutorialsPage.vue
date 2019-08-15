@@ -91,6 +91,7 @@ export default {
       await this.addTutorial({
         data: tutorial.toPlainObject(),
       });
+      await chromeExtension.selectTutorial(tutorial);
       window.open(tutorial.buildUrl, '_blank');
     },
     onSwitch(tutorial) {

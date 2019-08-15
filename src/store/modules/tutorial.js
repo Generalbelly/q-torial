@@ -77,7 +77,7 @@ export const mutations = {
 let tutorialsLatestSnapshot = null;
 const actions = {
   listTutorials: async ({ state, rootState, commit }, payload = {}) => {
-    const { searchQuery = null, orderBy = ['createdAt', 'desc'] } = payload;
+    const { searchQuery = null, orderBy = ['createdAt', 'desc'], useCache = true } = payload;
     commit(SET_REQUESTING, true);
 
     if (searchQuery !== state.searchQuery) {
@@ -118,10 +118,16 @@ const actions = {
 
     query = query.limit(QUERY_LIMIT);
 
-    let snapshot = await query.get({ source: 'cache' });
-    if (snapshot.empty) {
-      snapshot = await query.get({ source: 'server' });
+    let snapshot;
+    if (useCache) {
+      snapshot = await query.get({ source: 'cache' });
+      if (snapshot.empty) {
+        snapshot = await query.get({ source: 'server' });
+      }
+    } else {
+      snapshot = await query.get();
     }
+
     snapshot.docs.forEach((doc) => {
       commit(ADD_TUTORIAL, convertDocToObject(doc));
     });
