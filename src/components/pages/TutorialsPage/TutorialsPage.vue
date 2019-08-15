@@ -12,6 +12,8 @@
     @sort="onSort"
     @click:delete="onClickDelete"
     @click:edit="onClickEdit"
+    @click:go="onClickGo"
+    @switch="onSwitch"
   />
 </template>
 <script>
@@ -19,7 +21,7 @@ import { mapState, mapActions } from 'vuex';
 import { debounce } from 'debounce';
 import TutorialsTemplate from '../../templates/TutorialsTemplate';
 import { QUERY_LIMIT } from '../../../utils/constants';
-import TutorialEntity from '../../atoms/Entities/TutorialEntity';
+import chromeExtension from '../../../chromeExtension';
 
 export default {
   name: 'TutorialsPage',
@@ -45,6 +47,7 @@ export default {
     ...mapActions('tutorial', [
       'listTutorials',
       'addTutorial',
+      'updateTutorial',
       'deleteTutorial',
       'sortTutorials',
       'selectTutorial',
@@ -70,6 +73,10 @@ export default {
         },
       });
     },
+    async onClickGo(tutorial) {
+      await chromeExtension.selectTutorial(tutorial);
+      window.open(tutorial.buildUrl, '_blank');
+    },
     onClickDelete(tutorial) {
       this.deleteTutorial({
         data: tutorial.toPlainObject(),
@@ -85,6 +92,11 @@ export default {
         data: tutorial.toPlainObject(),
       });
       window.open(tutorial.buildUrl, '_blank');
+    },
+    onSwitch(tutorial) {
+      this.updateTutorial({
+        data: tutorial.toPlainObject(),
+      });
     },
   },
 };

@@ -15,6 +15,7 @@
           :domain.sync="innerTutorial.domain"
           :ga-id.sync="innerTutorial.gaId"
           :gas="gas"
+          :build-url="innerTutorial.buildUrl"
         />
       </validation-observer>
       <grouped-buttons-layout is-right class="has-margin-top-5">

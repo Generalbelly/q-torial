@@ -1,3 +1,4 @@
+const SELECT_TUTORIAL = 'SELECT_TUTORIAL';
 const SIGN_IN = 'SIGN_IN';
 const SIGN_OUT = 'SIGN_OUT';
 const VERSION = 'VERSION';
@@ -59,5 +60,23 @@ export default {
     } catch (e) {
       return false;
     }
+  },
+  async selectTutorial(tutorial = {}) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await this.sendMessage({
+          command: SELECT_TUTORIAL,
+          data: tutorial,
+        });
+        if (response.status === 'OK') {
+        } else {
+          console.log("error occurred.")
+        }
+        resolve()
+      } catch (e) {
+        console.log(e)
+        reject(e)
+      }
+    })
   },
 };

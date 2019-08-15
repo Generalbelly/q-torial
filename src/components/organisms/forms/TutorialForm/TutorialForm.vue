@@ -69,6 +69,13 @@
         placeholder="Select Google Analytics Web Property to connect."
       />
     </div>
+    <div>
+      <text-field
+        label="Building this tutorial on (You cannot change this url)"
+        disabled
+        :value="buildUrl"
+      />
+    </div>
   </div>
 </template>
 <script>
@@ -81,10 +88,12 @@ import ParameterFields from '../../../molecules/fields/ParameterFields';
 import ValidatableDomainField from '../../../molecules/fields/ValidatableDomainField';
 import BaseLabel from '../../../atoms/BaseLabel/BaseLabel';
 import BaseFadeTransition from '../../../atoms/transitions/BaseFadeTransition';
+import TextField from '../../../molecules/fields/TextField/TextField';
 
 export default {
   name: 'TutorialForm',
   components: {
+    TextField,
     BaseFadeTransition,
     BaseLabel,
     ValidatableDomainField,
@@ -134,6 +143,10 @@ export default {
       default() {
         return [];
       },
+    },
+    buildUrl: {
+      type: String,
+      default: null,
     },
   },
   data() {

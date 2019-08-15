@@ -131,7 +131,7 @@ const actions = {
       tutorialsLatestSnapshot = snapshot;
     }
   },
-  selectTutorial: async ({ commit, state, getters }, payload) => {
+  selectTutorial: async ({ commit }, payload) => {
     commit(SET_REQUESTING, true);
     commit(SELECT_TUTORIAL, payload);
     commit(SET_REQUESTING, false);
@@ -139,7 +139,7 @@ const actions = {
   sortTutorials({ commit }, payload) {
     commit(SORT_TUTORIALS, payload);
   },
-  addTutorial: async ({ commit, state, rootState }, payload) => {
+  addTutorial: async ({ commit, rootState }, payload) => {
     commit(SET_REQUESTING, true);
 
     const batch = firebase.getDB().batch();

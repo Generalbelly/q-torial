@@ -14,7 +14,7 @@
       v-model="innerBuildUrl"
       name="url"
       placeholder="https://example.com/path1"
-      :rules="{url: {require_protocol: true }}"
+      :rules="{url: {require_protocol: true }, required: true}"
     />
     <base-message
       active

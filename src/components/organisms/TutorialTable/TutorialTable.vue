@@ -12,15 +12,19 @@
         {{ props.row.name }}
       </b-table-column>
       <b-table-column field="domain" label="Domain">
-        {{ props.row.domain }}
+        {{ props.row.domain || '-' }}
       </b-table-column>
       <b-table-column field="isActive" label="Active">
-        {{ props.row.isActive ? 'YES' : 'NO' }}
+        <base-switch :value="props.row.isActive" @input="event => { onSwitch(event, props.row) }" />
       </b-table-column>
       <b-table-column label="Actions">
         <pen-icon
-          class="has-margin-right-3 has-cursor-pointer"
+          class="has-margin-right-4 has-cursor-pointer"
           @click.stop="$emit('click:edit', props.row)"
+        />
+        <external-link-icon
+          class="has-margin-right-4 has-cursor-pointer"
+          @click.stop="$emit('click:go', props.row)"
         />
         <trash-icon
           class="has-cursor-pointer"
@@ -34,14 +38,27 @@
 import BaseTable from '../../molecules/BaseTable';
 import PenIcon from '../../atoms/icons/PenIcon';
 import TrashIcon from '../../atoms/icons/TrashIcon';
+import BaseSwitch from '../../atoms/BaseSwitch/BaseSwitch';
+import TutorialEntity from '../../atoms/Entities/TutorialEntity';
+import ExternalLinkIcon from '../../atoms/icons/ExternalLinkIcon/ExternalLinkIcon';
 
 export default {
   name: 'TutorialTable',
   components: {
+    ExternalLinkIcon,
+    BaseSwitch,
     TrashIcon,
     PenIcon,
     BaseTable,
   },
+  methods: {
+    onSwitch(value, row) {
+      this.$emit('switch', new TutorialEntity({
+        ...row,
+        isActive: value,
+      }));
+    },
+  }
 };
 </script>
 

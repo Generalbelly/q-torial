@@ -29,6 +29,7 @@ export default {
   },
   async created() {
     if (!this.tutorial) {
+      // TODO tutorialが20以上ある場合は見つからないこともあるので、ループかなにかで対応する
       await this.listTutorials();
       this.selectTutorial({
         id: this.$route.params.id,

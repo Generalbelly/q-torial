@@ -16,7 +16,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import firebase from './firebase';
-// import chromeExtension from './chromeExtension';
+ import chromeExtension from './chromeExtension';
 import TheNavbar from './components/organisms/global/TheNavbar';
 import TheMain from './components/organisms/global/TheMain';
 
@@ -73,13 +73,10 @@ export default {
       return [];
     },
   },
-  // mounted() {
-  //   this.checkIfExtensionInstalled();
-  // },
+  async mounted() {
+    await chromeExtension.getVersion();
+  },
   methods: {
-    // async checkIfExtensionInstalled() {
-    //   this.showExtensionLink = await chromeExtension.getVersion();
-    // },
     showSnackbar(message = 'Oops! Something went wrong.') {
       this.$snackbar.open({
         position: 'is-top',

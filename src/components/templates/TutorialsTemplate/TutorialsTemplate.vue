@@ -27,6 +27,8 @@
           @click:show-more="$emit('click:show-more', $event)"
           @click:edit="$emit('click:edit', $event)"
           @click:delete="$emit('click:delete', $event)"
+          @switch="$emit('switch', $event)"
+          @click:go="$emit('click:go', $event)"
         />
       </template>
     </index-page-layout>
