@@ -1,6 +1,6 @@
 <template>
     <tag-template
-        :user-key="userKey"
+      :user-key="userKey"
     >
     </tag-template>
 </template>
@@ -14,10 +14,13 @@ export default {
   components: {
     TagTemplate,
   },
-  computed: {
-    ...mapGetters([
-      'userKey',
-    ]),
+  data() {
+    return {
+      userKey: null,
+    };
+  },
+  mounted() {
+    this.userKey = this.$route.params.id
   },
 };
 </script>

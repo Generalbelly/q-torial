@@ -29,6 +29,7 @@
           @click:delete="$emit('click:delete', $event)"
           @switch="$emit('switch', $event)"
           @click:go="$emit('click:go', $event)"
+          @click:chart="$emit('click:chart', $event)"
         />
       </template>
     </index-page-layout>

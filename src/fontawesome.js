@@ -55,4 +55,5 @@ library.add(
   faInfoCircle,
   faExclamationTriangle,
   faChartBar,
+
 );

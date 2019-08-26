@@ -13,9 +13,6 @@ import UserEntity from '../components/atoms/Entities/UserEntity';
 Vue.use(Vuex);
 
 const getters = {
-  userKey(state) {
-    return state.user ? state.user.uuid : null;
-  },
   email(state) {
     return state.user ? state.user.email : null;
   },

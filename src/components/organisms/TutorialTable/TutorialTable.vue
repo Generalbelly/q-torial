@@ -18,6 +18,10 @@
         <base-switch :value="props.row.isActive" @input="event => { onSwitch(event, props.row) }" />
       </b-table-column>
       <b-table-column label="Actions">
+        <chart-bar-icon
+          class="has-margin-right-4 has-cursor-pointer"
+          @click.stop="$emit('click:edit', props.row)"
+        />
         <pen-icon
           class="has-margin-right-4 has-cursor-pointer"
           @click.stop="$emit('click:edit', props.row)"
@@ -40,11 +44,13 @@ import PenIcon from '../../atoms/icons/PenIcon';
 import TrashIcon from '../../atoms/icons/TrashIcon';
 import BaseSwitch from '../../atoms/BaseSwitch/BaseSwitch';
 import TutorialEntity from '../../atoms/Entities/TutorialEntity';
-import ExternalLinkIcon from '../../atoms/icons/ExternalLinkIcon/ExternalLinkIcon';
+import ExternalLinkIcon from '../../atoms/icons/ExternalLinkIcon';
+import ChartBarIcon from '../../atoms/icons/ChartBarIcon';
 
 export default {
   name: 'TutorialTable',
   components: {
+    ChartBarIcon,
     ExternalLinkIcon,
     BaseSwitch,
     TrashIcon,
@@ -58,7 +64,7 @@ export default {
         isActive: value,
       }));
     },
-  }
+  },
 };
 </script>
 

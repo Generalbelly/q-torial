@@ -16,7 +16,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import firebase from './firebase';
- import chromeExtension from './chromeExtension';
+import chromeExtension from './chromeExtension';
 import TheNavbar from './components/organisms/global/TheNavbar';
 import TheMain from './components/organisms/global/TheMain';
 
@@ -30,23 +30,7 @@ export default {
   data() {
     return {
       // showExtensionLink: false,
-      navItems: [
-        {
-          icon: 'book',
-          text: 'Tutorials',
-          to: { name: 'tutorials.index' },
-        },
-        {
-          icon: 'code',
-          text: 'Tag',
-          to: { name: 'tags.show', params: { id: this.userKey } },
-        },
-        {
-          icon: 'chart-bar',
-          text: 'Google Analytics',
-          to: { name: 'gas.index' },
-        },
-      ],
+      navItems: [],
     };
   },
   computed: {
@@ -54,9 +38,6 @@ export default {
       'errorCode',
       'serverSideErrors',
       'user',
-    ]),
-    ...mapGetters([
-      'userKey',
     ]),
     shouldShowNavbar() {
       if (this.$route.name === 'sign-in' || this.$route.name === 'sign-up' || this.$route.name === 'gas.show') {
@@ -72,6 +53,27 @@ export default {
       }
       return [];
     },
+    user(value) {
+      if (value) {
+        this.navItems = [
+          {
+            icon: 'book',
+            text: 'Tutorials',
+            to: { name: 'tutorials.index' },
+          },
+          {
+            icon: 'code',
+            text: 'Tag',
+            to: { name: 'tags.show', params: { id: value.uid } },
+          },
+          {
+            icon: 'plug',
+            text: 'Google Analytics',
+            to: { name: 'gas.index' },
+          },
+        ];
+      }
+    }
   },
   async mounted() {
     await chromeExtension.getVersion();

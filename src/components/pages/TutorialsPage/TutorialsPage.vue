@@ -14,6 +14,7 @@
     @click:edit="onClickEdit"
     @click:go="onClickGo"
     @switch="onSwitch"
+    @click:chart="onClickChart"
   />
 </template>
 <script>
@@ -99,6 +100,9 @@ export default {
         data: tutorial.toPlainObject(),
       });
     },
+    onClickChart(tutorial) {
+      console.log(tutorial);
+    }
   },
 };
 </script>
