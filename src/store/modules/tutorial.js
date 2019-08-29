@@ -76,7 +76,7 @@ export const mutations = {
 
 let tutorialsLatestSnapshot = null;
 const actions = {
-  listTutorials: async ({ state, commit }, payload = {}) => {
+  listTutorials: async ({ state, rootState, commit }, payload = {}) => {
     const { searchQuery = null, orderBy = ['createdAt', 'desc'], useCache = true } = payload;
     commit(SET_REQUESTING, true);
 
@@ -93,6 +93,8 @@ const actions = {
 
     let query = firebase
       .getDB()
+      .collection('users')
+      .doc(rootState.user.uid)
       .collection('tutorials');
 
     if (state.searchQuery) {
@@ -143,7 +145,7 @@ const actions = {
   sortTutorials({ commit }, payload) {
     commit(SORT_TUTORIALS, payload);
   },
-  addTutorial: async ({ commit }, payload) => {
+  addTutorial: async ({ commit, rootState }, payload) => {
     commit(SET_REQUESTING, true);
 
     const batch = firebase.getDB().batch();
@@ -152,6 +154,8 @@ const actions = {
     const { id, steps, ...fields } = data;
     const tutorialRef = await firebase
       .getDB()
+      .collection('users')
+      .doc(rootState.user.uid)
       .collection('tutorials')
       .doc();
 
@@ -185,7 +189,7 @@ const actions = {
     });
     commit(SET_REQUESTING, false);
   },
-  updateTutorial({ commit }, payload) {
+  updateTutorial({ commit, state, rootState }, payload) {
     return new Promise(async (resolve, reject) => {
       try {
         commit(SET_REQUESTING, true);
@@ -196,6 +200,8 @@ const actions = {
 
         const tutorialRef = await firebase
           .getDB()
+          .collection('users')
+          .doc(rootState.user.uid)
           .collection('tutorials')
           .doc(id);
 
@@ -247,12 +253,14 @@ const actions = {
       }
     })
   },
-  deleteTutorial: async ({ commit }, payload = {}) => {
+  deleteTutorial: async ({ commit, state, rootState }, payload = {}) => {
     commit(SET_REQUESTING, true);
     const { data } = payload;
     const { id } = data;
     await firebase
       .getDB()
+      .collection('users')
+      .doc(rootState.user.uid)
       .collection('tutorials')
       .doc(id)
       .delete();
