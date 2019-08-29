@@ -56,7 +56,6 @@ export default {
   },
   watchAuth() {
     firebase.auth().onAuthStateChanged(async (user) => {
-      console.log('watchAuth()', user);
       await store.dispatch('setUser', user);
     });
   },

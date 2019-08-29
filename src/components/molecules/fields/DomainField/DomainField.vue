@@ -30,6 +30,10 @@ export default {
       type: String,
       default: null,
     },
+    value: {
+      type: String,
+      default: null,
+    },
   },
   data() {
     return {
