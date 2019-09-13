@@ -15,6 +15,8 @@
             :account-name.sync="innerGa.accountName"
             :property-id.sync="innerGa.propertyId"
             :property-name.sync="innerGa.propertyName"
+            :view-id.sync="innerGa.viewId"
+            :view-name.sync="innerGa.viewName"
             :google-analytics-accounts="googleAnalyticsAccounts"
           />
         </validation-observer>

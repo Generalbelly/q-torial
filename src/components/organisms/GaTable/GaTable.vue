@@ -20,6 +20,12 @@
       <b-table-column label="Property ID">
         {{ props.row.propertyId || '未選択' }}
       </b-table-column>
+      <b-table-column label="View Name">
+        {{ props.row.viewName || '未選択' }}
+      </b-table-column>
+      <b-table-column label="View ID">
+        {{ props.row.viewId || '未選択' }}
+      </b-table-column>
       <b-table-column label="Actions">
         <pen-icon
           class="has-margin-right-3 has-cursor-pointer"

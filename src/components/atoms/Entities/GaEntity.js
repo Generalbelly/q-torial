@@ -17,6 +17,10 @@ export default class GaEntity extends Entity {
 
   propertyName = null;
 
+  viewId = null;
+
+  viewName = null;
+
   // websiteUrl = null;
 
   constructor(data = {}) {

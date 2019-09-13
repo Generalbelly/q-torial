@@ -21,6 +21,17 @@
         rules="required"
       />
     </div>
+    <div>
+      <validatable-select-field
+        :disabled="googleAnalyticWebProperty === null"
+        :items="googleAnalyticsProfileOptions"
+        label="View"
+        placeholder="Select view"
+        v-model="innerViewId"
+        name="View"
+        rules="required"
+      />
+    </div>
   </div>
 </template>
 
@@ -61,6 +72,14 @@ export default {
       type: String,
       default: null,
     },
+    viewId: {
+      type: String,
+      default: null,
+    },
+    viewName: {
+      type: String,
+      default: null,
+    },
     googleAnalyticsAccounts: {
       type: Array,
       default() {
@@ -93,6 +112,14 @@ export default {
         this.$emit('update:property-id', newValue);
       },
     },
+    innerViewId: {
+      get() {
+        return this.viewId;
+      },
+      set(newValue) {
+        this.$emit('update:view-id', newValue);
+      },
+    },
     googleAnalyticsAccount() {
       if (this.innerAccountId) {
         return this.googleAnalyticsAccounts.find(a => a.id === this.innerAccountId);
@@ -105,11 +132,28 @@ export default {
         value: g.id,
       }));
     },
+    googleAnalyticWebProperty() {
+      if (this.googleAnalyticsAccount && this.innerPropertyId) {
+        return this.googleAnalyticsAccount.webProperties.find(
+          account => account.id === this.innerPropertyId
+        );
+      }
+      return null;
+    },
     googleAnalyticsWebPropertyOptions() {
       if (this.googleAnalyticsAccount) {
-        return this.googleAnalyticsAccount.webProperties.map(w => ({
-          text: `${w.name} (${w.websiteUrl})`,
-          value: w.id,
+        return this.googleAnalyticsAccount.webProperties.map(webProperty => ({
+          text: `${webProperty.name} (${webProperty.websiteUrl})`,
+          value: webProperty.id,
+        }));
+      }
+      return [];
+    },
+    googleAnalyticsProfileOptions() {
+      if (this.googleAnalyticsAccount && this.googleAnalyticWebProperty) {
+        return this.googleAnalyticWebProperty.profiles.map(profile => ({
+          text: profile.name,
+          value: profile.id,
         }));
       }
       return [];
@@ -123,6 +167,10 @@ export default {
     innerPropertyId(value) {
       const property = this.googleAnalyticsWebPropertyOptions.find(a => a.value === value);
       this.$emit('update:property-name', property ? property.text : null);
+    },
+    innerViewId(value) {
+      const property = this.googleAnalyticsProfileOptions.find(a => a.value === value);
+      this.$emit('update:view-name', property ? property.text : null);
     },
   }
 };
