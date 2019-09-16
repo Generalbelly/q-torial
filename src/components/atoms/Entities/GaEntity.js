@@ -7,8 +7,6 @@ export default class GaEntity extends Entity {
 
   refreshToken = null
 
-  accessToken = null
-
   accountId = null;
 
   accountName = null;
