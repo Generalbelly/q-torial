@@ -1,9 +1,9 @@
 <template>
     <div>
       <base-loading is-full-page :active="loading" />
-<!--      <base-heading>-->
-<!--        {{ innerTutorial.name }}-->
-<!--      </base-heading>-->
+      <base-heading>
+        {{ tutorial.name }}
+      </base-heading>
       <validation-observer ref="observer">
         <tutorial-form
           :id="innerTutorial.id"
@@ -38,11 +38,13 @@ import BackButton from '../../atoms/buttons/BackButton';
 import GroupedButtonsLayout from '../../molecules/layouts/GroupedButtonsLayout';
 import TutorialForm from '../../organisms/forms/TutorialForm/TutorialForm';
 import BaseLoading from '../../atoms/BaseLoading/BaseLoading';
+import BaseHeading from '../../atoms/BaseHeading/BaseHeading';
 // import BaseHeading from '../../atoms/BaseHeading/BaseHeading';
 
 export default {
   name: 'TutorialTemplate',
   components: {
+    BaseHeading,
     // BaseHeading,
     BaseLoading,
     TutorialForm,

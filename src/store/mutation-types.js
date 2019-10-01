@@ -25,3 +25,5 @@ export const ADD_GA = 'ADD_GA';
 export const UPDATE_GA = 'UPDATE_GA';
 export const DELETE_GA = 'DELETE_GA';
 export const SET_GA_ACCOUNTS = 'SET_GA_ACCOUNTS';
+
+export const SET_PERFORMANCE = 'SET_PERFORMANCE';

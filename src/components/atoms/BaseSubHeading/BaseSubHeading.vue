@@ -1,5 +1,5 @@
 <template>
-  <div class="subtitle">
+  <div class="subtitle is-4">
     <slot></slot>
   </div>
 </template>

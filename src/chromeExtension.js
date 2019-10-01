@@ -68,11 +68,11 @@ export default {
           command: SELECT_TUTORIAL,
           data: tutorial,
         });
-        if (response.status === 'OK') {
+        if (response && response.status === 'ok') {
+          resolve(true)
         } else {
-          console.log("error occurred.")
+          resolve(false)
         }
-        resolve()
       } catch (e) {
         console.log(e)
         reject(e)

@@ -2,19 +2,19 @@ import Entity from './Entity';
 import GoogleAnalyticsWebProperty from './GoogleAnalyticsWebProperty';
 
 export default class GoogleAnalyticsAccount extends Entity {
-    id = null
+  id = null
 
-    name = null
+  name = null
 
-    webProperties = []
+  webProperties = []
 
-    constructor(data = {}) {
-      super();
-      const {
-        webProperties = [],
-        ...props
-      } = data;
-      this.fill(props);
-      this.webProperties = webProperties.map(webProperty => new GoogleAnalyticsWebProperty(webProperty));
-    }
+  constructor(data = {}) {
+    super();
+    const {
+      webProperties = [],
+      ...props
+    } = data;
+    this.fill(props);
+    this.webProperties = webProperties.map(webProperty => new GoogleAnalyticsWebProperty(webProperty));
+  }
 }

@@ -29,7 +29,7 @@
           @click:delete="$emit('click:delete', $event)"
           @switch="$emit('switch', $event)"
           @click:go="$emit('click:go', $event)"
-          @click:chart="$emit('click:chart', $event)"
+          @click:performance="$emit('click:performance', $event)"
         />
       </template>
     </index-page-layout>
@@ -49,6 +49,10 @@
         <create-button @click="onClickCreate" />
       </template>
     </base-modal>
+    <extension-not-installed-modal
+      :active="shouldShowExtensionNotInstalledModal"
+      @click:close="shouldShowExtensionNotInstalledModal=false"
+    ></extension-not-installed-modal>
   </div>
 </template>
 
@@ -62,10 +66,13 @@ import BaseModal from '../../molecules/BaseModal';
 import TutorialEntity from '../../atoms/Entities/TutorialEntity';
 import CreateTutorialForm from '../../organisms/forms/CreateTutorialForm/CreateTutorialForm';
 import CreateButton from '../../atoms/buttons/CreateButton/CreateButton';
+import ExtensionNotInstalledModal
+  from '../../organisms/modals/ExtensionNotInstalledModal/ExtensionNotInstalledModal';
 
 export default {
   name: 'TutorialsTemplate',
   components: {
+    ExtensionNotInstalledModal,
     CreateButton,
     CreateTutorialForm,
     ValidationObserver,
@@ -108,6 +115,7 @@ export default {
   data() {
     return {
       shouldShowCreateTutorialForm: false,
+      shouldShowExtensionNotInstalledModal: false,
       innerTutorial: new TutorialEntity(),
     };
   },
@@ -120,6 +128,9 @@ export default {
     },
     onClickAdd() {
       this.shouldShowCreateTutorialForm = true;
+    },
+    showExtensionNotInstalledModal() {
+      this.shouldShowExtensionNotInstalledModal = true
     },
   },
 };

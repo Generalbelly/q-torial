@@ -1,5 +1,7 @@
 import TutorialsPage from '../../components/pages/TutorialsPage';
 import TutorialPage from '../../components/pages/TutorialPage';
+import TutorialPerformancePage
+  from '../../components/pages/TutorialPerformancePage/TutorialPerformancePage';
 
 export default [
   {
@@ -13,6 +15,13 @@ export default [
     path: '/tutorials/:id',
     name: 'tutorials.show',
     component: TutorialPage,
+    props: true,
+    meta: { requireAuth: true },
+  },
+  {
+    path: '/tutorials/:id/performance',
+    name: 'tutorials.performance',
+    component: TutorialPerformancePage,
     props: true,
     meta: { requireAuth: true },
   },

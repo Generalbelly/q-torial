@@ -14,7 +14,8 @@
     @click:edit="onClickEdit"
     @click:go="onClickGo"
     @switch="onSwitch"
-    @click:chart="onClickChart"
+    @click:performance="onClickPerformance"
+    ref="template"
   />
 </template>
 <script>
@@ -75,8 +76,12 @@ export default {
       });
     },
     async onClickGo(tutorial) {
-      await chromeExtension.selectTutorial(tutorial);
-      window.open(tutorial.buildUrl, '_blank');
+      const selected = await chromeExtension.selectTutorial(tutorial);
+      if (selected) {
+        window.open(tutorial.buildUrl, '_blank')
+      } else {
+        this.$refs.template.showExtensionNotInstalledModal()
+      }
     },
     onClickDelete(tutorial) {
       this.deleteTutorial({
@@ -100,9 +105,14 @@ export default {
         data: tutorial.toPlainObject(),
       });
     },
-    onClickChart(tutorial) {
-      console.log(tutorial);
-    }
+    onClickPerformance(tutorial) {
+      this.$router.push({
+        name: 'tutorials.performance',
+        params: {
+          id: tutorial.id,
+        },
+      });
+    },
   },
 };
 </script>

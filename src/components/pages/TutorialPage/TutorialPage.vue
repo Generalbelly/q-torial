@@ -28,9 +28,10 @@ export default {
     ]),
   },
   async created() {
-    if (!this.tutorial) {
-      // TODO tutorialが20以上ある場合は見つからないこともあるので、ループかなにかで対応する
-      await this.listTutorials();
+    if (!this.tutorial || this.tutorial.id !== this.$route.params.id) {
+      await this.getTutorial({
+        id: this.$route.params.id,
+      });
       this.selectTutorial({
         id: this.$route.params.id,
       });
@@ -46,7 +47,7 @@ export default {
     ...mapActions('tutorial', [
       'updateTutorial',
       'selectTutorial',
-      'listTutorials',
+      'getTutorial',
     ]),
     async onUpdateTutorial(tutorial) {
       await this.updateTutorial({

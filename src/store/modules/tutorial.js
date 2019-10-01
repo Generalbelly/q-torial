@@ -13,11 +13,13 @@ import {
   SORT_TUTORIALS,
   ADD_TUTORIAL,
   UPDATE_TUTORIAL,
-  DELETE_TUTORIAL,
+  DELETE_TUTORIAL, SET_PERFORMANCE,
 } from '../mutation-types';
 import TutorialEntity from '../../components/atoms/Entities/TutorialEntity';
 
 export const mutations = {
+  [SET_PERFORMANCE](state, payload) {
+  },
   [ADD_TUTORIAL](state, payload) {
     state.tutorials = [...state.tutorials, new TutorialEntity(payload)];
   },
@@ -136,6 +138,32 @@ const actions = {
     if (!tutorialsLatestSnapshot) {
       tutorialsLatestSnapshot = snapshot;
     }
+  },
+  getTutorial: async ({ state, rootState, commit }, payload = {}) => {
+    const { id, useCache = true } = payload;
+    commit(SET_REQUESTING, true);
+
+    commit(UPDATE_SEARCH_QUERY, id);
+
+    const query = firebase
+      .getDB()
+      .collection('users')
+      .doc(rootState.user.uid)
+      .collection('tutorials')
+      .doc(id)
+
+    let snapshot;
+    if (useCache) {
+      snapshot = await query.get({ source: 'cache' });
+      if (snapshot.empty) {
+        snapshot = await query.get({ source: 'server' });
+      }
+    } else {
+      snapshot = await query.get();
+    }
+
+    commit(ADD_TUTORIAL, convertDocToObject(snapshot));
+    commit(SET_REQUESTING, false);
   },
   selectTutorial: async ({ commit }, payload) => {
     commit(SET_REQUESTING, true);
@@ -265,6 +293,38 @@ const actions = {
       .doc(id)
       .delete();
     commit(DELETE_TUTORIAL, data);
+    commit(SET_REQUESTING, false);
+  },
+  getPerformance: async ({ commit, rootState, state }, payload = {}) => {
+    const { id, from, to, useCache = false } = payload
+    commit(SET_REQUESTING, true);
+    const query = await firebase
+      .getDB()
+      .collection('users')
+      .doc(rootState.user.uid)
+      .collection('tutorials')
+      .doc(id)
+      .collection('performances')
+      .where('createdAt', '>=', new Date(from))
+      .where('createdAt', '<=', new Date(to))
+
+    let snapshot;
+    if (useCache) {
+      snapshot = await query.get({ source: 'cache' });
+      if (snapshot.empty) {
+        snapshot = await query.get({ source: 'server' });
+      }
+    } else {
+      snapshot = await query.get();
+    }
+    const performances = [];
+    snapshot.docs.forEach((doc) => {
+      performances.push(convertDocToObject(doc))
+    });
+    commit(UPDATE_TUTORIAL, {
+      id,
+      performances,
+    });
     commit(SET_REQUESTING, false);
   },
 };

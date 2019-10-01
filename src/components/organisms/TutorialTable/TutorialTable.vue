@@ -20,7 +20,7 @@
       <b-table-column label="Actions">
         <chart-bar-icon
           class="has-margin-right-4 has-cursor-pointer"
-          @click.stop="$emit('click:edit', props.row)"
+          @click.stop="$emit('click:performance', props.row)"
         />
         <pen-icon
           class="has-margin-right-4 has-cursor-pointer"
