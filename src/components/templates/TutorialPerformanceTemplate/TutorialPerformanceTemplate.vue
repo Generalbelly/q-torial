@@ -49,7 +49,13 @@
               <b-table-column field="completionRate" label="Completion Rate">
                 <div style="display: flex; align-items: center;">
                   <div style="min-width: 80px;">{{ props.row.completionRate * 100 }} %</div>
-                  <progress class="progress is-primary" :value="props.row.completionRate * 100" max="100">{{ props.row.completionRate }}</progress>
+                  <progress
+                    class="progress is-primary"
+                    :value="props.row.completionRate * 100"
+                    max="100"
+                  >
+                    {{ props.row.completionRate }}
+                  </progress>
                 </div>
               </b-table-column>
             </template>
