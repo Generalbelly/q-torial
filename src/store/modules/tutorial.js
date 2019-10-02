@@ -298,15 +298,20 @@ const actions = {
   getPerformance: async ({ commit, rootState, state }, payload = {}) => {
     const { id, from, to, useCache = false } = payload
     commit(SET_REQUESTING, true);
-    const query = await firebase
+    let query = await firebase
       .getDB()
       .collection('users')
       .doc(rootState.user.uid)
       .collection('tutorials')
       .doc(id)
       .collection('performances')
-      .where('createdAt', '>=', new Date(from))
-      .where('createdAt', '<=', new Date(to))
+
+    if (from && to) {
+      console.log('from,to');
+      query = query.where('createdAt', '>=', from)
+      query = query.where('createdAt', '<=', to)
+    }
+    console.log('come');
 
     let snapshot;
     if (useCache) {

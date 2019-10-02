@@ -1,9 +1,40 @@
 <template>
     <div>
       <base-loading is-full-page :active="loading" />
-      <base-heading>
+      <base-heading v-if="tutorial">
         {{ tutorial.name }}
       </base-heading>
+      <base-columns>
+        <base-column>
+          <base-level>
+            <base-level-left>
+              <base-level-item>
+                <select-field
+                  :items="dateRanges"
+                  v-model="dateRange"
+                  class="is-marginless"
+                />
+                <base-field
+                  v-show="dateRange === 'CUSTOM'"
+                  grouped
+                >
+                  <b-datepicker
+                    placeholder="From"
+                    v-model="customFrom"
+                  />
+                  <b-datepicker
+                    placeholder="To"
+                    v-model="customTo"
+                  />
+                </base-field>
+              </base-level-item>
+              <base-level-item>
+                {{ selectedDates }}
+              </base-level-item>
+            </base-level-left>
+          </base-level>
+        </base-column>
+      </base-columns>
       <base-columns>
         <base-column class="card">
           <div class="has-text-weight-semibold has-margin-bottom-4">TOTAL COMPLETED</div>
@@ -23,7 +54,7 @@
           <div class="has-text-weight-semibold has-margin-bottom-4">COMPLETION RATE</div>
           <p>What percentage of users completed the tutorial?</p>
           <div class="has-text-weight-bold result-number">
-            {{ numberWithCommas(numberOfCompletePerformances / numberOfPerformances * 100) }}%
+            {{ numberWithCommas(completionRate) }}%
           </div>
         </base-column>
       </base-columns>
@@ -36,6 +67,9 @@
             :data="stepsData"
             :loadable="false"
           >
+            <template v-slot:empty>
+              No data available
+            </template>
             <template slot-scope="props">
               <b-table-column field="step" label="Step">
                 {{ props.row.step }}
@@ -66,38 +100,75 @@
 </template>
 
 <script>
+import format from 'date-fns/format';
+import startOfDay from 'date-fns/startOfDay';
+import endOfDay from 'date-fns/endOfDay';
+import subDays from 'date-fns/subDays';
+import startOfMonth from 'date-fns/startOfMonth';
+import subMonths from 'date-fns/subMonths';
+import endOfMonth from 'date-fns/endOfMonth';
 import BaseLoading from '../../atoms/BaseLoading/BaseLoading';
 import BaseColumns from '../../atoms/BaseColumns/BaseColumns';
 import BaseColumn from '../../atoms/BaseColumn/BaseColumn';
 import BaseTable from '../../molecules/BaseTable/BaseTable';
 import BaseSubHeading from '../../atoms/BaseSubHeading/BaseSubHeading';
 import BaseHeading from '../../atoms/BaseHeading/BaseHeading';
+import SelectField from '../../molecules/fields/SelectField/SelectField';
+import BaseField from '../../atoms/BaseField/BaseField';
+import BaseFadeTransitionGroup
+  from '../../atoms/transitions/BaseFadeTransitionGroup/BaseFadeTransitionGroup';
+import BaseLevel from '../../atoms/BaseLevel/BaseLevel';
+import BaseLevelLeft from '../../atoms/BaseLevelLeft/BaseLevelLeft';
+import BaseLevelItem from '../../atoms/BaseLevelItem/BaseLevelItem';
 
-const columns = [
+const ALL_TIME = 'ALL_TIME';
+const LAST_7_DAYS = 'LAST_7_DAYS';
+const LAST_14_DAYS = 'LAST_14_DAYS';
+const LAST_30_DAYS = 'LAST_30_DAYS';
+const CUSTOM = 'CUSTOM';
+const THIS_MONTH = 'THIS_MONTH';
+const LAST_MONTH = 'LAST_MONTH';
+const SELECTED_DATES = 'SELECTED_DATES';
+const dateRanges = [
   {
-    field: 'step',
-    label: 'Step',
+    text: 'This Month',
+    value: THIS_MONTH,
   },
   {
-    field: 'shown',
-    label: 'Shown',
-    numeric: true,
+    text: 'Last Month',
+    value: LAST_MONTH,
   },
   {
-    field: 'completed',
-    label: 'Completed',
-    numeric: true,
+    text: 'Last 7 days',
+    value: LAST_7_DAYS,
   },
   {
-    field: 'completionRate',
-    label: 'Completion Rate',
-    numeric: true,
+    text: 'Last 14 days',
+    value: LAST_14_DAYS,
+  },
+  {
+    text: 'Last 30 days',
+    value: LAST_30_DAYS,
+  },
+  {
+    text: 'All time',
+    value: ALL_TIME,
+  },
+  {
+    text: 'Custom',
+    value: CUSTOM,
   },
 ];
 
 export default {
   name: 'TutorialPerformanceTemplate',
   components: {
+    BaseLevelItem,
+    BaseLevelLeft,
+    BaseLevel,
+    BaseFadeTransitionGroup,
+    BaseField,
+    SelectField,
     BaseHeading,
     BaseSubHeading,
     BaseTable,
@@ -114,10 +185,21 @@ export default {
       type: Boolean,
       default: false,
     },
+    dates: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
   },
   data() {
     return {
-      // columns,
+      dateRanges,
+      dateRange: THIS_MONTH,
+      customFrom: null,
+      customTo: null,
+      onDateRangeSelection: false,
+      selectedDates: null,
     };
   },
   computed: {
@@ -169,6 +251,12 @@ export default {
       }
       return 0;
     },
+    completionRate() {
+      if (this.numberOfCompletePerformances > 0 && this.numberOfPerformances > 0) {
+        return this.numberOfCompletePerformances / this.numberOfPerformances * 100;
+      }
+      return 0;
+    },
     stepsData() {
       if (this.tutorial && this.tutorial.id) {
         const data = {}
@@ -195,7 +283,67 @@ export default {
         });
       }
       return [];
-    }
+    },
+  },
+  watch: {
+    dates(value) {
+      let from = null;
+      let to = null;
+      if (value.length === 2) {
+        from = format(value[0], 'yyyy/MM/dd');
+        to = format(value[1], 'yyyy/MM/dd');
+      }
+      if (from && to) {
+        this.selectedDates = `${from} - ${to}`;
+      } else {
+        this.selectedDates = '';
+      }
+    },
+    customFrom(value) {
+      if (
+        this.dateRange === CUSTOM
+        && value
+        && this.customTo
+        && value.getTime() <= this.customTo.getTime()
+      ) {
+        this.$emit('update:dates', [value, this.customTo]);
+      }
+    },
+    customTo(value) {
+      if (
+        this.dateRange === CUSTOM
+        && value
+        && this.customFrom
+        && this.customFrom.getTime() <= value.getTime()
+      ) {
+        this.$emit('update:dates', [this.customFrom, value]);
+      }
+    },
+    dateRange(value) {
+      if (value === SELECTED_DATES || value === CUSTOM) return;
+      let from = null;
+      let to = null;
+      const yesterday = endOfDay(subDays(new Date(), 1));
+      switch (value) {
+        case LAST_7_DAYS:
+        case LAST_14_DAYS:
+        case LAST_30_DAYS:
+          to = yesterday;
+          from = startOfDay(subDays(to, parseInt(value.replace(/\D/g, ''), 10)));
+          break;
+        case THIS_MONTH:
+          to = yesterday
+          from = startOfDay(startOfMonth(to));
+          break;
+        case LAST_MONTH:
+          from = startOfDay(startOfMonth(subMonths(yesterday, 1)));
+          to = endOfDay(endOfMonth(subMonths(yesterday, 1)));
+          break;
+        default:
+          break;
+      }
+      this.$emit('update:dates', [from, to]);
+    },
   },
   methods: {
     numberWithCommas(x) {
