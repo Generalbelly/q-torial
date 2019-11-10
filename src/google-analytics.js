@@ -1,5 +1,4 @@
 import firebase from './firebase';
-import GoogleAnalyticsAccount from './components/atoms/Entities/GoogleAnalyticsAccount';
 
 let auth = null;
 let _scope = null;

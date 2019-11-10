@@ -1,5 +1,5 @@
 // ./index
-export const SET_USER = 'SET_USER';
+export const UPDATE_USER = 'UPDATE_USER';
 export const SET_ERROR_CODE = 'SET_ERROR_CODE';
 export const SET_SERVER_SIDE_ERRORS = 'SET_SERVER_SIDE_ERRORS';
 

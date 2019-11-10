@@ -40,13 +40,11 @@ export default {
   },
   async signIn(email, password) {
     await firebase.auth().signInWithEmailAndPassword(email, password);
-    console.log('signIn');
     chromeExtension.signIn(email, password);
   },
   async signOut() {
     await firebase.auth().signOut();
-    console.log('signOut()');
-    await store.dispatch('setUser', null);
+    await store.dispatch('updateUser', null);
     chromeExtension.signOut();
   },
   checkAuth() {
@@ -56,7 +54,10 @@ export default {
   },
   watchAuth() {
     firebase.auth().onAuthStateChanged(async (user) => {
-      await store.dispatch('setUser', user);
+      await store.dispatch('updateUser', user);
+      if (user) {
+        await store.dispatch('getUserPaymentInfo', user);
+      }
     });
   },
   async applyActionCode(code) {

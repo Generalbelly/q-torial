@@ -7,8 +7,8 @@ module.exports = {
     //   extensions: ['.js', '.vue'],
     // },
   },
-  devServer: {
-    host: 'local.q-torial.com',
-    https: true,
-  },
+  // devServer: {
+  //   host: 'local.q-torial.com',
+  //   https: true,
+  // },
 };

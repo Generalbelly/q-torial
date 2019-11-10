@@ -1,0 +1,37 @@
+version: 2
+jobs:
+  deploy_job:
+    docker:
+      - image: circleci/node:8.16.0
+    steps:
+      - checkout
+
+      - restore_cache:
+          name: Restore cache
+          keys:
+            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "functions/yarn.lock" }}
+
+      - run:
+          name: install dependency for the project
+          command: yarn install
+
+      - save_cache:
+          name: Save cache
+          key: v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "functions/yarn.lock" }}
+          paths:
+            - node_modules
+      - run:
+          name: build
+          command: yarn run build
+      - run:
+          name: deploy firebase hosting
+          command: ./node_modules/.bin/firebase deploy --only hosting --token ${FIREBASE_TOKEN}
+
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - deploy_job:
+          filters:
+            branches:
+              only: master

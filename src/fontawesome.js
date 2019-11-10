@@ -22,6 +22,8 @@ import {
   faInfoCircle,
   faExclamationTriangle,
   faChartBar,
+  faBolt,
+  faUserCircle,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -55,5 +57,6 @@ library.add(
   faInfoCircle,
   faExclamationTriangle,
   faChartBar,
-
+  faBolt,
+  faUserCircle,
 );

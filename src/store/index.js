@@ -4,11 +4,13 @@ import { vuexfireMutations } from 'vuexfire';
 import modules from './modules';
 import {
   SET_ERROR_CODE,
-  SET_USER,
+  UPDATE_USER,
   SET_SERVER_SIDE_ERRORS,
   UPDATE_AUTH,
 } from './mutation-types';
 import UserEntity from '../components/atoms/Entities/UserEntity';
+import firebase, { convertDocToObject, convertDocumentsToArray } from '../firebase';
+import StripeCustomerEntity from '../components/atoms/Entities/StripeCustomerEntity';
 
 Vue.use(Vuex);
 
@@ -28,12 +30,56 @@ const mutations = {
   [SET_ERROR_CODE](state, code) {
     state.errorCode = code;
   },
-  [SET_USER](state, user) {
+  [UPDATE_USER](state, user) {
     if (user) {
+      console.log(user)
       state.user = new UserEntity({
         ...state.user,
         ...user,
       });
+
+      state.navItems = [
+        {
+          icon: 'book',
+          text: 'Tutorials',
+          to: { name: 'tutorials.index' },
+        },
+        // {
+        //   icon: 'code',
+        //   text: 'Tag',
+        //   to: { name: 'tags.show', params: { id: value.uid } },
+        // },
+        {
+          icon: 'plug',
+          text: 'Google Analytics',
+          to: { name: 'gas.index' },
+        },
+      ];
+
+      if (state.user.stripeCustomer) {
+        state.userItems = [
+          {
+            text: 'Cancel Pro Plan',
+            value: 'cancel',
+          },
+          {
+            text: 'Sign out',
+            value: 'signout',
+          },
+        ];
+      } else {
+        state.userItems = [
+          {
+            text: 'Upgrade to Pro Plan',
+            value: 'upgrade',
+          },
+          {
+            text: 'Sign out',
+            value: 'signout',
+          },
+        ];
+      }
+
     } else {
       state.user = null;
     }
@@ -51,8 +97,8 @@ const mutations = {
 };
 
 const actions = {
-  setUser({ commit }, user) {
-    commit(SET_USER, user);
+  updateUser({ commit }, user) {
+    commit(UPDATE_USER, user);
   },
   setServerSideErrors({ commit }, payload) {
     commit(SET_SERVER_SIDE_ERRORS, payload);
@@ -67,6 +113,27 @@ const actions = {
       emailVerificationLinkExpired: value,
     });
   },
+  getUserPaymentInfo: async ({ state, commit }, payload = {}) => {
+    if (!state.user) return;
+    firebase
+      .getDB()
+      .collection('users')
+      .doc(state.user.uid)
+      .collection('stripe_customers')
+      .where('deletedAt', '==', null)
+      .limit(1)
+      .onSnapshot((snapshot) => {
+        if (snapshot.docs.length > 0) {
+          console.log(convertDocumentsToArray(snapshot))
+          const stripeCustomer = new StripeCustomerEntity(
+            convertDocumentsToArray(snapshot)[0]
+          );
+          commit(UPDATE_USER, { stripeCustomer });
+        } else {
+          commit(UPDATE_USER, { stripeCustomer: null });
+        }
+      });
+  },
 };
 
 const state = {
@@ -77,6 +144,8 @@ const state = {
     emailVerificationLinkSent: false,
     emailVerificationLinkExpired: false,
   },
+  navItems: [],
+  userItems: [],
 };
 
 export default new Vuex.Store({

@@ -4,6 +4,8 @@
       v-if="shouldShowNavbar"
       :navItems="navItems"
       @click:sign-out="signOut"
+      :user="user"
+      :user-items="userItems"
     ></the-navbar>
     <the-main
       class="has-padding-5"
@@ -14,7 +16,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import firebase from './firebase';
 import chromeExtension from './chromeExtension';
 import TheNavbar from './components/organisms/global/TheNavbar';
@@ -25,16 +27,11 @@ export default {
   components: {
     TheMain,
     TheNavbar,
-    // ExtensionInstallBanner,
-  },
-  data() {
-    return {
-      // showExtensionLink: false,
-      navItems: [],
-    };
   },
   computed: {
     ...mapState([
+      'navItems',
+      'userItems',
       'errorCode',
       'serverSideErrors',
       'user',
@@ -53,32 +50,12 @@ export default {
       }
       return [];
     },
-    user(value) {
-      if (value) {
-        this.navItems = [
-          {
-            icon: 'book',
-            text: 'Tutorials',
-            to: { name: 'tutorials.index' },
-          },
-          {
-            icon: 'code',
-            text: 'Tag',
-            to: { name: 'tags.show', params: { id: value.uid } },
-          },
-          {
-            icon: 'plug',
-            text: 'Google Analytics',
-            to: { name: 'gas.index' },
-          },
-        ];
-      }
-    }
   },
   async mounted() {
     await chromeExtension.getVersion();
   },
   methods: {
+    ...mapActions(['getUserPaymentInfo']),
     showSnackbar(message = 'Oops! Something went wrong.') {
       this.$snackbar.open({
         position: 'is-top',

@@ -67,16 +67,28 @@
       </div>
     </div>
     <div>
+      <div class="is-flex">
+        <base-label>
+          Send data to the following Google Analytics (account / web property)
+        </base-label>
+        <question-circle-icon
+          @click="showGaInfo = !showGaInfo"
+          size="is-small"
+          style="height: 100%; margin-left: 10px;"
+        />
+      </div>
+      <base-message :active="showGaInfo" type="is-info">
+        We send data of how many steps users complete on your behalf to your connected Google Analytics account.
+      </base-message>
       <select-field
         v-model="innerGaId"
         :items="gasOptions"
-        label="Sending data to the following Google Analytics (account / web property)"
         placeholder="Select Google Analytics Web Property to connect."
       />
     </div>
     <div>
       <text-field
-        label="Building this tutorial on (You cannot change this url)"
+        label="Build this tutorial on (You cannot change this url)"
         disabled
         :value="buildUrl"
       />
@@ -94,10 +106,14 @@ import ValidatableDomainField from '../../../molecules/fields/ValidatableDomainF
 import BaseLabel from '../../../atoms/BaseLabel/BaseLabel';
 import BaseFadeTransition from '../../../atoms/transitions/BaseFadeTransition';
 import TextField from '../../../molecules/fields/TextField/TextField';
+import BaseMessage from '../../../atoms/BaseMessage/BaseMessage';
+import QuestionCircleIcon from '../../../atoms/icons/QuestionCircleIcon/QuestionCircleIcon';
 
 export default {
   name: 'TutorialForm',
   components: {
+    QuestionCircleIcon,
+    BaseMessage,
     TextField,
     BaseFadeTransition,
     BaseLabel,
@@ -167,6 +183,7 @@ export default {
       domainRequired: false,
       parametersRequired: false,
       pathOperators: PathOperators,
+      showGaInfo: false,
     };
   },
   computed: {

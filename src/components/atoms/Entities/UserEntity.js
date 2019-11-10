@@ -9,6 +9,8 @@ export default class UserEntity extends Entity {
 
   emailVerified = false;
 
+  stripeCustomer = null;
+
   constructor(data = {}) {
     super();
     this.fill(data);

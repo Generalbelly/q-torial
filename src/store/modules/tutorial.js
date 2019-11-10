@@ -79,7 +79,7 @@ export const mutations = {
 let tutorialsLatestSnapshot = null;
 const actions = {
   listTutorials: async ({ state, rootState, commit }, payload = {}) => {
-    const { searchQuery = null, orderBy = ['createdAt', 'desc'], useCache = true } = payload;
+    const { searchQuery = null, orderBy = ['createdAt', 'desc'], useCache = false } = payload;
     commit(SET_REQUESTING, true);
 
     if (searchQuery !== state.searchQuery) {
@@ -140,7 +140,7 @@ const actions = {
     }
   },
   getTutorial: async ({ state, rootState, commit }, payload = {}) => {
-    const { id, useCache = true } = payload;
+    const { id, useCache = false } = payload;
     commit(SET_REQUESTING, true);
 
     commit(UPDATE_SEARCH_QUERY, id);

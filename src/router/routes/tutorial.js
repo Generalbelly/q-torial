@@ -1,7 +1,8 @@
+import ThanksPage from '../../components/pages/ThanksPage';
+import UpgradePage from '../../components/pages/UpgradePage';
 import TutorialsPage from '../../components/pages/TutorialsPage';
 import TutorialPage from '../../components/pages/TutorialPage';
-import TutorialPerformancePage
-  from '../../components/pages/TutorialPerformancePage/TutorialPerformancePage';
+import TutorialPerformancePage from '../../components/pages/TutorialPerformancePage';
 
 export default [
   {
@@ -10,6 +11,16 @@ export default [
     component: TutorialsPage,
     props: true,
     meta: { requireAuth: true },
+    children: [
+      {
+        path: 'upgrade',
+        component: UpgradePage,
+      },
+      {
+        path: 'thanks',
+        component: ThanksPage,
+      },
+    ],
   },
   {
     path: '/tutorials/:id',

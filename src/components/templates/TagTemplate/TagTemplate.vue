@@ -39,7 +39,7 @@ export default {
   data() {
     return {
       copiedInClipboard: false,
-      url: process.env.VUE_SCRIPT_URL,
+      url: `${process.env.VUE_APP_URL}/js/q-torial.js`,
     };
   },
   created() {

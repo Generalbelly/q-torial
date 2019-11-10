@@ -6,6 +6,7 @@
     "serve": "vue-cli-service serve",
     "serve:secure": "vue-cli-service serve --https",
     "build": "vue-cli-service build",
+    "deploy": "yarn build && firebase deploy --only hosting",
     "lint": "vue-cli-service lint",
     "test:e2e": "vue-cli-service test:e2e",
     "test:unit": "vue-cli-service test:unit"
