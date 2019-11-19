@@ -41,20 +41,15 @@ const routing = (to, from, next, userData = null) => {
   }
 };
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   if (to.name === 'sign-in' && to.query.source === 'extension') {
-    firebase.signOut();
+    await firebase.signOut();
   }
-  firebase.checkAuth()
-    .then((user) => {
-      if (from.name === 'email.verify') {
-        user.reload().then(() => {
-          routing(to, from, next, user);
-        });
-      } else {
-        routing(to, from, next, user);
-      }
-    });
+  const user = await firebase.checkAuth();
+  if (from.name === 'email.verify') {
+    await user.reload();
+  }
+  routing(to, from, next, user);
 });
 
 export default router;

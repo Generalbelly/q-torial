@@ -124,7 +124,6 @@ const actions = {
       .limit(1)
       .onSnapshot((snapshot) => {
         if (snapshot.docs.length > 0) {
-          console.log(convertDocumentsToArray(snapshot))
           const stripeCustomer = new StripeCustomerEntity(
             convertDocumentsToArray(snapshot)[0]
           );
