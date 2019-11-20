@@ -5,8 +5,10 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "serve:secure": "vue-cli-service serve --https",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --mode production",
+    "build:dev": "vue-cli-service build --mode staging",
     "deploy": "yarn build && firebase deploy --only hosting",
+    "deploy:dev": "yarn build:dev && firebase deploy --only hosting",
     "lint": "vue-cli-service lint",
     "test:e2e": "vue-cli-service test:e2e",
     "test:unit": "vue-cli-service test:unit"
