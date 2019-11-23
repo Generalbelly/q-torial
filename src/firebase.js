@@ -3,7 +3,6 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/functions';
 import store from './store';
-import chromeExtension from './chromeExtension';
 
 export const { FieldValue } = firebase.firestore;
 
@@ -28,24 +27,22 @@ export const convertDocumentsToArray = snapshot => {
 let db = null;
 let functions = null;
 export default {
-  init(config) {
+  async init(config) {
     firebase.initializeApp(config);
     firebase.auth().useDeviceLanguage();
     functions = firebase.functions();
     db = firebase.firestore();
-    db.enablePersistence({ synchronizeTabs: true });
+    await db.enablePersistence({ synchronizeTabs: true });
   },
   async signUp(email, password) {
     await firebase.auth().createUserWithEmailAndPassword(email, password);
   },
   async signIn(email, password) {
     await firebase.auth().signInWithEmailAndPassword(email, password);
-    chromeExtension.signIn(email, password);
   },
   async signOut() {
     await firebase.auth().signOut();
     await store.dispatch('updateUser', null);
-    chromeExtension.signOut();
   },
   checkAuth() {
     return new Promise((resolve) => {

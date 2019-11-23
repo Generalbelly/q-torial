@@ -7,6 +7,7 @@
 <script>
 import firebase from '../../../firebase';
 import SignInTemplate from '../../templates/SignInTemplate';
+import chromeExtension from '../../../chromeExtension';
 
 export default {
   name: 'SignInPage',
@@ -17,20 +18,23 @@ export default {
     async onClickSignIn({ email, password }) {
       try {
         await firebase.signIn(email, password);
-        const { redirect = null } = this.$route.query;
+        if (await chromeExtension.getVersion()) {
+          await chromeExtension.signIn(email, password);
+        }
+        const { redirect = '' } = this.$route.query;
         if (redirect) {
           if (redirect.startsWith('http')) {
             window.location.href = redirect;
           } else {
-            this.$router.push(redirect);
+            await this.$router.push(redirect);
           }
         } else {
-          this.$router.push({
+          await this.$router.push({
             name: 'tutorials.index',
           });
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
         this.handleError(e);
       }
     },

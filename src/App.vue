@@ -64,10 +64,17 @@ export default {
       });
     },
     async signOut() {
-      await firebase.signOut();
-      this.$router.push({
-        name: 'sign-in',
-      });
+      try {
+        await firebase.signOut();
+        await this.$router.push({
+          name: 'sign-in',
+        });
+        if (await chromeExtension.getVersion()) {
+          await chromeExtension.signOut();
+        }
+      } catch (e) {
+        console.error(e);
+      }
     },
   },
 };

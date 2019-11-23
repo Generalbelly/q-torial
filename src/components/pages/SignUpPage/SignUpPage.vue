@@ -6,6 +6,7 @@
 
 <script>
 import firebase from '../../../firebase';
+import chromeExtension from '../../../chromeExtension';
 import SignUpTemplate from '../../templates/SignUpTemplate';
 
 export default {
@@ -17,8 +18,11 @@ export default {
     async onClickSignUp({ email, password }) {
       try {
         await firebase.signUp(email, password);
+        if (await chromeExtension.getVersion()) {
+          await chromeExtension.signIn(email, password);
+        }
         await firebase.sendEmailVerification();
-        this.$router.push({
+        await this.$router.push({
           name: 'email.verify',
         });
       } catch (e) {

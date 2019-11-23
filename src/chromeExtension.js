@@ -31,30 +31,23 @@ export default {
           email,
           password,
         },
-      });
+      }, true);
     } catch (e) {
       throw e;
     }
   },
   async signOut() {
-    try {
-      return this.sendMessage({
-        command: SIGN_OUT,
-      });
-    } catch (e) {
-      console.log(e);
-      return false;
-    }
+    this.sendMessage({
+      command: SIGN_OUT,
+    });
   },
   async getVersion() {
     try {
       const response = await this.sendMessage({
         command: VERSION,
       }, true);
-      if (response) {
+      if (response.message) {
         version = response.message;
-      } else {
-        version = null;
       }
       return version;
     } catch (e) {
@@ -69,9 +62,9 @@ export default {
           data: tutorial,
         });
         if (response && response.status === 'ok') {
-          resolve(true)
+          resolve(true);
         } else {
-          resolve(false)
+          resolve(false);
         }
       } catch (e) {
         console.log(e)
