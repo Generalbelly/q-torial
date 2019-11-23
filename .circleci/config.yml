@@ -26,8 +26,8 @@ jobs:
           command: yarn run build
 
       - run:
-          name: deploy firebase hosting
-          command: ./node_modules/.bin/firebase use prod
+          name: set the project
+          command: ./node_modules/.bin/firebase use ${FIREBASE_PROJECT} --token ${FIREBASE_TOKEN}
 
       - run:
           name: deploy firebase hosting
