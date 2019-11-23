@@ -32,7 +32,6 @@ const mutations = {
   },
   [UPDATE_USER](state, user) {
     if (user) {
-      console.log(user)
       state.user = new UserEntity({
         ...state.user,
         ...user,
@@ -44,11 +43,11 @@ const mutations = {
           text: 'Tutorials',
           to: { name: 'tutorials.index' },
         },
-        // {
-        //   icon: 'code',
-        //   text: 'Tag',
-        //   to: { name: 'tags.show', params: { id: value.uid } },
-        // },
+        {
+          icon: 'code',
+          text: 'Tag',
+          to: { name: 'tags.show', params: { id: state.user.uid } },
+        },
         {
           icon: 'plug',
           text: 'Google Analytics',

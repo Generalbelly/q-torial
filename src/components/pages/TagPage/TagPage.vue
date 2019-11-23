@@ -6,7 +6,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import TagTemplate from '../../templates/TagTemplate';
 
 export default {
@@ -20,7 +19,7 @@ export default {
     };
   },
   mounted() {
-    this.userKey = this.$route.params.id
+    this.userKey = this.$route.params.id;
   },
 };
 </script>
