@@ -31,8 +31,8 @@ jobs:
           command: eval "./node_modules/.bin/firebase functions:config:set $(cat config|tr "\n" " ")"
 
       - run:
-          name: build for hosting
-          command: yarn run build
+          name: build
+          command: yarn run build && cd functions && yarn run build && cd ../
 
       - run:
           name: deploy firebase hosting
@@ -49,10 +49,6 @@ jobs:
       - run:
           name: deploy storage:rules
           command: ./node_modules/.bin/firebase deploy --only storage --token ${FIREBASE_TOKEN}
-
-      - run:
-          name: build for cloud functions
-          command: cd funtions && yarn run build
 
       - run:
           name: deploy cloud functions
