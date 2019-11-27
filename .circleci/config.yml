@@ -6,10 +6,10 @@ jobs:
     steps:
       - checkout
 
-      - restore_cache:
-          name: Restore cache
-          keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "functions/yarn.lock" }}
+#      - restore_cache:
+#          name: Restore cache
+#          keys:
+#            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "functions/yarn.lock" }}
 
       - run:
           name: install dependency for the project
