@@ -2,9 +2,9 @@ version: '3'
 services:
   dev:
     build: ./.docker
-    container_name: q-torial-firebase-dev
+    container_name: q-torial-dev
     tty: true
-    #environment:
+    env_file: .env
     #   - GOOGLE_APPLICATION_CREDENTIALS=firebase-adminsdk.json
     volumes:
       - ./:/app
