@@ -35,8 +35,8 @@ jobs:
           command: yarn run build
 
       - run:
-        name: deploy firebase hosting
-        command: ./node_modules/.bin/firebase deploy --only hosting --token ${FIREBASE_TOKEN}
+          name: deploy firebase hosting
+          command: ./node_modules/.bin/firebase deploy --only hosting --token ${FIREBASE_TOKEN}
 
       - run:
           name: deploy firestore:rules
