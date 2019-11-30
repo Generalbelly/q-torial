@@ -6,9 +6,9 @@
     "serve": "vue-cli-service serve",
     "serve:secure": "vue-cli-service serve --https",
     "build": "vue-cli-service build --mode production",
-    "build:dev": "vue-cli-service build --mode staging",
-    "deploy": "yarn build && firebase use production && firebase deploy --only hosting",
-    "deploy:dev": "yarn build:dev && firebase use staging && firebase deploy --only hosting",
+    "build:dev": "vue-cli-service build --mode staging && mv dist/index.html functions/lib/dist/",
+    "deploy": "yarn build && firebase use production && cp firebase.production.json firebase.json && firebase deploy --only hosting",
+    "deploy:dev": "yarn build:dev && firebase use staging && cp firebase.staging.json firebase.json && firebase deploy --only hosting",
     "lint": "vue-cli-service lint",
     "test:e2e": "vue-cli-service test:e2e",
     "test:unit": "vue-cli-service test:unit"
@@ -47,9 +47,9 @@
     "chai": "^4.1.2",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "firebase-tools": "^7.6.1",
     "node-sass": "^4.12.0",
     "sass-loader": "^7.1.0",
-    "vue-template-compiler": "^2.5.21",
-    "firebase-tools": "^7.6.1"
+    "vue-template-compiler": "^2.5.21"
   }
 }

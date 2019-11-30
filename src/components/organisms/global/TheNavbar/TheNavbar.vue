@@ -20,6 +20,7 @@
             <base-navbar-start>
               <template v-for="item in navItems">
                 <router-link
+                  v-if="item.to.name"
                   :class="routerLinkClass(item.to)"
                   :to="item.to"
                   :key="item.text"
@@ -29,6 +30,13 @@
                   />
                   <span>{{ item.text }}</span>
                 </router-link>
+                <a
+                  v-else
+                  :href="item.to"
+                  :class="routerLinkClass(item.to)"
+                  target="_blank"
+                >{{ item.text }}
+                </a>
               </template>
             </base-navbar-start>
             <base-navbar-end>
@@ -170,6 +178,7 @@ export default {
     this.stripe = window.Stripe(process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY);
   },
   methods: {
+    // TODO 本当はApp.vueにあるべき
     async onClickItem(value) {
       if (this.user) {
         if (value === 'upgrade') {
@@ -201,12 +210,22 @@ export default {
       }
     },
     routerLinkClass(to) {
-      const prefix = to.name.split('.')[0];
-      return {
-        'has-text-primary': this.$route.name ? this.$route.name.startsWith(prefix) : false,
-        'has-text-primary-100': this.$route.name ? !this.$route.name.startsWith(prefix) : false,
+      const baseClasses = {
         'navbar-item': true,
         'is-flex': true,
+      }
+      if (to.name) {
+        const prefix = to.name.split('.')[0];
+        return {
+          'has-text-primary': this.$route.name ? this.$route.name.startsWith(prefix) : false,
+          'has-text-primary-100': this.$route.name ? !this.$route.name.startsWith(prefix) : false,
+          ...baseClasses,
+        };
+      }
+      return {
+        //'has-text-primary': this.$route.name ? this.$route.name.startsWith(prefix) : false,
+        'has-text-primary-100': true,
+        ...baseClasses,
       };
     },
     onClickLogo() {

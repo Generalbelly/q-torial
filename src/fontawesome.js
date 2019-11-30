@@ -24,6 +24,7 @@ import {
   faChartBar,
   faBolt,
   faUserCircle,
+  faHammer,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -33,6 +34,7 @@ import {
 
 library.add(
   faCode,
+  faHammer,
   faExternalLinkAlt,
   faFrown,
   faPen,

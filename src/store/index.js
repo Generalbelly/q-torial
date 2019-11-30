@@ -53,6 +53,11 @@ const mutations = {
           text: 'Google Analytics',
           to: { name: 'gas.index' },
         },
+        {
+          icon: 'hammer',
+          text: 'Chrome Extension',
+          to: process.env.VUE_APP_CHROME_EXTRNSION_INSTALL_URL,
+        },
       ];
 
       if (state.user.stripeCustomer) {
