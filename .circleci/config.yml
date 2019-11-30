@@ -23,6 +23,10 @@ jobs:
             - functions/node_modules
 
       - run:
+          name: get firebase.json ready
+          command: cp firebase.production.json firebase.json
+
+      - run:
           name: set the project
           command: ./node_modules/.bin/firebase use ${FIREBASE_PROJECT} --token ${FIREBASE_TOKEN}
 

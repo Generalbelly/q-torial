@@ -15,7 +15,7 @@ const routing = (to, from, next, userData = null) => {
   const requireAuth = to.matched.some(route => route.meta.requireAuth);
   const user = userData ? new UserEntity(userData) : null;
   if (user && user.emailVerified) {
-    if (to.name === 'sign-in' || to.name === 'sign-up' || to.name === 'email.verify') {
+    if (to.name === 'sign-in' || to.name === 'sign-up' || to.name === 'email.verify' || to.path === '/') {
       next({
         name: 'tutorials.index',
       });
