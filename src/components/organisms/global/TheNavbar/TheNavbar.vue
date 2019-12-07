@@ -253,9 +253,10 @@ export default {
       };
     },
     onClickLogo() {
+      if (this.isOnIndexPage) return;
       if (this.$route.name !== 'tutorials.index') {
         this.$router.push({
-          name: 'index',
+          name: 'tutorials.index',
         });
       }
     },

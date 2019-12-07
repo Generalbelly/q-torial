@@ -1,14 +1,12 @@
 <template>
   <div class="form-container">
-    <base-logo
-      class="has-margin-bottom-6"
-    ></base-logo>
+    <base-logo class="has-margin-bottom-6" @click="onClickLogo" />
     <validation-observer ref="observer">
       <sign-up-form
         :email.sync="innerEmail"
         :password.sync="innerPassword"
         @click:sign-up="onClickSignUp"
-      ></sign-up-form>
+      />
     </validation-observer>
     <p class="has-margin-top-5">
       Do you have an account?
@@ -75,6 +73,11 @@ export default {
           password: this.innerPassword,
         });
       }
+    },
+    onClickLogo() {
+      this.$router.push({
+        name: 'index',
+      });
     },
   },
 };
