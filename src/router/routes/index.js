@@ -1,15 +1,13 @@
+import IndexPage from '../../components/pages/IndexPage';
+
 const files = require.context('.', false, /\.js$/);
 
 const routes = [
-  // {
-  //   name: 'service-page',
-  //   path: '/',
-  //   // redirect: () => {
-  //   //   window.location.href = 'https://www.agito-inc.com';
-  //   //   return;
-  //   // },
-  // },
-  // { path: '*', redirect: '/' },
+  {
+    name: 'index',
+    path: '/',
+    component: IndexPage,
+  },
 ];
 
 files.keys().forEach((key) => {

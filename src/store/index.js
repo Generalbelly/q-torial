@@ -86,6 +86,34 @@ const mutations = {
 
     } else {
       state.user = null;
+      state.navItems = [
+        // {
+        //   text: 'Solution',
+        //   to: {
+        //     name: 'index.solution',
+        //   },
+        // },
+        // {
+        //   text: 'Feature',
+        //   to: {
+        //     name: 'index.feature',
+        //   },
+        // },
+        // {
+        //   text: 'Pricing',
+        //   to: {
+        //     name: 'index.pricing',
+        //   },
+        // },
+      ];
+      state.userItems = [
+        {
+          text: 'Sign in',
+          to: {
+            name: 'sign-in',
+          },
+        },
+      ];
     }
   },
   [SET_SERVER_SIDE_ERRORS](state, payload) {

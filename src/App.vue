@@ -1,12 +1,21 @@
 <template>
-  <div>
+  <div v-if="isIndexPage">
+    <the-navbar
+      :navItems="navItems"
+      :user="user"
+      :user-items="userItems"
+      :is-on-index-page="isIndexPage"
+    />
+    <router-view />
+  </div>
+  <div v-else>
     <the-navbar
       v-if="shouldShowNavbar"
       :navItems="navItems"
       @click:sign-out="signOut"
       :user="user"
       :user-items="userItems"
-    ></the-navbar>
+    />
     <the-main
       class="has-padding-5"
     >
@@ -37,10 +46,16 @@ export default {
       'user',
     ]),
     shouldShowNavbar() {
+      if (this.isIndexPage) {
+        return true;
+      }
       if (this.$route.name === 'sign-in' || this.$route.name === 'sign-up' || this.$route.name === 'gas.show') {
         return false;
       }
       return this.user && this.user.emailVerified;
+    },
+    isIndexPage() {
+      return this.$route.name === 'index';
     },
   },
   watch: {
@@ -81,10 +96,4 @@ export default {
 </script>
 
 <style scoped>
-  .banner {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-  }
 </style>

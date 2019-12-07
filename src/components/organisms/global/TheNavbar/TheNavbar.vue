@@ -5,16 +5,16 @@
       role="navigation"
       aria-label="main navigation"
     >
-      <div class="container">
+      <div class="container" :style="navStyle">
         <template>
           <base-navbar-brand>
             <base-navbar-item @click="onClickLogo">
-              <base-logo :width="180" :height="50" />
+              <base-logo :width="180" :height="48" />
             </base-navbar-item>
             <base-navbar-burger
               :is-active="burgerMenuActive"
               @click="burgerMenuActive = !burgerMenuActive"
-            ></base-navbar-burger>
+            />
           </base-navbar-brand>
           <base-navbar-menu :is-active="burgerMenuActive">
             <base-navbar-start>
@@ -41,7 +41,18 @@
             </base-navbar-start>
             <base-navbar-end>
               <base-navbar-item>
+                <router-link
+                  v-if="userItems.length === 1"
+                  :to="userItems[0].to"
+                  :key="userItems[0].text"
+                >
+                  <base-icon
+                    :icon="userItems[0].icon"
+                  />
+                  <span>{{ userItems[0].text }}</span>
+                </router-link>
                 <base-dropdown
+                  v-else
                   :items="userItems"
                   @click:item="onClickItem"
                 >
@@ -148,6 +159,10 @@ export default {
       type: Object,
       default: null,
     },
+    isOnIndexPage: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -159,6 +174,16 @@ export default {
       //showUpgradeFailedModal: false,
       loading: false,
     };
+  },
+  computed: {
+    navStyle() {
+      if (this.isOnIndexPage) {
+        return {
+          'min-width': '95%',
+        };
+      }
+      return {};
+    }
   },
   watch: {
     user(value) {
@@ -213,7 +238,7 @@ export default {
       const baseClasses = {
         'navbar-item': true,
         'is-flex': true,
-      }
+      };
       if (to.name) {
         const prefix = to.name.split('.')[0];
         return {
@@ -223,7 +248,6 @@ export default {
         };
       }
       return {
-        //'has-text-primary': this.$route.name ? this.$route.name.startsWith(prefix) : false,
         'has-text-primary-100': true,
         ...baseClasses,
       };
@@ -231,7 +255,7 @@ export default {
     onClickLogo() {
       if (this.$route.name !== 'tutorials.index') {
         this.$router.push({
-          name: 'tutorials.index',
+          name: 'index',
         });
       }
     },
@@ -242,5 +266,12 @@ export default {
 <style scoped>
   .navbar-item >>> .icon {
       margin-right: .25em;
+  }
+  .navbar.is-spaced {
+    padding: 0;
+  }
+  .navbar-burger.burger {
+    width: 64px;
+    height: 64px;
   }
 </style>
