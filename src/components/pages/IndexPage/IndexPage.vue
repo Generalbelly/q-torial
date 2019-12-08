@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="segment-container" style="background-color: #fff !important;">
+    <section class="section" style="background-color: #fff !important;">
       <base-columns>
         <base-column class="is-flex">
           <h1 class="has-text-weight-bold is-size-2">
@@ -23,9 +23,9 @@
           <img src="/img/screen.png" />
         </base-column>
       </base-columns>
-    </div>
-    <div class="segment-container">
-      <base-columns class="has-margin-top-6">
+    </section>
+    <section class="section">
+      <base-columns>
         <base-column class="is-flex">
           <h2 class="is-size-3 has-text-weight-semibold has-margin-bottom-5">
             Show your product value at a glance
@@ -38,7 +38,7 @@
           <img src="/img/welcome.png" />
         </base-column>
       </base-columns>
-      <base-columns class="has-margin-top-6">
+      <base-columns>
         <base-column>
           <img src="/img/new_feature.png" />
         </base-column>
@@ -51,7 +51,7 @@
           </p>
         </base-column>
       </base-columns>
-      <base-columns class="has-margin-top-6">
+      <base-columns>
         <base-column class="is-flex">
           <h2 class="is-size-3 has-text-weight-semibold has-margin-bottom-5">
             Measure effectiveness
@@ -65,35 +65,62 @@
           <img src="/img/measure.png" />
         </base-column>
       </base-columns>
-    </div>
-    <div class="has-margin-top-6 segment-container has-background-info">
-      <p class="has-padding-top-5 has-text-centered is-size-3 has-text-weight-semibold has-text-grey">
+    </section>
+    <section class="section has-background-info">
+      <p class="has-padding-top-3 has-text-centered is-size-3 has-text-weight-semibold has-text-grey">
         Pricing
       </p>
       <base-columns class="has-padding-y-5">
         <base-column>
           <base-card class="has-text-centered">
-            <div class="has-text-primary is-size-5">Self-host Plan</div>
-            <div class="is-size-3">Free</div>
-          </base-card>
-        </base-column>
-        <base-column>
-          <base-card class="has-text-centered">
-            <div class="has-text-primary is-size-5">Basic Plan</div>
-            <div class="is-size-3">$10<span class="is-size-7">/Mo</span></div>
+            <div class="label is-size-5 has-padding-bottom-4">{{ commaSeparationFormatter(monthlyActiveUsers) }} Monthly Active Users</div>
+            <base-slider
+              size="is-medium"
+              :min="0"
+              :max="20000"
+              v-model="monthlyActiveUsers"
+              :items="[1000, 2500, 5000, 10000, 20000]"
+            />
+            <div class="has-margin-top-5 is-size-2">
+              ${{ calculateBasicPrice(monthlyActiveUsers) }}
+              <span class="is-size-6">
+                /Mo
+              </span>
+            </div>
+            <ul class="has-margin-top-4">
+              <li>
+                Code-free tutorials builder
+              </li>
+              <li>
+                Unlimited number of tutorials
+              </li>
+              <li>
+                Tutorials performance reporting
+              </li>
+              <li>
+                Google Analytics Integration
+              </li>
+              <li>
+                Email support
+              </li>
+            </ul>
+            <p class="has-margin-top-4 help">
+              Do you have more than 20,000 users?
+              Contact us for a customized Enterprise plan
+            </p>
           </base-card>
         </base-column>
       </base-columns>
-    </div>
-    <div class="has-text-centered segment-container">
-      <p class="has-margin-top-6 has-text-centered is-size-3 has-text-weight-semibold has-margin-bottom-5">30 Days Money-Back Guarantee</p>
+    </section>
+    <section class="has-text-centered section">
+      <p class="has-padding-top-3 has-text-centered is-size-3 has-text-weight-semibold has-margin-bottom-5">30 Days Money-Back Guarantee</p>
       <p>Try Qtorial for free up to 14 Days. After the free trial period, we give you an extra 30 days to decide. Completely risk-free!</p>
       <div class="has-margin-5">
         <primary-button size="is-large">
           Start free
         </primary-button>
       </div>
-    </div>
+    </section>
     <footer class="footer">
       <div class="content has-text-centered">
         © 2019 Qtorial
@@ -104,20 +131,17 @@
 
 <script>
 
-import BaseColumns from '../../atoms/BaseColumns/BaseColumns';
-import BaseColumn from '../../atoms/BaseColumn/BaseColumn';
-import BaseButton from '../../atoms/BaseButton/BaseButton';
-import PrimaryButton from '../../atoms/buttons/PrimaryButton/PrimaryButton';
-import BaseCard from '../../molecules/BaseCard/BaseCard';
-import BaseLogo from '../../atoms/BaseLogo/BaseLogo';
-import BaseNavbarBrand from '../../atoms/BaseNavbarBrand/BaseNavbarBrand';
-import BaseNavbarItem from '../../atoms/BaseNavbarItem/BaseNavbarItem';
+import BaseColumns from '../../atoms/BaseColumns';
+import BaseColumn from '../../atoms/BaseColumn';
+import BaseButton from '../../atoms/BaseButton';
+import PrimaryButton from '../../atoms/buttons/PrimaryButton';
+import BaseCard from '../../molecules/BaseCard';
+import BaseSlider from '../../molecules/BaseSlider';
+
 export default {
   name: 'IndexPage',
   components: {
-    BaseNavbarItem,
-    BaseNavbarBrand,
-    BaseLogo,
+    BaseSlider,
     BaseCard,
     PrimaryButton,
     BaseButton,
@@ -125,9 +149,32 @@ export default {
     BaseColumns
   },
   data() {
-    return {};
+    return {
+      monthlyActiveUsers: 0,
+    };
   },
-  computed: {
+  methods: {
+    calculateBasicPrice(value) {
+      if (value === 0) {
+        return 25;
+      }
+      if (value <= 1000) {
+        return 55;
+      }
+      if (value <= 5000) {
+        return 99;
+      }
+      if (value <= 10000) {
+        return 149;
+      }
+      if (value <= 20000) {
+        return 199;
+      }
+      return 199;
+    },
+    commaSeparationFormatter(value) {
+      return String(value).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+    },
   },
 };
 </script>
@@ -137,24 +184,24 @@ export default {
     justify-content: center;
     flex-direction: column;
   }
-  .segment-container {
+  .section {
     padding-left: 4rem;
     padding-right: 4rem;
   }
-  .segment-container:nth-child(1) {
+  .section:nth-child(1) {
     padding-top: 4rem;
     padding-bottom: 4rem;
   }
   @media only screen and (max-width: 600px) {
-    .segment-container {
+    .section {
       padding-left: 2rem;
       padding-right: 2rem;
     }
-    .segment-container:nth-child(1) {
+    .section:nth-child(1) {
       padding-top: 2rem;
       padding-bottom: 2rem;
     }
-    .segment-container:nth-child(1) .buttons .button {
+    .section:nth-child(1) .buttons .button {
       width: 100%;
       margin-right: 0;
     }
