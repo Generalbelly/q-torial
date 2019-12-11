@@ -1,6 +1,6 @@
 #!/bin/sh
 
-rsync -av ./functions/ ../q-torial-firebase/functions \
+rsync -av ./functions/ ../firebase/functions \
   --exclude lib \
   --exclude node_modules \
   --exclude src/models/stripe-customer.ts \
@@ -10,4 +10,4 @@ rsync -av ./functions/ ../q-torial-firebase/functions \
   --exclude .gitignore \
   --exclude yarn.lock
 
-mv ../q-torial-firebase/functions/src/developer.ts ../q-torial-firebase/functions/src/index.ts
+mv ../firebase/functions/src/developer.ts ../firebase/functions/src/index.ts
