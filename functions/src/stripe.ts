@@ -1,7 +1,7 @@
 import { DocumentSnapshot } from 'firebase-functions/lib/providers/firestore';
 import admin from './admin';
 import functions from './functions';
-import StripeCustomerEntity from './Entities/StripeCustomerEntity';
+import StripeCustomerEntity from './models/stripe-customer';
 
 const stripe = require('stripe')(functions.config().stripe.token);
 
@@ -43,8 +43,11 @@ const cancel = async (stripeCustomerId: string|null, userKey: string|null, custo
       const data = snapshot.data();
       if (data) {
         const stripeCustomer: StripeCustomerEntity = new StripeCustomerEntity(data);
-        stripe.subscriptions.update(stripeCustomer.subscriptionId, { cancel_at_period_end: true });
-        //				stripe.subscriptions.del(stripeCustomer.subscriptionId);
+        await stripe.subscriptions.update(
+          stripeCustomer.subscriptionId,
+          { cancel_at_period_end: true },
+        );
+        // stripe.subscriptions.del(stripeCustomer.subscriptionId);
         await snapshot.ref.update({
           deletedAt: admin.firestore.FieldValue.serverTimestamp(),
           updatedAt: admin.firestore.FieldValue.serverTimestamp(),
