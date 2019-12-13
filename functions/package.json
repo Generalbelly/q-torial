@@ -6,11 +6,11 @@
     "serve": "yarn run build && firebase serve --only functions",
     "shell": "yarn run build && firebase functions:shell",
     "start": "yarn run shell",
-    "deploy": "firebase deploy --only functions",
+    "deploy": "firebase use staging && firebase deploy --only functions",
     "logs": "firebase functions:log"
   },
   "engines": {
-    "node": "8"
+    "node": "10"
   },
   "main": "lib/index.js",
   "dependencies": {

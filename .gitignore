@@ -95,3 +95,5 @@ staging-secret.json
 
 firebase.json
 firebase.local.json
+
+public/js/q-torial.js

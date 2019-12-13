@@ -5,10 +5,11 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "serve:secure": "vue-cli-service serve --https",
-    "build": "vue-cli-service build --mode production",
-    "build:dev": "vue-cli-service build --mode staging && mv dist/index.html functions/lib/dist/",
+    "build": "rm -rf public/js vue-cli-service build --mode production",
+    "build:dev": "rm -rf public/js vue-cli-service build --mode staging && mv dist/index.html functions/lib/dist/",
     "deploy": "yarn build && firebase use production && cp firebase.production.json firebase.json && firebase deploy --only hosting",
     "deploy:dev": "yarn build:dev && firebase use staging && cp firebase.staging.json firebase.json && firebase deploy --only hosting",
+    "developer": "sh copy_for_developer.sh",
     "lint": "vue-cli-service lint",
     "test:e2e": "vue-cli-service test:e2e",
     "test:unit": "vue-cli-service test:unit"

@@ -6,6 +6,7 @@ import { google } from "googleapis";
 
 import admin from './admin';
 import functions from './functions';
+import Ga from "./models/ga";
 
 // oauth for google analytics
 const credentials: any = functions.config().ga.credentials;
@@ -50,24 +51,22 @@ export const addGa = functions.https.onCall((data: any, context: functions.https
     if (!email) {
       throw new functions.https.HttpsError('invalid-argument', 'The function must be called with one arguments "email".');
     }
-  
+
     const { refresh_token } = await getToken(code);
-    
+
     oauth2Client.setCredentials({ refresh_token: refresh_token });
-    
+
     try {
       const ref = admin.firestore().collection("users").doc(auth.uid).collection('gas').doc();
-      const ga = {
+      const ga = new Ga({
+        id: ref.id,
         email: email,
         refreshToken: refresh_token,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      };
-      await ref.set(ga);
-      resolve({
-        id: ref.id,
-        ...ga
-      }); 
+      });
+      await ref.set(ga.toPlainObject());
+      resolve(ga);
     } catch (error) {
       reject(error);
     }
@@ -87,12 +86,15 @@ export const queryAccounts = functions.https.onCall((data: any, context: functio
       throw new functions.https.HttpsError('invalid-argument', 'The function must be called with one arguments "id".');
     }
     const snap = await admin.firestore().collection("users").doc(auth.uid).collection('gas').doc(id).get();
-    const ga = snap.data();
-    if (!ga) {
+    if (!snap.exists) {
       throw new functions.https.HttpsError('not-found', `ga(id:${id}) not found.`);
     }
+    const ga = new Ga({
+      id,
+      ...snap.data(),
+    });
     oauth2Client.setCredentials({ refresh_token: ga.refreshToken });
-    
+
     try {
       const apiClient = google.analytics({
         auth: oauth2Client,
@@ -118,7 +120,7 @@ export const queryAccounts = functions.https.onCall((data: any, context: functio
           webProperties,
         };
       }));
-      resolve(accounts); 
+      resolve(accounts);
     } catch (error) {
       reject(error);
     }

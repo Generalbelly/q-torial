@@ -1,8 +1,13 @@
 import admin from './admin';
 import functions from './functions';
-import { onTutorialDelete, onTutorialCreate, onTutorialUpdate } from './tutorial';
+import {
+  onTutorialDelete,
+  onTutorialCreate,
+  onTutorialUpdate,
+  getTutorial,
+  storePerformance
+} from './tutorial';
 import { addGa, queryAccounts, onGaDelete } from './ga';
-import { getTutorial, storePerformance } from './api';
 import { stripeWebhook, cancelSubscription } from './stripe';
 
 if (functions.config().app.env !== 'production') {

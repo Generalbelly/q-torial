@@ -1,6 +1,6 @@
-import Entity from './Entity'
+import Model from './model';
 
-export default class GaEntity extends Entity {
+export default class Ga extends Model {
   email:string|null = null;
 
   refreshToken:string|null = null;
@@ -17,7 +17,7 @@ export default class GaEntity extends Entity {
 
   viewName:string|null = null;
 
-  constructor(init?: Partial<GaEntity>) {
+  constructor(init?: Partial<Ga>) {
     super()
     Object.assign(this, init);
   }
