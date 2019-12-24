@@ -59,8 +59,6 @@ export default {
           errorMessage = message;
           break;
       }
-      console.log(field);
-      console.log(errorMessage);
       await this.$store.dispatch('setServerSideErrors', {
         [field]: errorMessage,
       });

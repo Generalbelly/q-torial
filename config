@@ -1,5 +1,5 @@
-stripe.ending_secret=${STRIPE_ENDING_SECRET}
-stripe.token=${STRIPE_TOKEN}
-ga.credentials.client_id=${GA_CREDENTIALS_CLIENT_ID}
-ga.credentials.client_secret=${GA_CREDENTIALS_CLIENT_SECRET}
-app.env=${APP_ENV}
+stripe.ending_secret="${STRIPE_ENDING_SECRET}"
+stripe.token="${STRIPE_TOKEN}"
+ga.credentials.client_id="${GA_CREDENTIALS_CLIENT_ID}"
+ga.credentials.client_secret="${GA_CREDENTIALS_CLIENT_SECRET}"
+app.env="${APP_ENV}"

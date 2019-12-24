@@ -127,6 +127,7 @@ export const queryAccounts = functions.https.onCall((data: any, context: functio
   });
 });
 
+// developerのtutorials.gaはきれいにはならない。。。
 export const onGaDelete = functions.firestore
   .document('/users/{userID}/gas/{gaID}')
   .onDelete(async (snap, context) => {

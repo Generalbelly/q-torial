@@ -16,16 +16,17 @@
           :ga-id.sync="innerTutorial.gaId"
           :gas="gas"
           :build-url="innerTutorial.buildUrl"
-          :settingssync="innerTutorial.settings"
+          :settings.sync="innerTutorial.settings"
+          @update:ga-property-id="updateGaPropertyId"
         />
       </validation-observer>
       <grouped-buttons-layout is-right class="has-margin-top-5">
           <back-button
               @click="onCancel"
-          ></back-button>
+          />
           <save-button
               @click="onSave"
-          ></save-button>
+          />
       </grouped-buttons-layout>
     </div>
 </template>
@@ -95,6 +96,9 @@ export default {
     },
     onCancel() {
       this.$emit('click:cancel', this.innerTutorial);
+    },
+    updateGaPropertyId(gaPropertyId) {
+      this.innerTutorial.gaPropertyId = gaPropertyId;
     },
   },
 };

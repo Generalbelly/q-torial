@@ -2,7 +2,6 @@ import functions from './functions';
 import PathOperators from './models/path-oerators';
 import { URL } from 'url';
 import Tutorial  from './models/tutorial';
-import Ga from './models/ga';
 import admin from './admin';
 import Step from './models/step';
 
@@ -65,7 +64,6 @@ export const getTutorial = functions.https.onRequest(async (request, response) =
       return response.status(422).send('Unprocessable Entity');
     }
     let selectedTutorial: Tutorial|null = null;
-    let ga: object|null = null;
     const url = new URL(request.body.url);
     const userKey = request.body.key;
     const once: string[] = request.body.once;
@@ -98,19 +96,9 @@ export const getTutorial = functions.https.onRequest(async (request, response) =
           ...ref.data()
         });
       })
-      if (selectedTutorial.gaId) {
-        const gaRef = await admin.firestore().collection("users").doc(userKey).collection('gas').doc(selectedTutorial.gaId).get();
-        if (gaRef.exists) {
-          ga = new Ga({
-            id: gaRef.id,
-            ...gaRef.data(),
-          });
-        }
-      }
     }
     return response.status(200).send({
       tutorial: selectedTutorial,
-      ga,
     });
   }
   return response.status(405).send('Method Not Allowed');
