@@ -24,12 +24,12 @@
       <template v-slot:secondary-action-button>
         <back-button
           @click="onClickCancel"
-        ></back-button>
+        />
       </template>
       <template v-slot:primary-action-button>
         <save-button
           @click="onClickConfirm"
-        ></save-button>
+        />
       </template>
     </base-modal>
 </template>

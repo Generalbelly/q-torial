@@ -28,6 +28,8 @@ export default class TutorialEntity extends Entity {
 
   gaId = null;
 
+  gaPropertyId = null;
+
   performances = []
 
   constructor(data = {}) {

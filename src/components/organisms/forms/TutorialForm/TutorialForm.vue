@@ -240,7 +240,10 @@ export default {
     },
     innerGaId: {
       get() {
-        return this.gaId;
+        if (this.gasOptions.map(ga => ga.value).includes(this.gaId)) {
+          return this.gaId;
+        }
+        return null;
       },
       set(newValue) {
         this.$emit('update:ga-id', newValue);
@@ -293,6 +296,14 @@ export default {
             && this.parametersRequired
         ) {
           this.parametersRequired = false;
+        }
+      },
+    },
+    innerGaId: {
+      handler(value) {
+        const ga = this.gas.find(ga => ga.id === value)
+        if (ga) {
+          this.$emit('update:ga-property-id', ga.propertyId);
         }
       },
     },

@@ -1,5 +1,9 @@
 FROM node:10-alpine
 
+RUN apk update && \
+    apk upgrade && \
+    apk --no-cache add gettext
+
 RUN yarn global add firebase-tools
 
 WORKDIR /app/functions

@@ -7,7 +7,11 @@ const stripe = require('stripe')(functions.config().stripe.token);
 
 const endpointSecret = functions.config().stripe.ending_secret;
 
-const cancel = async (stripeCustomerId: string|null, userKey: string|null, customerId: string|null, subscriptionId: string|null): Promise<boolean> => {
+const cancel = async (
+  stripeCustomerId: string|null,
+  userKey: string|null,
+  customerId: string|null,
+  subscriptionId: string|null): Promise<boolean> => {
   if (!((customerId && subscriptionId) || (userKey && stripeCustomerId))) {
     throw Error('both of customerId and subscriptionId or userKey is required');
   }
@@ -106,19 +110,21 @@ export const stripeWebhook = functions.https.onRequest(async (request, response)
   return response.status(405).send('Method Not Allowed');
 });
 
-export const cancelSubscription = functions.https.onCall((data: any, context: functions.https.CallableContext) => {
-  const { auth } = context;
-  if (!auth) {
-    throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
-  }
-  return new Promise(async (resolve, reject) => {
-    const { id } = data;
-    try {
-      const result = await cancel(id, auth.uid, null, null);
-      resolve(result);
-    } catch (error) {
-      console.error(error);
-      reject(false);
+export const cancelSubscription = functions.https.onCall(
+  (data: any, context: functions.https.CallableContext) => {
+    const { auth } = context;
+    if (!auth) {
+      throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
     }
-  });
-});
+    return new Promise(async (resolve, reject) => {
+      const { id } = data;
+      try {
+        const result = await cancel(id, auth.uid, null, null);
+        resolve(result);
+      } catch (error) {
+        console.error(error);
+        reject(false);
+      }
+    });
+  },
+);

@@ -9,6 +9,9 @@ import {
 } from './tutorial';
 import { addGa, queryAccounts, onGaDelete } from './ga';
 import { stripeWebhook, cancelSubscription } from './stripe';
+import {
+  updateAssets,
+} from './asset';
 
 if (functions.config().app.env !== 'production') {
   const express = require('express');
@@ -36,3 +39,4 @@ exports.storePerformance = storePerformance;
 
 exports.stripeWebhook = stripeWebhook;
 exports.cancelSubscription = cancelSubscription;
+exports.updateAssets = updateAssets;
