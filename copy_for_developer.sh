@@ -9,7 +9,7 @@ rsync -av ./functions/ ../firebase/functions \
   --exclude package.json \
   --exclude .gitignore \
   --exclude yarn.lock \
-  --exclude src/ga.ts
-#  --exclude src/models/ga.ts \
+  --exclude src/ga.ts \
+  --exclude src/models/ga.ts
 
 mv ../firebase/functions/src/developer.ts ../firebase/functions/src/index.ts

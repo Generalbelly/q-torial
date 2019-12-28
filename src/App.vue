@@ -21,6 +21,11 @@
     >
       <router-view />
     </the-main>
+    <footer class="footer">
+      <div class="content has-text-centered has-text-grey">
+        If you have any questions, feel free to contact us by email: {{ supportEmail }}
+      </div>
+    </footer>
   </div>
 </template>
 
@@ -36,6 +41,11 @@ export default {
   components: {
     TheMain,
     TheNavbar,
+  },
+  data() {
+    return {
+      supportEmail: process.env.VUE_APP_CONTACT_EMAIL,
+    };
   },
   computed: {
     ...mapState([
