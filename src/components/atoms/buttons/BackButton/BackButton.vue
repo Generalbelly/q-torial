@@ -6,6 +6,7 @@
 
 <script>
 import BaseButton from '../../BaseButton/BaseButton';
+
 export default {
   name: 'BackButton',
   components: { BaseButton },

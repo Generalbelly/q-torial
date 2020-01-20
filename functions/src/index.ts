@@ -5,7 +5,8 @@ import {
   onTutorialCreate,
   onTutorialUpdate,
   getTutorial,
-  storePerformance
+  storePerformance,
+  logError,
 } from './tutorial';
 import { addGa, queryAccounts, onGaDelete } from './ga';
 import { stripeWebhook, cancelSubscription } from './stripe';
@@ -36,7 +37,9 @@ exports.onGaDelete = onGaDelete;
 
 exports.getTutorial = getTutorial;
 exports.storePerformance = storePerformance;
+exports.logError = logError;
 
 exports.stripeWebhook = stripeWebhook;
 exports.cancelSubscription = cancelSubscription;
+
 exports.updateAssets = updateAssets;

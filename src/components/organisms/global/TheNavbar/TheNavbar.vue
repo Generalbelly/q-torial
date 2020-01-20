@@ -8,8 +8,12 @@
       <div class="container" :style="navStyle">
         <template>
           <base-navbar-brand>
-            <base-navbar-item @click="onClickLogo">
-              <base-logo :width="180" :height="48" />
+            <base-navbar-item>
+              <base-logo
+                @click="onClickLogo"
+                :width="180"
+                :height="48"
+              />
             </base-navbar-item>
             <base-navbar-burger
               :is-active="burgerMenuActive"
@@ -171,7 +175,7 @@ export default {
       showCancelCompleteModal: false,
       showCancelFailedModal: false,
       showUpgradeCompleteModal: false,
-      //showUpgradeFailedModal: false,
+      // showUpgradeFailedModal: false,
       loading: false,
     };
   },
@@ -183,7 +187,7 @@ export default {
         };
       }
       return {};
-    }
+    },
   },
   watch: {
     user(value) {

@@ -129,7 +129,7 @@ export const queryAccounts = functions.https.onCall((data: any, context: functio
 
 // developerのtutorials.gaはきれいにはならない。。。
 export const onGaDelete = functions.firestore
-  .document('/users/{userID}/gas/{gaID}')
+  .document('/users/{userId}/gas/{gaId}')
   .onDelete(async (snap, context) => {
     try {
       const data = snap.data();
@@ -143,8 +143,8 @@ export const onGaDelete = functions.firestore
       const response = await oauth2Client.getAccessToken();
       await oauth2Client.revokeToken(response.token!);
 
-      const userKey = context.params.userID
-      const tutorials = await admin.firestore().collection("users").doc(userKey).collection('tutorials').where("gaId", "==", context.params.gaID).get();
+      const userKey = context.params.userId
+      const tutorials = await admin.firestore().collection("users").doc(userKey).collection('tutorials').where("gaId", "==", context.params.gaId).get();
       await Promise.all(tutorials.docs.map(doc => doc.ref.update({
         gaId: null,
       })));

@@ -6,47 +6,53 @@ import admin from './admin';
 import Step from './models/step';
 
 export const onTutorialCreate = functions.firestore
-  .document('/users/{userID}/tutorials/{tutorialID}')
+  .document('/users/{userId}/tutorials/{tutorialId}')
   .onCreate(async (snap, context) => {
     const newValue: any = snap.data();
-    const pathPriority = PathOperators.find(p => p.value === newValue.pathOperator)!.pathPriority;
+    const pathOperator = PathOperators.find(p => p.value === newValue.pathOperator);
+    if (!pathOperator) return;
     try {
       await snap.ref.update({
-        pathPriority
+        pathPriority: pathOperator.pathPriority,
       })
-      return true;
     } catch (error) {
       console.error(error);
-      return false;
     }
   });
 
 export const onTutorialUpdate = functions.firestore
-  .document('/users/{userID}/tutorials/{tutorialID}')
+  .document('/users/{userId}/tutorials/{tutorialId}')
   .onUpdate(async (snap, context) => {
     const newValue: any = snap.after.data();
-    const pathPriority = PathOperators.find(p => p.value === newValue.pathOperator)!.pathPriority;
+    const pathOperator = PathOperators.find(p => p.value === newValue.pathOperator);
+    if (!pathOperator) return;
     try {
       await snap.after.ref.update({
-        pathPriority
+        pathPriority: pathOperator.pathPriority,
       });
-      return true;
     } catch (error) {
       console.error(error);
-      return false;
     }
   });
 
 export const onTutorialDelete = functions.firestore
-  .document('/users/{userID}/tutorials/{tutorialID}')
+  .document('/users/{userId}/tutorials/{tutorialId}')
   .onDelete(async (snap, context) => {
     try {
-      const querySnapshot = await snap.ref.collection('steps').get();
-      await Promise.all(querySnapshot.docs.map(doc => doc.ref.delete()));
-      return true;
+      const stepsSnapshot = await snap.ref.collection('steps').get();
+      if (stepsSnapshot.docs.length > 0) {
+        await Promise.all(stepsSnapshot.docs.map(doc => doc.ref.delete()));
+      }
+      const performancesSnapshot = await snap.ref.collection('performances').get();
+      if (performancesSnapshot.docs.length > 0) {
+        await Promise.all(performancesSnapshot.docs.map(doc => doc.ref.delete()));
+      }
+      const errorsSnapshot = await snap.ref.collection('errors').get();
+      if (errorsSnapshot.docs.length > 0) {
+        await Promise.all(errorsSnapshot.docs.map(doc => doc.ref.delete()));
+      }
     } catch (error) {
       console.error(error);
-      return false;
     }
   });
 
@@ -57,7 +63,7 @@ export const getTutorial = functions.https.onRequest(async (request, response) =
     response.set('Access-Control-Allow-Methods', 'POST');
     response.set('Access-Control-Allow-Headers', 'Content-Type');
     response.set('Access-Control-Max-Age', '3600');
-    return response.status(204).send('');
+    return response.sendStatus(204);
   } else if (request.method === 'POST') {
     response.set('Cache-Control', 'public, max-age=300, s-maxage=600');
     if (request.body === undefined || request.body.url === undefined || request.body.key === undefined || request.body.once === undefined) {
@@ -69,7 +75,6 @@ export const getTutorial = functions.https.onRequest(async (request, response) =
     const once: string[] = request.body.once;
 
     const tutorialRefs: FirebaseFirestore.QuerySnapshot = await admin.firestore().collection("users").doc(userKey).collection('tutorials').where('isActive', '==', true).orderBy('pathPriority', 'asc').get();
-    // tutorialsをループしてpathvalueをチェックする
     const matchedTutorials: Tutorial[] = [];
     tutorialRefs.forEach(ref => {
       const tutorial = new Tutorial({
@@ -110,11 +115,11 @@ export const storePerformance = functions.https.onRequest(async (request, respon
     response.set('Access-Control-Allow-Methods', 'POST');
     response.set('Access-Control-Allow-Headers', 'Content-Type');
     response.set('Access-Control-Max-Age', '3600');
-    return response.status(204).send('');
+    return response.sendStatus(204);
   } else if (request.method === 'POST') {
     const tutorialId: string = request.body.tutorialId;
     const userKey: string = request.body.key;
-    if (!request.body || !tutorialId) {
+    if (!request.body || !tutorialId || !userKey) {
       return response.status(422).send('Unprocessable Entity');
     }
     const ref = admin.firestore().collection("users").doc(userKey).collection('tutorials').doc(tutorialId).collection("performances").doc();
@@ -124,6 +129,31 @@ export const storePerformance = functions.https.onRequest(async (request, respon
       complete: request.body.complete,
       elapsedTime: request.body.elapsedTime,
       euId: request.body.euId,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    return response.sendStatus(200);
+  }
+  return response.status(405).send('Method Not Allowed');
+});
+
+export const logError = functions.https.onRequest(async (request, response) => {
+  response.set('Access-Control-Allow-Origin', '*');
+  if (request.method === 'OPTIONS') {
+    response.set('Access-Control-Allow-Methods', 'POST');
+    response.set('Access-Control-Allow-Headers', 'Content-Type');
+    response.set('Access-Control-Max-Age', '3600');
+    return response.sendStatus(204);
+  } else if (request.method === 'POST') {
+    const tutorialId: string = request.body.tutorialId;
+    const userKey: string = request.body.key;
+    if (!request.body || !userKey || !tutorialId) {
+      return response.status(422).send('Unprocessable Entity');
+    }
+    const ref = admin.firestore().collection("users").doc(userKey).collection('tutorials').doc(tutorialId).collection("errors").doc();
+    await ref.set({
+      message: request.body.message,
+      stepIndex: request.body.stepIndex,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });

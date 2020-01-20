@@ -1,11 +1,18 @@
 <template>
+  <validation-observer ref="observer">
     <sign-in-template
-        @click:sign-in="onClickSignIn"
-    ></sign-in-template>
+      :loading="requesting"
+      :email.sync="email"
+      :password.sync="password"
+      @click:sign-in="onClickSignIn"
+    />
+  </validation-observer>
 </template>
 
 <script>
-import firebase from '../../../firebase';
+import { mapActions, mapState, mapGetters } from 'vuex';
+import { ValidationObserver } from 'vee-validate';
+import { appFirebaseService, getUserFirebaseService } from '../../../firebase';
 import SignInTemplate from '../../templates/SignInTemplate';
 import chromeExtension from '../../../chromeExtension';
 
@@ -13,29 +20,56 @@ export default {
   name: 'SignInPage',
   components: {
     SignInTemplate,
+    ValidationObserver,
   },
-  methods: {
-    async onClickSignIn({ email, password }) {
-      try {
-        await firebase.signIn(email, password);
-        if (await chromeExtension.getVersion()) {
-          await chromeExtension.signIn(email, password);
-        }
-        const { redirect = '' } = this.$route.query;
+  data() {
+    return {
+      email: null,
+      password: null,
+    };
+  },
+  computed: {
+    ...mapGetters([
+      'firebaseConfig',
+    ]),
+    ...mapState([
+      'requesting',
+    ]),
+  },
+  watch: {
+    async firebaseConfig(value) {
+      if (value) {
+        await getUserFirebaseService(value).signIn(this.email, this.password);
+        const { source, redirect = '' } = this.$route.query;
+        if (source === 'extension') return;
         if (redirect) {
-          if (redirect.startsWith('http')) {
-            window.location.href = redirect;
-          } else {
-            await this.$router.push(redirect);
-          }
+          await this.$router.push(redirect);
         } else {
           await this.$router.push({
             name: 'tutorials.index',
           });
         }
+      }
+    },
+  },
+  methods: {
+    ...mapActions([
+      'setRequesting',
+      'setServerSideErrors',
+    ]),
+    async onClickSignIn() {
+      const isValid = await this.$refs.observer.validate();
+      if (!isValid) return;
+      try {
+        this.setRequesting(true);
+        await appFirebaseService.signIn(this.email, this.password);
+        if (await chromeExtension.getVersion()) {
+          await chromeExtension.signIn(this.email, this.password);
+        }
       } catch (e) {
-        console.error(e);
         this.handleError(e);
+      } finally {
+        this.setRequesting(false);
       }
     },
     async handleError({ message, code }) {
@@ -59,7 +93,7 @@ export default {
           errorMessage = message;
           break;
       }
-      await this.$store.dispatch('setServerSideErrors', {
+      await this.setServerSideErrors({
         [field]: errorMessage,
       });
     },

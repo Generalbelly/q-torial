@@ -146,7 +146,7 @@ export default {
     PrimaryButton,
     BaseButton,
     BaseColumn,
-    BaseColumns
+    BaseColumns,
   },
   data() {
     return {

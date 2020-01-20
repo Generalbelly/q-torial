@@ -5,12 +5,12 @@
     @click:resend="onClickResend"
     :email-verification-link-expired="emailVerificationLinkExpired"
     :email-verification-link-sent="emailVerificationLinkSent"
-  ></verify-email-template>
+  />
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
-import firebase from '../../../firebase';
+import { appFirebaseService } from '../../../firebase';
 import VerifyEmailTemplate from '../../templates/VerifyEmailTemplate';
 
 export default {
@@ -42,9 +42,9 @@ export default {
   methods: {
     async onClickVerify() {
       try {
-        await firebase.applyActionCode(this.code);
-        this.$router.push({
-          name: 'tutorials.index',
+        await appFirebaseService.applyActionCode(this.code);
+        await this.$router.push({
+          name: 'instruction',
         });
       } catch (e) {
         this.handleError(e);
@@ -71,13 +71,12 @@ export default {
           errorMessage = message;
           break;
       }
-      console.log(field);
       await this.$store.dispatch('setServerSideErrors', {
         [field]: errorMessage,
       });
     },
     async onClickResend({ email }) {
-      firebase.sendPasswordResetEmail(email);
+      await appFirebaseService.sendPasswordResetEmail(email);
     },
   },
 };

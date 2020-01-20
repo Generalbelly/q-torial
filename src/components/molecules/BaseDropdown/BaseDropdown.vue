@@ -24,7 +24,7 @@ export default {
     items: {
       type: Array,
       default() {
-        return []
+        return [];
       },
     },
     itemText: {
@@ -36,5 +36,5 @@ export default {
       default: 'value',
     },
   },
-}
+};
 </script>

@@ -2,11 +2,11 @@
   <forget-password-template
     @click:reset-link="onClickResetLink"
     :password-reset-link-sent="passwordResetLinkSent"
-  ></forget-password-template>
+  />
 </template>
 
 <script>
-import firebase from '../../../firebase';
+import { appFirebaseService } from '../../../firebase';
 import ForgetPasswordTemplate from '../../templates/ForgetPasswordTemplate/ForgetPasswordTemplate';
 
 export default {
@@ -22,7 +22,7 @@ export default {
   methods: {
     async onClickResetLink({ email }) {
       try {
-        await firebase.sendPasswordResetEmail(email);
+        await appFirebaseService.sendPasswordResetEmail(email);
         this.passwordResetLinkSent = true;
       } catch (e) {
         console.log(e);

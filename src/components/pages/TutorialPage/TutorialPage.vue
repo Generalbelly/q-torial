@@ -61,7 +61,7 @@ export default {
       this.$router.push({
         name: 'tutorials.index',
       });
-    }
+    },
   },
 };
 </script>

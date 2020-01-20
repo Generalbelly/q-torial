@@ -174,9 +174,9 @@ export default {
       default() {
         return {
           once: true,
-        }
+        };
       },
-    }
+    },
   },
   data() {
     return {
@@ -257,13 +257,13 @@ export default {
     },
     settingsOnce: {
       get() {
-        return this.settings.once
+        return this.settings.once;
       },
       set(newValue) {
         this.$emit('update:settings', {
           ...this.settings,
           once: newValue,
-        })
+        });
       },
     },
   },
@@ -301,7 +301,7 @@ export default {
     },
     innerGaId: {
       handler(value) {
-        const ga = this.gas.find(ga => ga.id === value)
+        const ga = this.gas.find(ga => ga.id === value);
         if (ga) {
           this.$emit('update:ga-property-id', ga.propertyId);
         }

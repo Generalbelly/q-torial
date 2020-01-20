@@ -1,35 +1,61 @@
 <template>
-  <div class="form-container">
-    <base-logo class="has-margin-bottom-6" @click="onClickLogo" />
-    <validation-observer ref="observer">
-      <sign-in-form
-        :email.sync="innerEmail"
-        :password.sync="innerPassword"
-        @click:sign-in="onClickSignIn"
-      />
-    </validation-observer>
-    <p class="has-margin-top-5">
-      You don't have an account?
-      <router-link :to="{ name: 'sign-up' }">
-        Create account
-      </router-link>
-    </p>
+  <div>
+    <centering-layout>
+      <template v-slot:content>
+        <base-logo
+          @click="onClickLogo"
+          :width="300"
+        />
+        <sign-in-form
+          class="has-margin-top-5"
+          :email.sync="innerEmail"
+          :password.sync="innerPassword"
+        />
+        <p>
+          <router-link :to="{ name: 'password.forget' }">
+            Forget your password?
+          </router-link>
+        </p>
+        <primary-button
+          clickable-with-enter
+          @click="onClickSignIn"
+          class="has-margin-top-5 is-fullwidth"
+        >
+          Sign in
+        </primary-button>
+        <p class="has-margin-top-5">
+          You don't have an account?
+          <router-link :to="{ name: 'sign-up' }">
+            Create account
+          </router-link>
+        </p>
+      </template>
+    </centering-layout>
+    <base-loading is-full-page :active="loading" />
   </div>
 </template>
 
 <script>
-import { ValidationObserver } from 'vee-validate';
 import SignInForm from '../../organisms/forms/SignInForm';
 import BaseLogo from '../../atoms/BaseLogo/BaseLogo';
+import CenteringLayout from '../../molecules/layouts/CenteringLayout';
+import PrimaryButton from '../../atoms/buttons/PrimaryButton';
+import BaseLoading from '../../atoms/BaseLoading';
 
 export default {
   name: 'SignInTemplate',
   components: {
+    BaseLoading,
+    PrimaryButton,
+    CenteringLayout,
     BaseLogo,
     SignInForm,
-    ValidationObserver,
   },
   props: {
+    loading: {
+      type: Boolean,
+      default: false,
+    },
     email: {
       type: String,
       default: null,
@@ -39,40 +65,27 @@ export default {
       default: null,
     },
   },
-  data() {
-    return {
-      innerEmail: null,
-      innerPassword: null,
-    };
-  },
-  watch: {
-    email(value) {
-      this.innerEmail = value;
+  computed: {
+    innerEmail: {
+      get() {
+        return this.email;
+      },
+      set(newValue) {
+        this.$emit('update:email', newValue);
+      },
     },
-    password(value) {
-      this.innerPassword = value;
+    innerPassword: {
+      get() {
+        return this.password;
+      },
+      set(newValue) {
+        this.$emit('update:password', newValue);
+      },
     },
-  },
-  mounted() {
-    window.addEventListener('keyup', this.onKeyup);
-  },
-  beforeDestroy() {
-    window.removeEventListener('keyup', this.onKeyup);
   },
   methods: {
-    onKeyup(e) {
-      if (e.keyCode === 13) {
-        this.onClickSignIn();
-      }
-    },
     async onClickSignIn() {
-      const isValid = await this.$refs.observer.validate();
-      if (isValid) {
-        this.$emit('click:sign-in', {
-          email: this.innerEmail,
-          password: this.innerPassword,
-        });
-      }
+      this.$emit('click:sign-in');
     },
     onClickLogo() {
       this.$router.push({
@@ -85,18 +98,4 @@ export default {
 </script>
 
 <style scoped>
-.form-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-.form-container > span {
-  min-width: 350px;
-}
 </style>

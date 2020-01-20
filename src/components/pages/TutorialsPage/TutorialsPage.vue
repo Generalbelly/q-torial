@@ -40,10 +40,15 @@ export default {
       'requesting',
       'allFetched',
       'orderBy',
+      'repositoryReady',
     ]),
   },
-  created() {
-    this.listTutorials();
+  watch: {
+    repositoryReady(value) {
+      if (value) {
+        this.listTutorials();
+      }
+    },
   },
   methods: {
     ...mapActions('tutorial', [
@@ -78,9 +83,9 @@ export default {
     async onClickGo(tutorial) {
       const selected = await chromeExtension.selectTutorial(tutorial);
       if (selected) {
-        window.open(tutorial.buildUrl, '_blank')
+        window.open(tutorial.buildUrl, '_blank');
       } else {
-        this.$refs.template.showExtensionNotInstalledModal()
+        this.$refs.template.showExtensionNotInstalledModal();
       }
     },
     onClickDelete(tutorial) {

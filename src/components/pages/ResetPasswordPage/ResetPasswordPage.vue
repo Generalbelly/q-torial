@@ -2,11 +2,12 @@
     <reset-password-template
       @click:reset-password="onClickResetPassword"
       :password-reset-complete="passwordResetComplete"
-    ></reset-password-template>
+    />
 </template>
 
 <script>
-import firebase from '../../../firebase';
+import { mapGetters } from 'vuex';
+import { appFirebaseService, getUserFirebaseService } from '../../../firebase';
 import ResetPasswordTemplate from '../../templates/ResetPasswordTemplate';
 
 export default {
@@ -20,6 +21,11 @@ export default {
       passwordResetComplete: false,
     };
   },
+  computed: {
+    ...mapGetters([
+      'firebaseConfig',
+    ]),
+  },
   created() {
     const {
       code = null,
@@ -29,7 +35,8 @@ export default {
   methods: {
     async onClickResetPassword({ password }) {
       try {
-        await firebase.resetPassword(this.code, password);
+        await appFirebaseService.resetPassword(this.code, password);
+        await getUserFirebaseService(this.firebaseConfig).updatePassword(password);
         this.passwordResetComplete = true;
       } catch (e) {
         console.log(e);
@@ -61,8 +68,6 @@ export default {
           errorMessage = message;
           break;
       }
-      console.log(field);
-      console.log(errorMessage);
       await this.$store.dispatch('setServerSideErrors', {
         [field]: errorMessage,
       });

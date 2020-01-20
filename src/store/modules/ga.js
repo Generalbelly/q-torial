@@ -1,6 +1,7 @@
-import firebase, {
+import {
   FieldValue,
   convertDocToObject,
+  appFirebaseService,
 } from '../../firebase';
 import gapi from '../../google-analytics';
 import { QUERY_LIMIT } from '../../utils/constants';
@@ -18,6 +19,9 @@ import {
 } from '../mutation-types';
 import GaEntity from '../../components/atoms/Entities/GaEntity';
 import GoogleAnalyticsAccount from '../../components/atoms/Entities/GoogleAnalyticsAccount';
+import repositoryFactory from '../../repository';
+
+const gaRepository = repositoryFactory.get('user', appFirebaseService.getDB());
 
 export const mutations = {
   [ADD_GA](state, payload) {
@@ -135,40 +139,36 @@ const actions = {
       gasLatestSnapshot = snapshot;
     }
   },
-  selectGa: async ({ commit }, payload) => {
-    return new Promise(async (resolve, reject) => {
-      const { id } = payload;
-      commit(SET_REQUESTING, true);
-      try {
-        const response = await gapi.queryAccounts(id);
-        commit(SET_GA_ACCOUNTS, response.data);
-        commit(SELECT_GA, payload);
-        commit(SET_REQUESTING, false);
-        resolve();
-      } catch (e) {
-        commit(SET_REQUESTING, false);
-        reject(e);
-      }
-    });
-  },
+  selectGa: async ({ commit }, payload) => new Promise(async (resolve, reject) => {
+    const { id } = payload;
+    commit(SET_REQUESTING, true);
+    try {
+      const response = await appFirebaseService.queryAccounts(id);
+      commit(SET_GA_ACCOUNTS, response.data);
+      commit(SELECT_GA, payload);
+      commit(SET_REQUESTING, false);
+      resolve();
+    } catch (e) {
+      commit(SET_REQUESTING, false);
+      reject(e);
+    }
+  }),
   sortGas({ commit }, payload) {
     commit(SORT_GAS, payload);
   },
-  addGa: async ({ commit, dispatch  }, payload = {}) => {
-    return new Promise(async (resolve, reject) => {
-      commit(SET_REQUESTING, true);
-      try {
-        const response = await gapi.oauth2SignIn();
-        commit(ADD_GA, response.data);
-        await dispatch('selectGa', response.data);
-        resolve(response);
-        commit(SET_REQUESTING, false);
-      } catch (e) {
-        reject(e);
-        commit(SET_REQUESTING, false);
-      }
-    });
-  },
+  addGa: async ({ commit, dispatch }, payload = {}) => new Promise(async (resolve, reject) => {
+    commit(SET_REQUESTING, true);
+    try {
+      const response = await gapi.oauth2SignIn();
+      commit(ADD_GA, response.data);
+      await dispatch('selectGa', response.data);
+      resolve(response);
+      commit(SET_REQUESTING, false);
+    } catch (e) {
+      reject(e);
+      commit(SET_REQUESTING, false);
+    }
+  }),
   updateGa({ commit, state, rootState }, payload) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -176,9 +176,7 @@ const actions = {
         const { data } = payload;
         const { id, ...fields } = data;
 
-        const batch = firebase.getDB().batch();
-
-        await firebase
+        await appFirebaseService
           .getDB()
           .collection('users')
           .doc(rootState.user.uid)
@@ -193,15 +191,15 @@ const actions = {
         resolve();
       } catch (e) {
         console.error(e);
-        reject(e)
+        reject(e);
       }
-    })
+    });
   },
   deleteGa: async ({ commit, state, rootState }, payload = {}) => {
     commit(SET_REQUESTING, true);
     const { data } = payload;
     const { id } = data;
-    await firebase
+    await appFirebaseService
       .getDB()
       .collection('users')
       .doc(rootState.user.uid)

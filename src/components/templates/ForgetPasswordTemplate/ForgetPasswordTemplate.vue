@@ -1,29 +1,32 @@
 <template>
-  <div class="form-container">
-    <base-logo class="has-margin-bottom-6">
-    </base-logo>
-    <base-heading>
-      Forget your password?
-    </base-heading>
-    <base-fade-transition>
-      <password-reset-link-sent-message
-        v-show="passwordResetLinkSent"
-      >
-      </password-reset-link-sent-message>
-    </base-fade-transition>
-    <validation-observer ref="observer">
-      <forget-password-form
-        :email.sync="innerEmail"
-        @click:reset-link="onClickResetLink"
-      >
-      </forget-password-form>
-    </validation-observer>
-    <p class="has-margin-top-5">
-      <router-link :to="{ name: 'sign-in' }">
-        Sign in
-      </router-link>
-    </p>
-  </div>
+  <centering-layout>
+    <template v-slot:content>
+      <base-logo class="has-margin-bottom-5" />
+      <base-sub-heading class="has-text-weight-semibold">
+        Forget your password?
+      </base-sub-heading>
+      <base-fade-transition>
+        <password-reset-link-sent-message
+          v-show="passwordResetLinkSent"
+        />
+      </base-fade-transition>
+      <validation-observer ref="observer">
+        <p class="has-margin-bottom-4">Please enter the email registered on your account.</p>
+        <forget-password-form
+          :email.sync="innerEmail"
+        />
+        <forget-password-button
+          @click="onClickResetLink"
+          class="has-margin-top-5 is-fullwidth"
+        />
+      </validation-observer>
+      <p class="has-margin-top-5">
+        Go back to <router-link :to="{ name: 'sign-in' }">
+          Sign in
+        </router-link>
+      </p>
+    </template>
+  </centering-layout>
 </template>
 
 <script>
@@ -32,17 +35,21 @@ import ForgetPasswordForm from '../../organisms/forms/ForgetPasswordForm';
 import BaseHeading from '../../atoms/BaseHeading';
 import BaseMessage from '../../atoms/BaseMessage';
 import BaseFadeTransition from '../../atoms/transitions/BaseFadeTransition';
-import PasswordResetLinkSentMessage
-  from '../../organisms/messages/PasswordResetLinkSentMessage/PasswordResetLinkSentMessage';
+import PasswordResetLinkSentMessage from '../../organisms/messages/PasswordResetLinkSentMessage';
 import BaseLogo from '../../atoms/BaseLogo/BaseLogo';
+import CenteringLayout from '../../molecules/layouts/CenteringLayout';
+import ForgetPasswordButton from '../../atoms/buttons/ForgetPasswordButton/ForgetPasswordButton';
+import BaseSubHeading from '../../atoms/BaseSubHeading/BaseSubHeading';
 
 export default {
   name: 'ForgetPasswordTemplate',
   components: {
+    BaseSubHeading,
+    ForgetPasswordButton,
+    CenteringLayout,
     BaseLogo,
     PasswordResetLinkSentMessage,
     BaseFadeTransition,
-    BaseMessage,
     BaseHeading,
     ForgetPasswordForm,
     ValidationObserver,

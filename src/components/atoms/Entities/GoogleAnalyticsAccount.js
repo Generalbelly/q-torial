@@ -15,6 +15,8 @@ export default class GoogleAnalyticsAccount extends Entity {
       ...props
     } = data;
     this.fill(props);
-    this.webProperties = webProperties.map(webProperty => new GoogleAnalyticsWebProperty(webProperty));
+    this.webProperties = webProperties.map(
+      webProperty => new GoogleAnalyticsWebProperty(webProperty),
+    );
   }
 }

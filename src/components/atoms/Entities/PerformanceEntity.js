@@ -17,13 +17,4 @@ export default class PerformanceEntity extends Entity {
     super();
     this.fill(data);
   }
-
-  toPlainObject() {
-    return super.toPlainObject([
-      'createdAtAsDateString',
-      'updatedAtAsDateString',
-      'createdAt',
-      'updatedAt',
-    ]);
-  }
 }

@@ -25,13 +25,4 @@ export default class GaEntity extends Entity {
     super();
     this.fill(data);
   }
-
-  toPlainObject() {
-    return super.toPlainObject([
-      'createdAtAsDateString',
-      'updatedAtAsDateString',
-      'createdAt',
-      'updatedAt',
-    ]);
-  }
 }

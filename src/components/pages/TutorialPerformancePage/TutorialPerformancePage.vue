@@ -41,7 +41,7 @@ export default {
       });
     }
     const to = endOfDay(subDays(new Date(), 1));
-    const from = startOfDay(startOfMonth(to))
+    const from = startOfDay(startOfMonth(to));
     this.dates = [from, to];
   },
   watch: {

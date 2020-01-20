@@ -67,9 +67,9 @@ export default {
           resolve(false);
         }
       } catch (e) {
-        console.log(e)
-        reject(e)
+        console.log(e);
+        reject(e);
       }
-    })
+    });
   },
 };

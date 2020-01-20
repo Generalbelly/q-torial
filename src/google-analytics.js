@@ -1,10 +1,10 @@
 import firebase from './firebase';
 
 let auth = null;
-let _scope = null;
+let s = null;
 export default {
   init(clientId, apiKey, scope) {
-    _scope = scope;
+    s = scope;
     window.gapi.client.init({
       clientId,
       apiKey,
@@ -17,7 +17,7 @@ export default {
       let responseCode;
       auth.currentUser.listen(async (user) => {
         if (user.isSignedIn()) {
-          const basicProfile = user.getBasicProfile()
+          const basicProfile = user.getBasicProfile();
           const email = basicProfile.getEmail();
           const addGa = firebase.getFunctions().httpsCallable('addGa');
           const ga = await addGa({
@@ -28,22 +28,9 @@ export default {
         }
       });
       const { code } = await auth.grantOfflineAccess({
-        scope: _scope,
+        scope: s,
       });
       responseCode = code;
-    });
-  },
-  queryAccounts(gaId) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const queryAccounts = firebase.getFunctions().httpsCallable('queryAccounts');
-        const accounts = await queryAccounts({
-          id: gaId,
-        });
-        resolve(accounts);
-      } catch (e) {
-        reject(e);
-      }
     });
   },
 };

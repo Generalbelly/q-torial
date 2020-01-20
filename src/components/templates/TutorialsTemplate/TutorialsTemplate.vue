@@ -130,7 +130,7 @@ export default {
       this.shouldShowCreateTutorialForm = true;
     },
     showExtensionNotInstalledModal() {
-      this.shouldShowExtensionNotInstalledModal = true
+      this.shouldShowExtensionNotInstalledModal = true;
     },
   },
 };

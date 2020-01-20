@@ -19,6 +19,7 @@
 <script>
 import BaseModal from '../../../molecules/BaseModal/BaseModal';
 import BaseButton from '../../../atoms/BaseButton/BaseButton';
+
 export default {
   name: 'ExtensionNotInstalledModal',
   components: {
@@ -28,7 +29,7 @@ export default {
   data() {
     return {
       installUrl: process.env.VUE_APP_CHROME_EXTRNSION_INSTALL_URL,
-    }
+    };
   },
 };
 </script>

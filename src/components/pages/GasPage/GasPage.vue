@@ -58,19 +58,19 @@ export default {
     ]),
     async onSort(orderBy) {
       if (this.loadable) {
-        this.listGas({
+        await this.listGas({
           orderBy,
         });
       } else {
-        this.sortGas(orderBy);
+        await this.sortGas(orderBy);
       }
     },
-    onClickShowMore() {
-      this.listGas();
+    async onClickShowMore() {
+      await this.listGas();
     },
     async onClickAdd() {
       const response = await this.addGa();
-      this.$router.push({
+      await this.$router.push({
         name: 'gas.show',
         params: {
           id: response.data.id,
@@ -79,7 +79,7 @@ export default {
     },
     async onClickEdit(ga) {
       await this.selectGa(ga);
-      this.$router.push({
+      await this.$router.push({
         name: 'gas.show',
         params: {
           id: ga.id,
@@ -87,12 +87,12 @@ export default {
       });
     },
     async onClickDelete(ga) {
-      this.deleteGa({
+      await this.deleteGa({
         data: ga.toPlainObject(),
       });
     },
-    onChangeQuery: debounce(function (query) {
-      this.listGas({
+    onChangeQuery: debounce(async function (query) {
+      await this.listGas({
         searchQuery: query,
       });
     }, 500),

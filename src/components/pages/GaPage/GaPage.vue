@@ -48,7 +48,7 @@ export default {
       await this.updateGa({
         data: ga.toPlainObject(),
       });
-      this.$router.push({
+      await this.$router.push({
         name: 'gas.index',
       });
     },
@@ -56,7 +56,7 @@ export default {
       this.$router.push({
         name: 'gas.index',
       });
-    }
+    },
   },
 };
 </script>

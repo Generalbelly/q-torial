@@ -238,3 +238,6 @@ $colors: (
     "warning-800": ($warning-800, $warning-800-invert),
     "warning-900": ($warning-900, $warning-900-invert),
 );
+
+$snackbar-background-color: $neutral-800;
+$snackbar-color: $neutral-800-invert;

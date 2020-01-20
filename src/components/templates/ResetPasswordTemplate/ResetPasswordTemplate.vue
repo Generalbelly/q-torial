@@ -15,7 +15,7 @@
       <reset-password-form
         :password.sync="password"
         @click:reset-password="onClickResetPassword"
-      ></reset-password-form>
+      />
     </validation-observer>
   </div>
 </template>

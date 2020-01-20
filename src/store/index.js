@@ -3,20 +3,49 @@ import Vuex from 'vuex';
 import { vuexfireMutations } from 'vuexfire';
 import modules from './modules';
 import {
-  SET_ERROR_CODE,
   UPDATE_USER,
   SET_SERVER_SIDE_ERRORS,
   UPDATE_AUTH,
+  SET_REQUESTING,
 } from './mutation-types';
 import UserEntity from '../components/atoms/Entities/UserEntity';
-import firebase, { convertDocToObject, convertDocumentsToArray } from '../firebase';
+import {
+  appFirebaseService,
+  convertDocumentsToArray,
+} from '../firebase';
 import StripeCustomerEntity from '../components/atoms/Entities/StripeCustomerEntity';
+import repositoryFactory from '../repository';
+import FirebaseConfigEntity from '../components/atoms/Entities/FirebaseConfigEntity';
 
 Vue.use(Vuex);
+
+
+/** @typedef {import('../repository/repositories/user')} userRepository */
+let userRepository = repositoryFactory.get('user');
+let userRepositoryReady = false;
+
+const getUserRepository = (userId) => {
+  if (userRepositoryReady) {
+    return userRepository;
+  }
+  userRepositoryReady = true;
+  userRepository = userRepository(
+    appFirebaseService.getUserCollection(),
+    appFirebaseService.getStripeCustomerCollection(userId),
+    appFirebaseService.getFirebaseConfigCollection(userId),
+  );
+  return userRepository;
+};
 
 const getters = {
   email(state) {
     return state.user ? state.user.email : null;
+  },
+  firebaseConfig(state) {
+    return state.user ? state.user.firebaseConfig : null;
+  },
+  setupComplete(state) {
+    return state.user ? state.user.setupComplete : false;
   },
   emailVerificationLinkSent(state) {
     return state.auth.emailVerificationLinkSent;
@@ -27,8 +56,8 @@ const getters = {
 };
 
 const mutations = {
-  [SET_ERROR_CODE](state, code) {
-    state.errorCode = code;
+  [SET_REQUESTING](state, payload) {
+    state.requesting = payload;
   },
   [UPDATE_USER](state, user) {
     if (user) {
@@ -36,7 +65,6 @@ const mutations = {
         ...state.user,
         ...user,
       });
-
       state.navItems = [
         {
           icon: 'book',
@@ -83,7 +111,6 @@ const mutations = {
           },
         ];
       }
-
     } else {
       state.user = null;
       state.navItems = [
@@ -129,8 +156,32 @@ const mutations = {
 };
 
 const actions = {
-  updateUser({ commit }, user) {
+  async setRequesting({ commit }, payload) {
+    commit(SET_REQUESTING, payload);
+  },
+  async getUser({ commit, state }) {
+    if (!state.user) return;
+    const { setupComplete } = await getUserRepository(state.user.uid).get(state.user.uid);
+    commit(UPDATE_USER, {
+      setupComplete,
+    });
+  },
+  async addUser({ commit, state }, user) {
+    if (!state.user) return;
+    await getUserRepository(state.user.uid).add(user);
     commit(UPDATE_USER, user);
+  },
+  async updateUser({ commit, state }, user) {
+    if (!state.user) return;
+    await getUserRepository(state.user.uid).update(user);
+    commit(UPDATE_USER, user);
+  },
+  async updateLocalUser({ commit }, user) {
+    commit(UPDATE_USER, user);
+  },
+  async upsertFirebaseConfig({ state }, firebaseConfig) {
+    if (!state.user) return;
+    await getUserRepository(state.user.uid).upsertFirebaseConfig(firebaseConfig);
   },
   setServerSideErrors({ commit }, payload) {
     commit(SET_SERVER_SIDE_ERRORS, payload);
@@ -145,31 +196,36 @@ const actions = {
       emailVerificationLinkExpired: value,
     });
   },
-  getUserPaymentInfo: async ({ state, commit }, payload = {}) => {
+  checkUserPaymentInfo({ commit, state }) {
     if (!state.user) return;
-    firebase
-      .getDB()
-      .collection('users')
-      .doc(state.user.uid)
-      .collection('stripe_customers')
-      .where('deletedAt', '==', null)
-      .limit(1)
-      .onSnapshot((snapshot) => {
-        if (snapshot.docs.length > 0) {
-          const stripeCustomer = new StripeCustomerEntity(
-            convertDocumentsToArray(snapshot)[0]
-          );
-          commit(UPDATE_USER, { stripeCustomer });
-        } else {
-          commit(UPDATE_USER, { stripeCustomer: null });
-        }
-      });
+    getUserRepository(state.user.uid).checkUserPaymentInfo((snapshot) => {
+      if (snapshot.docs.length > 0) {
+        const stripeCustomer = new StripeCustomerEntity(
+          convertDocumentsToArray(snapshot)[0],
+        );
+        commit(UPDATE_USER, { stripeCustomer });
+      } else {
+        commit(UPDATE_USER, { stripeCustomer: null });
+      }
+    });
+  },
+  checkFirebaseConfig({ commit, state, dispatch }) {
+    if (!state.user) return;
+    getUserRepository(state.user.uid).checkFirebaseConfig(async (snapshot) => {
+      if (snapshot.docs.length > 0) {
+        const firebaseConfig = new FirebaseConfigEntity(convertDocumentsToArray(snapshot)[0]);
+        commit(UPDATE_USER, { firebaseConfig });
+        await dispatch('tutorial/initRepository');
+      } else {
+        commit(UPDATE_USER, { firebaseConfig: null });
+      }
+    });
   },
 };
 
 const state = {
   user: null,
-  errorCode: null,
+  requesting: false,
   serverSideErrors: {},
   auth: {
     emailVerificationLinkSent: false,
