@@ -28,7 +28,7 @@
         <router-view />
       </the-main>
     </template>
-    <footer v-if="shouldShowFooter"class="footer">
+    <footer v-if="shouldShowFooter" class="footer">
       <div class="content has-text-centered has-text-grey">
         If you have any questions, feel free to contact us by email: {{ supportEmail }}
       </div>
@@ -120,6 +120,9 @@ export default {
     await chromeExtension.getVersion();
   },
   methods: {
+    ...mapActions([
+      'updateLocalUser',
+    ]),
     // TODO コンポーネント化する
     showSnackbar({
       message = 'Oops! Something went wrong.', position = 'is-top', type = 'is-success', indefinite = false,
@@ -134,6 +137,7 @@ export default {
     async signOut() {
       try {
         await appFirebaseService.signOut();
+        await this.updateLocalUser(null);
         await this.$router.push({
           name: 'sign-in',
         });

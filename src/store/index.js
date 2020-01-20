@@ -11,11 +11,8 @@ import {
 import UserEntity from '../components/atoms/Entities/UserEntity';
 import {
   appFirebaseService,
-  convertDocumentsToArray,
 } from '../firebase';
-import StripeCustomerEntity from '../components/atoms/Entities/StripeCustomerEntity';
 import repositoryFactory from '../repository';
-import FirebaseConfigEntity from '../components/atoms/Entities/FirebaseConfigEntity';
 
 Vue.use(Vuex);
 
@@ -113,26 +110,7 @@ const mutations = {
       }
     } else {
       state.user = null;
-      state.navItems = [
-        // {
-        //   text: 'Solution',
-        //   to: {
-        //     name: 'index.solution',
-        //   },
-        // },
-        // {
-        //   text: 'Feature',
-        //   to: {
-        //     name: 'index.feature',
-        //   },
-        // },
-        // {
-        //   text: 'Pricing',
-        //   to: {
-        //     name: 'index.pricing',
-        //   },
-        // },
-      ];
+      state.navItems = [];
       state.userItems = [
         {
           text: 'Sign in',
@@ -198,26 +176,16 @@ const actions = {
   },
   checkUserPaymentInfo({ commit, state }) {
     if (!state.user) return;
-    getUserRepository(state.user.uid).checkUserPaymentInfo((snapshot) => {
-      if (snapshot.docs.length > 0) {
-        const stripeCustomer = new StripeCustomerEntity(
-          convertDocumentsToArray(snapshot)[0],
-        );
-        commit(UPDATE_USER, { stripeCustomer });
-      } else {
-        commit(UPDATE_USER, { stripeCustomer: null });
-      }
+    getUserRepository(state.user.uid).checkUserPaymentInfo((stripeCustomer) => {
+      commit(UPDATE_USER, { stripeCustomer });
     });
   },
   checkFirebaseConfig({ commit, state, dispatch }) {
     if (!state.user) return;
-    getUserRepository(state.user.uid).checkFirebaseConfig(async (snapshot) => {
-      if (snapshot.docs.length > 0) {
-        const firebaseConfig = new FirebaseConfigEntity(convertDocumentsToArray(snapshot)[0]);
-        commit(UPDATE_USER, { firebaseConfig });
+    getUserRepository(state.user.uid).checkFirebaseConfig(async (firebaseConfig) => {
+      commit(UPDATE_USER, { firebaseConfig });
+      if (firebaseConfig) {
         await dispatch('tutorial/initRepository');
-      } else {
-        commit(UPDATE_USER, { firebaseConfig: null });
       }
     });
   },

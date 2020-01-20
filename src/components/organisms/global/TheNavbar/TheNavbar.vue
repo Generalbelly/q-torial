@@ -35,6 +35,7 @@
                   <span>{{ item.text }}</span>
                 </router-link>
                 <a
+                  :key="item.text"
                   v-else
                   :href="item.to"
                   :class="routerLinkClass(item.to)"

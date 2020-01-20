@@ -46,7 +46,6 @@ export default {
   },
   watch: {
     dates(value) {
-      console.log(value)
       if (value.length === 2) {
         this.getPerformance({
           id: this.tutorial.id,

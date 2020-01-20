@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { appFirebaseService } from '../firebase';
+import store from '../store';
 import routes from './routes';
+import UserEntity from '../components/atoms/Entities/UserEntity';
 
 Vue.use(VueRouter);
 
@@ -46,10 +48,17 @@ const routing = (to, from, next, user = null) => {
 router.beforeEach(async (to, from, next) => {
   if (to.name === 'sign-in' && to.query.source === 'extension') {
     await appFirebaseService.signOut();
+    await store.dispatch('updateLocalUser', null);
   }
-  const user = await appFirebaseService.checkAuth();
-  if (from.name === 'email.verify') {
-    await user.reload();
+  let user = await appFirebaseService.checkAuth();
+  if (user) {
+    if (from.name === 'email.verify') {
+      await user.reload();
+    }
+    user = UserEntity.createFromAuth(
+      user,
+      store.state.user,
+    );
   }
   routing(to, from, next, user);
 });

@@ -2,8 +2,6 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/functions';
-import store from './store';
-import UserEntity from './components/atoms/Entities/UserEntity';
 
 export const { FieldValue } = firebase.firestore;
 
@@ -21,7 +19,9 @@ export const convertDocToObject = (doc) => {
   return data;
 };
 
-export const convertDocumentsToArray = snapshot => snapshot.docs.map(doc => convertDocToObject(doc));
+export const convertDocumentsToArray = snapshot => snapshot.docs.map(
+  doc => convertDocToObject(doc),
+);
 
 export default class FirebaseService {
   app;
@@ -50,35 +50,21 @@ export default class FirebaseService {
   }
 
   async signOut() {
-    await this.auth.signOut();
-    await store.dispatch('updateLocalUser', null);
+    return this.auth.signOut();
   }
 
   checkAuth() {
     return new Promise((resolve) => {
-      this.auth.onAuthStateChanged((user) => {
-        if (user) {
-          resolve(UserEntity.createFromAuth(
-            user,
-            store.state.user,
-          ));
-          return;
-        }
+      const unsubscribe = this.auth.onAuthStateChanged((user) => {
         resolve(user);
+        unsubscribe();
       });
     });
   }
 
-  watchAuth() {
+  watchAuth(handler) {
     if (this.app.name !== process.env.VUE_APP_NAME) return;
-    this.auth.onAuthStateChanged(async (user) => {
-      await store.dispatch('updateLocalUser', user);
-      if (user) {
-        await store.dispatch('getUser');
-        await store.dispatch('checkUserPaymentInfo');
-        await store.dispatch('checkFirebaseConfig');
-      }
-    });
+    this.auth.onAuthStateChanged(handler);
   }
 
   async applyActionCode(code) {

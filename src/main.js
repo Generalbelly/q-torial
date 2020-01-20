@@ -13,7 +13,14 @@ import router from './router';
 import App from './App.vue';
 import { appFirebaseService } from './firebase';
 
-appFirebaseService.watchAuth();
+appFirebaseService.watchAuth(async (user) => {
+  await store.dispatch('updateLocalUser', user);
+  if (user) {
+    await store.dispatch('getUser');
+    await store.dispatch('checkUserPaymentInfo');
+    await store.dispatch('checkFirebaseConfig');
+  }
+});
 
 // Buefy
 Vue.use(Buefy, {

@@ -1,6 +1,7 @@
 import { FieldValue, convertDocumentsToArray, convertDocToObject } from '../../firebase';
 import FirebaseConfigEntity from '../../components/atoms/Entities/FirebaseConfigEntity';
 import UserEntity from '../../components/atoms/Entities/UserEntity';
+import StripeCustomerEntity from '../../components/atoms/Entities/StripeCustomerEntity';
 
 export default class UserRepository {
   /** @typedef {firebase.firestore.CollectionReference} userCollection */
@@ -45,17 +46,31 @@ export default class UserRepository {
     });
   }
 
-  checkUserPaymentInfo(onSnapshot) {
+  checkUserPaymentInfo(cb) {
     this.stripeCustomerCollection
       .where('deletedAt', '==', null)
       .limit(1)
-      .onSnapshot(onSnapshot);
+      .onSnapshot((snapshot) => {
+        let stripeCustomer = null;
+        if (snapshot.docs.length > 0) {
+          stripeCustomer = new StripeCustomerEntity(
+            convertDocumentsToArray(snapshot)[0],
+          );
+        }
+        cb(stripeCustomer);
+      });
   }
 
-  checkFirebaseConfig(onSnapshot) {
+  checkFirebaseConfig(cb) {
     this.firebaseConfigCollection
       .limit(1)
-      .onSnapshot(onSnapshot);
+      .onSnapshot((snapshot) => {
+        let firebaseConfig = null;
+        if (snapshot.docs.length > 0) {
+          firebaseConfig = new FirebaseConfigEntity(convertDocumentsToArray(snapshot)[0]);
+        }
+        cb(firebaseConfig);
+      });
   }
 
   async getFirebaseConfig() {
