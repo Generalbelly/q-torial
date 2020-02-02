@@ -16,23 +16,7 @@ import repositoryFactory from '../repository';
 
 Vue.use(Vuex);
 
-
-/** @typedef {import('../repository/repositories/user')} userRepository */
-let userRepository = repositoryFactory.get('user');
-let userRepositoryReady = false;
-
-const getUserRepository = (userId) => {
-  if (userRepositoryReady) {
-    return userRepository;
-  }
-  userRepositoryReady = true;
-  userRepository = userRepository(
-    appFirebaseService.getUserCollection(),
-    appFirebaseService.getStripeCustomerCollection(userId),
-    appFirebaseService.getFirebaseConfigCollection(userId),
-  );
-  return userRepository;
-};
+const userRepository = repositoryFactory.get('user')(appFirebaseService.getDB());
 
 const getters = {
   email(state) {
@@ -137,29 +121,23 @@ const actions = {
   async setRequesting({ commit }, payload) {
     commit(SET_REQUESTING, payload);
   },
-  async getUser({ commit, state }) {
-    if (!state.user) return;
-    const { setupComplete } = await getUserRepository(state.user.uid).get(state.user.uid);
-    commit(UPDATE_USER, {
-      setupComplete,
-    });
+  async getUser({ dispatch, state }) {
+    const { setupComplete } = await userRepository.get(state.user.uid);
+    dispatch('updateLocalUser', { setupComplete });
   },
-  async addUser({ commit, state }, user) {
-    if (!state.user) return;
-    await getUserRepository(state.user.uid).add(user);
-    commit(UPDATE_USER, user);
+  async addUser({ dispatch }, payload) {
+    const user = await userRepository.add(payload);
+    dispatch('updateLocalUser', user);
   },
-  async updateUser({ commit, state }, user) {
-    if (!state.user) return;
-    await getUserRepository(state.user.uid).update(user);
-    commit(UPDATE_USER, user);
+  async updateUser({ dispatch }, payload) {
+    const user = await userRepository.update(payload);
+    dispatch('updateLocalUser', user);
   },
-  async updateLocalUser({ commit }, user) {
-    commit(UPDATE_USER, user);
+  async updateLocalUser({ commit }, payload) {
+    commit(UPDATE_USER, payload);
   },
-  async upsertFirebaseConfig({ state }, firebaseConfig) {
-    if (!state.user) return;
-    await getUserRepository(state.user.uid).upsertFirebaseConfig(firebaseConfig);
+  async addFirebaseConfig({ state }, firebaseConfig) {
+    await userRepository.addFirebaseConfig(state.user.uid, firebaseConfig);
   },
   setServerSideErrors({ commit }, payload) {
     commit(SET_SERVER_SIDE_ERRORS, payload);
@@ -175,15 +153,13 @@ const actions = {
     });
   },
   checkUserPaymentInfo({ commit, state }) {
-    if (!state.user) return;
-    getUserRepository(state.user.uid).checkUserPaymentInfo((stripeCustomer) => {
+    return userRepository.checkUserPaymentInfo(state.user.uid, stripeCustomer => {
       commit(UPDATE_USER, { stripeCustomer });
     });
   },
-  checkFirebaseConfig({ commit, state, dispatch }) {
-    if (!state.user) return;
-    getUserRepository(state.user.uid).checkFirebaseConfig(async (firebaseConfig) => {
-      commit(UPDATE_USER, { firebaseConfig });
+  checkFirebaseConfig({state, dispatch }) {
+    return userRepository.checkFirebaseConfig(state.user.uid, async firebaseConfig => {
+      dispatch('updateLocalUser', { firebaseConfig });
       if (firebaseConfig) {
         await dispatch('tutorial/initRepository');
       }

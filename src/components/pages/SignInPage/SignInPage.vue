@@ -37,9 +37,9 @@ export default {
     ]),
   },
   watch: {
-    async firebaseConfig(value) {
-      if (value) {
-        await getUserFirebaseService(value).signIn(this.email, this.password);
+    async firebaseConfig(newValue, oldValue) {
+      if (newValue && !oldValue) {
+        await getUserFirebaseService(newValue).signIn(this.email, this.password);
         const { source, redirect = '' } = this.$route.query;
         if (source === 'extension') return;
         if (redirect) {
@@ -67,6 +67,7 @@ export default {
           await chromeExtension.signIn(this.email, this.password);
         }
       } catch (e) {
+        console.log(e)
         this.handleError(e);
       } finally {
         this.setRequesting(false);

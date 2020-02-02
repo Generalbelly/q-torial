@@ -11,14 +11,22 @@ import './vee-validate';
 import store from './store';
 import router from './router';
 import App from './App.vue';
+
 import { appFirebaseService } from './firebase';
 
+let checkUserPaymentInfo;
+let checkFirebaseConfig;
 appFirebaseService.watchAuth(async (user) => {
   await store.dispatch('updateLocalUser', user);
   if (user) {
-    await store.dispatch('getUser');
-    await store.dispatch('checkUserPaymentInfo');
-    await store.dispatch('checkFirebaseConfig');
+    if (checkUserPaymentInfo) {
+      checkUserPaymentInfo();
+    }
+    if (checkFirebaseConfig) {
+      checkFirebaseConfig();
+    }
+    checkUserPaymentInfo = await store.dispatch('checkUserPaymentInfo');
+    checkFirebaseConfig = await store.dispatch('checkFirebaseConfig');
   }
 });
 

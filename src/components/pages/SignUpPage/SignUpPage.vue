@@ -22,6 +22,7 @@ import chromeExtension from '../../../chromeExtension';
 import SignUpTemplate from '../../templates/SignUpTemplate';
 import FirebaseConfigEntity from '../../atoms/Entities/FirebaseConfigEntity';
 import UserEntity from '../../atoms/Entities/UserEntity';
+import store from '../../../store';
 
 export default {
   name: 'SignUpPage',
@@ -33,7 +34,15 @@ export default {
     return {
       email: null,
       password: null,
-      firebaseConfig: new FirebaseConfigEntity(),
+      firebaseConfig: new FirebaseConfigEntity({
+        apiKey: "AIzaSyDfS8QLjhE8JY2sx3oh9400rFIoIceaykU",
+        authDomain: "customer-001-233b1.firebaseapp.com",
+        databaseURL: "https://customer-001-233b1.firebaseio.com",
+        projectId: "customer-001-233b1",
+        storageBucket: "customer-001-233b1.appspot.com",
+        messagingSenderId: "498351222083",
+        appId: "1:498351222083:web:3eecc32a9ab989f886d3f6"
+      }),
       step: 0,
     };
   },
@@ -42,34 +51,11 @@ export default {
       'requesting',
     ]),
   },
-  mounted() {
-    this.email = 'nobuyoshi.shimmen@gmail.com';
-    this.password = 'password';
-    this.firebaseConfig = new FirebaseConfigEntity({
-      ...this.firebaseConfig,
-      // customer-000
-      apiKey: 'AIzaSyCAK-OjAhUhmzNu0Y8OD6OPhZvpSqtWIbA',
-      authDomain: 'customer-000.firebaseapp.com',
-      databaseURL: 'https://customer-000.firebaseio.com',
-      projectId: 'customer-000',
-      storageBucket: 'customer-000.appspot.com',
-      messagingSenderId: '1027148058715',
-      appId: '1:1027148058715:web:c0297988aa50adf87aef7e',
-      // customer-001
-      // apiKey: 'AIzaSyDfS8QLjhE8JY2sx3oh9400rFIoIceaykU',
-      // authDomain: 'customer-001-233b1.firebaseapp.com',
-      // databaseURL: 'https://customer-001-233b1.firebaseio.com',
-      // projectId: 'customer-001-233b1',
-      // storageBucket: 'customer-001-233b1.appspot.com',
-      // messagingSenderId: '498351222083',
-      // appId: '1:498351222083:web:3eecc32a9ab989f886d3f6',
-    });
-  },
   methods: {
     ...mapActions([
       'setRequesting',
       'setServerSideErrors',
-      'upsertFirebaseConfig',
+      'addFirebaseConfig',
       'addUser',
     ]),
     async handleError({ message, code }) {
@@ -127,29 +113,37 @@ export default {
       if (!isValid) return;
       try {
         this.setRequesting(true);
+        const userFirebaseUnsubscribe = await getUserFirebaseService(this.firebaseConfig)
+          .watchAuth(async user => {
+            if (user) {
+              userFirebaseUnsubscribe();
+              this.firebaseConfig = new FirebaseConfigEntity({
+                ...this.firebaseConfig,
+                uid: user.uid,
+              });
+            }
+          });
+        const appFirebaseUnsubscribe = await appFirebaseService
+          .watchAuth(async user => {
+            if (user) {
+              appFirebaseUnsubscribe();
+              if (await chromeExtension.getVersion()) {
+                await chromeExtension.signIn(this.email, this.password);
+              }
+              await this.addFirebaseConfig(this.firebaseConfig);
+              await this.addUser(new UserEntity(user));
+              await appFirebaseService.sendEmailVerification();
+              await this.$router.push({
+                name: 'email.verify',
+              });
+            }
+          });
         await getUserFirebaseService(this.firebaseConfig).signUp(this.email, this.password);
-        const userFirebaseUser = await getUserFirebaseService(this.firebaseConfig).checkAuth();
         await appFirebaseService.signUp(this.email, this.password);
-        const user = await appFirebaseService.checkAuth();
-        const { uid } = user;
-        await this.addUser(new UserEntity({
-          uid,
-        }));
-        await this.upsertFirebaseConfig(new FirebaseConfigEntity({
-          ...this.firebaseConfig,
-          uid: userFirebaseUser.uid,
-        }));
-        if (await chromeExtension.getVersion()) {
-          await chromeExtension.signIn(this.email, this.password);
-        }
-        await appFirebaseService.sendEmailVerification();
-        await this.$router.push({
-          name: 'email.verify',
-        });
       } catch (e) {
         this.handleError(e);
       } finally {
-        this.setRequesting(false);;
+        this.setRequesting(false);
       }
     },
     onClickLogo() {

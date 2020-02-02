@@ -55,7 +55,7 @@ export default {
       'updateUser',
     ]),
     ...mapActions('tutorial', [
-      'listTutorials',
+      'testTutorial',
     ]),
     async onClickDone() {
       // Firestore, Storageはローケーションの選択が必須
@@ -65,7 +65,6 @@ export default {
         this.validateFirestore(),
         this.validateCloudStorage(),
       ]);
-      console.log(results);
       if (!results.every(result => result.valid)) {
         await this.setServerSideErrors({
           general: results.reduce((acc, cv) => {
@@ -117,15 +116,15 @@ export default {
           message: 'Unknown error occurred, Please contact us by email.',
         };
       }
-      let valid = true;
-      let message = 'ok';
+      let valid = false;
+      let message = 'It looks like that Firestore hasn\'t been correctly set up.';
       try {
-        await this.listTutorials({
-          source: 'server',
-        });
+        await this.testTutorial();
       } catch (error) {
-        valid = false;
-        message = 'It looks like that Firestore hasn\'t been correctly set up.';
+        if (error.name === 'FirebaseError' && error.message === 'Missing or insufficient permissions.') {
+          valid = true;
+          message = 'ok';
+        }
       }
       return {
         valid,

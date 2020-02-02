@@ -9,8 +9,16 @@
             Set up your firebase project for Qtorial
           </base-sub-heading>
           <ol>
-            <li>
-              Enable firestore, storage, and cloud functions in your firebase project, following the instruction of this <a href="https://firebase.google.com/docs/firestore/quickstart#create" target="_blank">page</a>
+            <li class="has-margin-bottom-5">
+              Enable firestore and storage in your firebase project, following these instructions.
+              <ul>
+                <li>
+                  <a href="https://firebase.google.com/docs/firestore/quickstart#create" target="_blank">Firestore</a>
+                </li>
+                <li>
+                  <a href="https://firebase.google.com/docs/storage/web/start#create-default-bucket" target="_blank">Storage</a>
+                </li>
+              </ul>
             </li>
             <li>
               Follow the instruction of this <a href="https://github.com/Qtorial/firebase">repository</a> to complete the setup.
@@ -23,7 +31,7 @@
           >
             Done
           </primary-button>
-          <div class="help has-margin-top-4 has-text-centered has-text-grey">
+          <div class="help has-margin-top-4 has-text-centered">
             If you encounter any problem, feel free to contact us by email: <span class="has-text-grey-darker">{{ supportEmail }}</span>
           </div>
         </div>

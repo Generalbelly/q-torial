@@ -16,6 +16,12 @@
       placeholder="https://example.com/path1"
       :rules="{url: {require_protocol: true }, required: true}"
     />
+    <validatable-text-field
+      v-show="false"
+      v-model="innerPathValue"
+      name="path value"
+      rules="required"
+    />
     <base-message
       active
       type="is-warning"
@@ -23,7 +29,7 @@
       has-icon
     >
       Have you installed our chrome extension?<br />
-      If not, here's the <a href="test">link</a> to it.<br />
+      If not, here's the <a :href="installUrl" target="_blank">link</a> to it.<br />
       It is required to build tutorials.
     </base-message>
   </div>
@@ -47,6 +53,15 @@ export default {
       type: String,
       default: null,
     },
+    pathValue: {
+      type: String,
+      default: null,
+    },
+  },
+  data() {
+    return {
+      installUrl: process.env.VUE_APP_CHROME_EXTRNSION_INSTALL_URL,
+    };
   },
   computed: {
     hostname() {
@@ -65,7 +80,17 @@ export default {
         return this.buildUrl;
       },
       set(newValue) {
+        const url = new URL(newValue);
+        this.innerPathValue = url.pathname;
         this.$emit('update:build-url', newValue);
+      },
+    },
+    innerPathValue: {
+      get() {
+        return this.pathValue;
+      },
+      set(newValue) {
+        this.$emit('update:path-value', newValue);
       },
     },
   },

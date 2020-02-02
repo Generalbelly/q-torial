@@ -1,4 +1,4 @@
-import Entity from './Entity';
+import Entity, { toPlainObject } from './Entity';
 import PerformanceEntity from './PerformanceEntity';
 
 export default class TutorialEntity extends Entity {
@@ -35,5 +35,14 @@ export default class TutorialEntity extends Entity {
     const { performances = [], ...props } = data;
     this.fill(props);
     this.performances = performances.map(p => new PerformanceEntity(p));
+  }
+
+  toPlainObject() {
+    return toPlainObject(this, [
+      'createdAt',
+      'updatedAt',
+      'performances',
+      'steps',
+    ]);
   }
 }

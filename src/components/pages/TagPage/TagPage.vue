@@ -1,11 +1,12 @@
 <template>
     <tag-template
-      :user-key="userKey"
+      :user="user"
     >
     </tag-template>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import TagTemplate from '../../templates/TagTemplate';
 
 export default {
@@ -13,13 +14,10 @@ export default {
   components: {
     TagTemplate,
   },
-  data() {
-    return {
-      userKey: null,
-    };
-  },
-  mounted() {
-    this.userKey = this.$route.params.id;
+  computed: {
+    ...mapState([
+      'user',
+    ]),
   },
 };
 </script>

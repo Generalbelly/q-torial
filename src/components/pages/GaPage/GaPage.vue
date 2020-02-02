@@ -26,18 +26,12 @@ export default {
       'ga',
     ]),
   },
-  watch: {
-    gas: {
-      async handler(value) {
-        if (value) {
-          if (value.length > 0) {
-            this.selectGa({
-              id: this.$route.params.id,
-            });
-          }
-        }
-      },
-    },
+  created() {
+    if (this.gas.length > 0 && this.gas.find(ga => ga.id === this.$route.params.id)) {
+      this.selectGa({
+        id: this.$route.params.id,
+      });
+    }
   },
   methods: {
     ...mapActions('ga', [
@@ -45,9 +39,7 @@ export default {
       'selectGa',
     ]),
     async onUpdateGa(ga) {
-      await this.updateGa({
-        data: ga.toPlainObject(),
-      });
+      await this.updateGa(ga);
       await this.$router.push({
         name: 'gas.index',
       });

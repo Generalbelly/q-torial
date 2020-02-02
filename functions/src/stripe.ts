@@ -1,4 +1,4 @@
-import { DocumentSnapshot } from 'firebase-functions/lib/providers/firestore';
+import {DocumentSnapshot} from 'firebase-functions/lib/providers/firestore';
 import admin from './admin';
 import functions from './functions';
 import StripeCustomerEntity from './models/stripe-customer';
@@ -15,7 +15,7 @@ const cancel = async (
   if (!((customerId && subscriptionId) || (userKey && stripeCustomerId))) {
     throw Error('both of customerId and subscriptionId or userKey is required');
   }
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async resolve => {
     try {
       let snapshot: DocumentSnapshot|null = null;
       if (stripeCustomerId && userKey) {
@@ -60,7 +60,7 @@ const cancel = async (
       resolve(true);
     } catch (e) {
       console.error(e);
-      reject(false);
+      resolve(false);
     }
   });
 };
@@ -87,15 +87,14 @@ export const stripeWebhook = functions.https.onRequest(async (request, response)
         const userKey = event.data.object.client_reference_id;
         const customerId = event.data.object.customer;
         const subscriptionId = event.data.object.subscription;
-        const stripeCustomerEntity = new StripeCustomerEntity({
-          customerId,
-          subscriptionId,
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-          deletedAt: null,
-        });
         await admin.firestore().collection('users').doc(userKey).collection('stripe_customers')
-          .add(stripeCustomerEntity.toPlainObject());
+          .add({
+            customerId,
+            subscriptionId,
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            deletedAt: null,
+          });
       } else if (event.type === 'customer.subscription.deleted' && !event.request) {
         const customerId = event.data.object.customer;
         const subscriptionId = event.data.object.id;
@@ -110,21 +109,11 @@ export const stripeWebhook = functions.https.onRequest(async (request, response)
   return response.status(405).send('Method Not Allowed');
 });
 
-export const cancelSubscription = functions.https.onCall(
-  (data: any, context: functions.https.CallableContext) => {
-    const { auth } = context;
-    if (!auth) {
-      throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
-    }
-    return new Promise(async (resolve, reject) => {
-      const { id } = data;
-      try {
-        const result = await cancel(id, auth.uid, null, null);
-        resolve(result);
-      } catch (error) {
-        console.error(error);
-        reject(false);
-      }
-    });
-  },
-);
+export const cancelSubscription = functions.https.onCall(async (data: any, context: functions.https.CallableContext) => {
+  const { auth } = context;
+  if (!auth) {
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
+  }
+  const { id } = data;
+  return cancel(id, auth.uid, null, null);
+});

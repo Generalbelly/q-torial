@@ -15,7 +15,7 @@
         <div class="content has-text-grey has-text-centered">
           <p>No {{ itemType }} found</p>
           <create-first-button @click="$emit('click:create-first-item')">
-            Create your first {{ itemType }}
+            Add your first {{ itemType }}
           </create-first-button>
         </div>
       </section>

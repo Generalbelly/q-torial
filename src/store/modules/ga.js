@@ -1,6 +1,4 @@
 import {
-  FieldValue,
-  convertDocToObject,
   appFirebaseService,
 } from '../../firebase';
 import gapi from '../../google-analytics';
@@ -21,7 +19,7 @@ import GaEntity from '../../components/atoms/Entities/GaEntity';
 import GoogleAnalyticsAccount from '../../components/atoms/Entities/GoogleAnalyticsAccount';
 import repositoryFactory from '../../repository';
 
-const gaRepository = repositoryFactory.get('user', appFirebaseService.getDB());
+const gaRepository = repositoryFactory.get('ga')(appFirebaseService.getDB(), appFirebaseService.getFunctions());
 
 export const mutations = {
   [ADD_GA](state, payload) {
@@ -75,8 +73,7 @@ export const mutations = {
     });
   },
   [SELECT_GA](state, payload) {
-    const { id } = payload;
-    state.selectedGaID = id;
+    state.selectedGaID = payload;
   },
   [SET_GA_ACCOUNTS](state, payload) {
     state.googleAnalyticsAccounts = payload.map(account => new GoogleAnalyticsAccount(account));
@@ -85,10 +82,13 @@ export const mutations = {
 
 let gasLatestSnapshot = null;
 const actions = {
-  listGas: async ({ state, rootState, commit }, payload = {}) => {
-    const { searchQuery = null, orderBy = ['createdAt', 'desc'] } = payload;
+  listGas: async ({ state, commit, rootState }, payload = {}) => {
+    const {
+      searchQuery = null,
+      orderBy = ['createdAt', 'desc'],
+      source = 'default',
+    } = payload;
     commit(SET_REQUESTING, true);
-
     if (searchQuery !== state.searchQuery) {
       gasLatestSnapshot = null;
       commit(UPDATE_SEARCH_QUERY, searchQuery);
@@ -100,40 +100,32 @@ const actions = {
       commit(SET_ALL_FETCHED, false);
     }
 
-    let query = firebase
-      .getDB()
-      .collection('users')
-      .doc(rootState.user.uid)
-      .collection('gas');
+    const {
+      gas,
+      allFetched = false,
+      snapshot,
+    } = await gaRepository.list(
+      rootState.user.uid,
+      {
+        searchQuery,
+        orderBy,
+        source,
+        startAfter:
+          gasLatestSnapshot
+          && gasLatestSnapshot.docs
+          && gasLatestSnapshot.docs.length > 0
+            ? gasLatestSnapshot.docs[
+              gasLatestSnapshot.docs.length - 1
+            ]
+            : null,
+        limit: QUERY_LIMIT,
+      },
+    );
 
-    if (state.searchQuery) {
-      query = query
-        .orderBy('name')
-        .startAt(searchQuery)
-        .endAt(`${searchQuery}\uf8ff`);
-    } else {
-      query = query.orderBy(state.orderBy[0], state.orderBy[1]);
-    }
-
-    if (
-      gasLatestSnapshot
-      && gasLatestSnapshot.docs
-      && gasLatestSnapshot.docs.length > 0
-    ) {
-      query = query.startAfter(
-        gasLatestSnapshot.docs[gasLatestSnapshot.docs.length - 1],
-      );
-    }
-
-    query = query.limit(QUERY_LIMIT);
-    let snapshot = await query.get({ source: 'cache' });
-    if (snapshot.empty) {
-      snapshot = await query.get({ source: 'server' });
-    }
-    snapshot.docs.forEach((doc) => {
-      commit(ADD_GA, convertDocToObject(doc));
+    gas.forEach(tutorial => {
+      commit(ADD_GA, tutorial);
     });
-    commit(SET_ALL_FETCHED, snapshot.empty);
+    commit(SET_ALL_FETCHED, allFetched);
     commit(SET_REQUESTING, false);
     if (!gasLatestSnapshot) {
       gasLatestSnapshot = snapshot;
@@ -143,9 +135,9 @@ const actions = {
     const { id } = payload;
     commit(SET_REQUESTING, true);
     try {
-      const response = await appFirebaseService.queryAccounts(id);
-      commit(SET_GA_ACCOUNTS, response.data);
-      commit(SELECT_GA, payload);
+      const accounts = await gaRepository.queryAccounts(id);
+      commit(SET_GA_ACCOUNTS, accounts);
+      commit(SELECT_GA, payload.id);
       commit(SET_REQUESTING, false);
       resolve();
     } catch (e) {
@@ -156,57 +148,35 @@ const actions = {
   sortGas({ commit }, payload) {
     commit(SORT_GAS, payload);
   },
-  addGa: async ({ commit, dispatch }, payload = {}) => new Promise(async (resolve, reject) => {
+  addGa: async ({ commit, dispatch }) => new Promise(async (resolve, reject) => {
     commit(SET_REQUESTING, true);
     try {
       const response = await gapi.oauth2SignIn();
       commit(ADD_GA, response.data);
       await dispatch('selectGa', response.data);
-      resolve(response);
-      commit(SET_REQUESTING, false);
+      resolve(response.data);
     } catch (e) {
       reject(e);
+    } finally {
       commit(SET_REQUESTING, false);
     }
   }),
-  updateGa({ commit, state, rootState }, payload) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        commit(SET_REQUESTING, true);
-        const { data } = payload;
-        const { id, ...fields } = data;
-
-        await appFirebaseService
-          .getDB()
-          .collection('users')
-          .doc(rootState.user.uid)
-          .collection('gas')
-          .doc(id)
-          .update({
-            ...fields,
-            updatedAt: FieldValue.serverTimestamp(),
-          });
-        commit(UPDATE_GA, data);
-        commit(SET_REQUESTING, false);
-        resolve();
-      } catch (e) {
-        console.error(e);
-        reject(e);
-      }
-    });
-  },
-  deleteGa: async ({ commit, state, rootState }, payload = {}) => {
+  async updateGa({ commit, rootState }, payload) {
     commit(SET_REQUESTING, true);
-    const { data } = payload;
-    const { id } = data;
-    await appFirebaseService
-      .getDB()
-      .collection('users')
-      .doc(rootState.user.uid)
-      .collection('gas')
-      .doc(id)
-      .delete();
-    commit(DELETE_GA, data);
+    const ga = await gaRepository.update(
+      rootState.user.uid,
+      payload,
+    );
+    commit(UPDATE_GA, ga);
+    commit(SET_REQUESTING, false);
+  },
+  async deleteGa({ commit, rootState }, payload) {
+    commit(SET_REQUESTING, true);
+    const ga = await gaRepository.delete(
+      rootState.user.uid,
+      payload,
+    );
+    commit(DELETE_GA, ga);
     commit(SET_REQUESTING, false);
   },
 };

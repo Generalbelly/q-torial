@@ -40,10 +40,17 @@ export default {
         return this.value;
       },
       set(newValue) {
+        console.log(newValue)
         return this.$emit('input', newValue);
       },
     },
     innerRules() {
+      if (!this.rules && this.exceptionDomains.length === 0) {
+        return 'domain';
+      }
+      if (!this.rules) {
+        return `domain:${this.exceptionDomains.join(',')}`;
+      }
       return `${this.rules}|domain:${this.exceptionDomains.join(',')}`;
     },
   },

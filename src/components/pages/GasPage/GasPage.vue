@@ -54,7 +54,6 @@ export default {
       'addGa',
       'deleteGa',
       'sortGas',
-      'selectGa',
     ]),
     async onSort(orderBy) {
       if (this.loadable) {
@@ -69,16 +68,21 @@ export default {
       await this.listGas();
     },
     async onClickAdd() {
-      const response = await this.addGa();
-      await this.$router.push({
-        name: 'gas.show',
-        params: {
-          id: response.data.id,
-        },
-      });
+      try {
+        const response = await this.addGa();
+        await this.$router.push({
+          name: 'gas.show',
+          params: {
+            id: response.data.id,
+          },
+        });
+      } catch (e) {
+        if (e.error !== 'popup_closed_by_user') {
+          console.log(e);
+        }
+      }
     },
     async onClickEdit(ga) {
-      await this.selectGa(ga);
       await this.$router.push({
         name: 'gas.show',
         params: {
@@ -87,9 +91,7 @@ export default {
       });
     },
     async onClickDelete(ga) {
-      await this.deleteGa({
-        data: ga.toPlainObject(),
-      });
+      await this.deleteGa(ga);
     },
     onChangeQuery: debounce(async function (query) {
       await this.listGas({

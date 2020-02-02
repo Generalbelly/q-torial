@@ -9,7 +9,7 @@
       cols="80"
       class="textarea"
     >
-      <script>(function(w,d,s,o,i){if(!w[o]){var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='{{ url }}';j.onload=function(){w[o].init(i);};f.parentNode.insertBefore(j,f);}})(window,document,'script','Qtorial','{{ userKey }}')</script>
+      <script>(function(w,d,s,o,i){if(!w[o]){var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='{{ url }}';j.onload=function(){w[o].init(i);};f.parentNode.insertBefore(j,f);}})(window,document,'script','Qtorial','{{ user.uid }}')</script>
     </textarea>
     <b-tooltip
       type="is-black"
@@ -34,6 +34,7 @@
 import ClipboardJS from 'clipboard';
 import BaseButton from '../../atoms/BaseButton';
 import assetManager from '../../../assets-manager';
+import UserEntity from '../../atoms/Entities/UserEntity';
 
 export default {
   name: 'TagTemplate',
@@ -41,15 +42,17 @@ export default {
     BaseButton,
   },
   props: {
-    userKey: {
-      type: String,
-      default: null,
+    user: {
+      type: Object,
+      default() {
+        return new UserEntity();
+      },
     },
   },
   data() {
     return {
       copiedInClipboard: false,
-      url: process.env.VUE_APP_TAG_URL,
+      url: `https://storage.googleapis.com/${this.user.firebaseConfig.storageBucket}/js/q-torial.js`,
     };
   },
   created() {
@@ -68,12 +71,12 @@ export default {
 </script>
 
 <style scoped>
-    .textarea {
-        font-family: courier new,courier;
-        font-size: 12px;
-        max-width: 800px;
-        overflow: auto;
-        resize: none;
-        user-select: all;
-    }
+  .textarea {
+    font-family: courier new,courier,serif;
+    font-size: 12px;
+    max-width: 800px;
+    overflow: auto;
+    resize: none;
+    user-select: all;
+  }
 </style>

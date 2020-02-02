@@ -1,105 +1,191 @@
-import { FieldValue, convertDocumentsToArray, convertDocToObject } from '../../firebase';
+import { FieldValue } from '../../firebase';
 import FirebaseConfigEntity from '../../components/atoms/Entities/FirebaseConfigEntity';
 import UserEntity from '../../components/atoms/Entities/UserEntity';
 import StripeCustomerEntity from '../../components/atoms/Entities/StripeCustomerEntity';
 
 export default class UserRepository {
-  /** @typedef {firebase.firestore.CollectionReference} userCollection */
-  userCollection;
+  /** @typedef {firebase.firestore.Firestore} db */
+  db;
 
-  /** @typedef {firebase.firestore.CollectionReference} stripeCustomerCollection */
-  stripeCustomerCollection;
+  /** @param {firebase.firestore.Firestore} db */
+  constructor(db) {
+    this.db = db;
+  }
 
-  /** @typedef {firebase.firestore.CollectionReference} firebaseConfigCollection */
-  firebaseConfigCollection;
+  /**
+   * @return {firebase.firestore.CollectionReference}
+   *
+   */
+  getUserCollection() {
+    return this.db.collection('users');
+  }
 
-  constructor(userCollection, stripeCustomerCollection, firebaseConfigCollection) {
-    this.userCollection = userCollection;
-    this.stripeCustomerCollection = stripeCustomerCollection;
-    this.firebaseConfigCollection = firebaseConfigCollection;
+  /**
+   * @return {firebase.firestore.CollectionReference}
+   *
+   */
+  getStripeCustomerCollection(userId) {
+    return this.db
+      .collection('users')
+      .doc(userId)
+      .collection('stripe_customers');
+  }
+
+  /**
+   * @return {firebase.firestore.CollectionReference}
+   *
+   */
+  getFirebaseConfigCollection(userId) {
+    return this.db
+      .collection('users')
+      .doc(userId)
+      .collection('firebase_configs');
   }
 
   async find(userId) {
-    await this.userCollection.doc(userId).get();
+    await this.getUserCollection()
+      .doc(userId)
+      .get();
   }
 
   /** @param {string} userId */
   async get(userId) {
-    const doc = await this.userCollection.doc(userId).get();
-    return new UserEntity(convertDocToObject(doc));
+    const doc = await this.getUserCollection()
+      .doc(userId)
+      .get();
+    return new UserEntity(doc.data());
   }
 
   /** @param {import('../../components/atoms/Entities/UserEntity').default} user */
   async add(user) {
-    await this.userCollection.doc(user.uid).set({
-      ...user.toPlainObject(),
-      createdAt: FieldValue.serverTimestamp(),
-      updatedAt: FieldValue.serverTimestamp(),
+    return new Promise(async resolve => {
+      const docRef = this.getUserCollection().doc(user.uid);
+      await docRef.set({
+        ...user.toPlainObject(),
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+      const unsubscribe = docRef.onSnapshot(doc => {
+        if (!doc.metadata.hasPendingWrites) {
+          resolve(new UserEntity(doc.data()));
+          unsubscribe();
+        }
+      });
     });
   }
 
   /** @param {import('../../components/atoms/Entities/UserEntity').default} user */
   async update(user) {
-    await this.userCollection.doc(user.uid).update({
-      ...user.toPlainObject(),
-      updatedAt: FieldValue.serverTimestamp(),
+    return new Promise(async resolve => {
+      const docRef = this.getUserCollection().doc(user.uid);
+      await docRef.update({
+        ...user.toPlainObject(),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+      const unsubscribe = docRef.onSnapshot(doc => {
+        if (!doc.metadata.hasPendingWrites) {
+          resolve(new UserEntity(doc.data()));
+          unsubscribe();
+        }
+      });
     });
   }
 
-  checkUserPaymentInfo(cb) {
-    this.stripeCustomerCollection
+  checkUserPaymentInfo(userId, handler) {
+    return this.getStripeCustomerCollection(userId)
       .where('deletedAt', '==', null)
       .limit(1)
-      .onSnapshot((snapshot) => {
+      .onSnapshot(snapshot => {
         let stripeCustomer = null;
         if (snapshot.docs.length > 0) {
-          stripeCustomer = new StripeCustomerEntity(
-            convertDocumentsToArray(snapshot)[0],
-          );
+          stripeCustomer = snapshot.docs.map(
+            doc => new StripeCustomerEntity(doc.data()),
+          )[0];
         }
-        cb(stripeCustomer);
+        handler(stripeCustomer);
       });
   }
 
-  checkFirebaseConfig(cb) {
-    this.firebaseConfigCollection
+
+  /**
+   * @param {string} userId
+   * @param {function} handler
+   */
+  checkFirebaseConfig(userId, handler) {
+    return this.getFirebaseConfigCollection(userId)
       .limit(1)
-      .onSnapshot((snapshot) => {
+      .onSnapshot(snapshot => {
         let firebaseConfig = null;
         if (snapshot.docs.length > 0) {
-          firebaseConfig = new FirebaseConfigEntity(convertDocumentsToArray(snapshot)[0]);
+          firebaseConfig = snapshot.docs.map(
+            doc => new FirebaseConfigEntity(doc.data()),
+          )[0];
         }
-        cb(firebaseConfig);
+        handler(firebaseConfig);
       });
-  }
-
-  async getFirebaseConfig() {
-    /** @typedef{firebase.firestore.QuerySnapshot} query */
-    const snapshot = await this.firebaseConfigCollection.limit(1).get();
-    if (snapshot.empty) return null;
-    return new FirebaseConfigEntity(convertDocumentsToArray(snapshot)[0]);
   }
 
   /**
-   * @param {import('../../components/atoms/Entities/FirebaseConfigEntity').default} firebaseConfig
+   * @param {string} userId
    */
-  async upsertFirebaseConfig(firebaseConfig) {
-    if (firebaseConfig.id) {
-      await this.firebaseConfigCollection
+  async getFirebaseConfig(userId) {
+    const snapshot = await this.getFirebaseConfigCollection(userId)
+      .limit(1)
+      .get();
+    if (snapshot.empty) {
+      return null;
+    }
+    return snapshot.docs.map(
+      doc => new FirebaseConfigEntity(doc.data()),
+    )[0];
+  }
+
+  /**
+   * @param {string} userId
+   * @param {import('../../components/atoms/Entities/FirebaseConfigEntity').default} firebaseConfig
+   * @return {Promise<import('../../components/atoms/Entities/FirebaseConfigEntity').default>}
+   */
+  async addFirebaseConfig(userId, firebaseConfig) {
+    return new Promise(async resolve => {
+      /** @typedef {firebase.firestore.DocumentReference} docRef */
+      const docRef = this.getFirebaseConfigCollection(userId).doc();
+      await docRef.set({
+        ...firebaseConfig.toPlainObject(),
+        id: docRef.id,
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+      const unsubscribe = docRef.onSnapshot(doc => {
+        if (!doc.metadata.hasPendingWrites) {
+          resolve(new FirebaseConfigEntity(doc.data()));
+          unsubscribe();
+        }
+      });
+    });
+  }
+
+  /**
+   * @param {string} userId
+   * @param {import('../../components/atoms/Entities/FirebaseConfigEntity').default} firebaseConfig
+   * @return {Promise<import('../../components/atoms/Entities/FirebaseConfigEntity').default>}
+   */
+  async updateFirebaseConfig(userId, firebaseConfig) {
+    return new Promise(async resolve => {
+      const docRef = this.getFirebaseConfigCollection(userId).doc(
+        firebaseConfig.id,
+      );
+      await this.getFirebaseConfigCollection(userId)
         .doc(firebaseConfig.id)
         .update({
           ...firebaseConfig.toPlainObject(),
           updatedAt: FieldValue.serverTimestamp(),
         });
-    } else {
-      /** @typedef {firebase.firestore.DocumentReference} ref */
-      const ref = await this.firebaseConfigCollection.doc();
-      ref.set({
-        ...firebaseConfig.toPlainObject(),
-        id: ref.id,
-        createdAt: FieldValue.serverTimestamp(),
-        updatedAt: FieldValue.serverTimestamp(),
+      const unsubscribe = docRef.onSnapshot(doc => {
+        if (!doc.metadata.hasPendingWrites) {
+          resolve(new FirebaseConfigEntity(doc.data()));
+          unsubscribe();
+        }
       });
-    }
+    });
   }
 }

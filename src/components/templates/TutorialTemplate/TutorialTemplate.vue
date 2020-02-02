@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="tutorial">
       <base-loading is-full-page :active="loading" />
       <base-heading>
         {{ tutorial.name }}
@@ -21,12 +21,12 @@
         />
       </validation-observer>
       <grouped-buttons-layout is-right class="has-margin-top-5">
-          <back-button
-              @click="onCancel"
-          />
-          <save-button
-              @click="onSave"
-          />
+        <back-button
+          @click="onCancel"
+        />
+        <save-button
+          @click="onSave"
+        />
       </grouped-buttons-layout>
     </div>
 </template>

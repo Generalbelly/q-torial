@@ -52,16 +52,13 @@ export default {
         }
       },
     },
-  },
-  computed: {
-    domainUrl: {
-      get() {
-        const url = this.protocol + this.domain;
-        return url || null;
-      },
-      set(newValue) {
-        this.$emit('input', newValue);
-      },
+    protocol(value) {
+      const url = value + this.domain;
+      this.$emit('input', url || null);
+    },
+    domain(value) {
+      const url = this.protocol + value;
+      this.$emit('input', url || null);
     },
   },
 };

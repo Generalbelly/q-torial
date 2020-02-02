@@ -26,29 +26,29 @@ export default {
   computed: {
     ...mapState('tutorial', [
       'requesting',
+      'repositoryReady',
+      'tutorials',
     ]),
     ...mapGetters('tutorial', [
       'tutorial',
     ]),
   },
-  async created() {
-    if (!this.tutorial || this.tutorial.id !== this.$route.params.id) {
-      await this.getTutorial({
-        id: this.$route.params.id,
-      });
-      this.selectTutorial({
-        id: this.$route.params.id,
-      });
+  async mounted() {
+    if (!this.tutorials.find(tutorial => tutorial.id === this.$route.params.id)) {
+      await this.getTutorial(this.$route.params.id);
     }
+    this.selectTutorial({
+      id: this.$route.params.id,
+    });
     const to = endOfDay(subDays(new Date(), 1));
     const from = startOfDay(startOfMonth(to));
     this.dates = [from, to];
   },
   watch: {
     dates(value) {
-      if (value.length === 2) {
+      if (this.repositoryReady && value.length === 2) {
         this.getPerformance({
-          id: this.tutorial.id,
+          tutorial: this.tutorial,
           from: value[0],
           to: value[1],
         });

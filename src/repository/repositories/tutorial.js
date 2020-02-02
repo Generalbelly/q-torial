@@ -1,32 +1,63 @@
-import { convertDocToObject, convertDocumentsToArray, FieldValue } from '../../firebase';
+import { FieldValue } from '../../firebase';
+import TutorialEntity from '../../components/atoms/Entities/TutorialEntity';
+import PerformanceEntity from '../../components/atoms/Entities/PerformanceEntity';
 
 export default class TutorialRepository {
-  /** @typedef {firebase.firestore.CollectionReference} tutorialCollection */
-  tutorialCollection;
+  /** @typedef {firebase.firestore.Firestore} db */
+  db;
 
-  /** @typedef {firebase.firestore.WriteBatch} batch */
-  batch;
-
-  constructor(tutorialCollection, batch) {
-    this.tutorialCollection = tutorialCollection;
-    this.batch = batch;
+  /**
+   * @param {firebase.firestore.Firestore} db
+   */
+  constructor(db) {
+    this.db = db;
   }
 
-  async list(userId, {
-    searchQuery = null,
-    orderBy = ['createdAt', 'desc'],
-    startAfter = null,
-    source = 'default',
-    limit = null,
-  }) {
+  /**
+   * @param {string} userId
+   * @return {firebase.firestore.CollectionReference}
+   *
+   */
+  getTutorialCollection(userId) {
+    return this.db
+      .collection('users')
+      .doc(userId)
+      .collection('tutorials');
+  }
+
+  /**
+   * @param {string} userId
+   * @param {import('../../components/atoms/Entities/TutorialEntity').default} tutorial
+   */
+  async test(userId, tutorial) {
+    const docRef = this.getTutorialCollection(userId).doc();
+    await docRef.set({
+      id: docRef.id,
+    });
+  }
+
+
+  async list(
+    userId,
+    {
+      searchQuery = null,
+      orderBy = ['createdAt', 'desc'],
+      startAfter = null,
+      source = 'default',
+      limit = null,
+    },
+  ) {
     let query;
     if (searchQuery) {
-      query = this.tutorialCollection
+      query = this.getTutorialCollection(userId)
         .orderBy('name')
         .startAt(searchQuery)
         .endAt(`${searchQuery}\uf8ff`);
     } else {
-      query = this.tutorialCollection.orderBy(orderBy[0], orderBy[1]);
+      query = this.getTutorialCollection(userId).orderBy(
+        orderBy[0],
+        orderBy[1],
+      );
     }
 
     if (startAfter) {
@@ -41,102 +72,98 @@ export default class TutorialRepository {
       source,
     });
     return {
-      tutorials: convertDocumentsToArray(snapshot),
+      tutorials: snapshot.docs.map(doc => new TutorialEntity(doc.data())),
       allFetched: snapshot.empty,
       snapshot,
     };
   }
 
-  async find(userId, { id, source = 'default' }) {
-    const query = this.tutorialCollection.doc(id);
-
-    const snapshot = await query.get({
-      source
-    });
-    return convertDocToObject(snapshot);
+  /**
+   * @param {string} userId
+   * @param {string} tutorialId
+   */
+  async find(userId, tutorialId) {
+    const query = this.getTutorialCollection(userId).doc(tutorialId);
+    const snapshot = await query.get();
+    return new TutorialEntity(snapshot.data());
   }
 
-  async add(userId, { id, steps, ...fields }) {
-    const tutorialRef = await this.tutorialCollection.doc();
-    this.batch.set(tutorialRef, {
-      ...fields,
-      createdAt: FieldValue.serverTimestamp(),
-      updatedAt: FieldValue.serverTimestamp(),
-    });
-    const savedSteps = [];
-    steps.forEach(({ id = null, ...stepFields }, index) => {
-      const orderAttachedStep = {
-        ...stepFields,
-        order: index,
-      };
-      const stepRef = tutorialRef.collection('steps').doc();
-      this.batch.set(stepRef, {
-        ...orderAttachedStep,
+  /**
+   * @param {string} userId
+   * @param {import('../../components/atoms/Entities/TutorialEntity').default} tutorial
+   */
+  add(userId, tutorial) {
+    return new Promise(async resolve => {
+      const docRef = this.getTutorialCollection(userId).doc();
+      await docRef.set({
+        ...tutorial.toPlainObject(),
+        id: docRef.id,
         createdAt: FieldValue.serverTimestamp(),
         updatedAt: FieldValue.serverTimestamp(),
       });
-      savedSteps.push({
-        ...orderAttachedStep,
-        id: stepRef.id,
+      const unsubscribe = docRef.onSnapshot(doc => {
+        if (!doc.metadata.hasPendingWrites) {
+          resolve(new TutorialEntity(doc.data()));
+          unsubscribe();
+        }
       });
     });
-    await this.batch.commit();
-    return {
-      ...fields,
-      id: tutorialRef.id,
-      steps: savedSteps,
-    };
   }
 
-  async update(userId, {
-    id,
-    steps = [],
-    performances = [],
-    ...fields
-  }) {
-    const tutorialRef = await this.tutorialCollection
-      .doc(id);
-
-    this.batch.update(tutorialRef, {
-      ...fields,
-      updatedAt: FieldValue.serverTimestamp(),
+  /**
+   * @param {string} userId
+   * @param {import('../../components/atoms/Entities/TutorialEntity').default} tutorial
+   */
+  update(userId, tutorial) {
+    return new Promise(async resolve => {
+      const docRef = this.getTutorialCollection(userId).doc(tutorial.id);
+      await docRef.update({
+        ...tutorial.toPlainObject(),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+      const unsubscribe = docRef.onSnapshot(doc => {
+        if (!doc.metadata.hasPendingWrites) {
+          resolve(new TutorialEntity(doc.data()));
+          unsubscribe();
+        }
+      });
     });
-    await this.batch.commit();
-    return {
-      ...fields,
-      id,
-      steps,
-    };
   }
 
-  async delete(userId, { id, ...fields }) {
-    await this.tutorialCollection.doc(id).delete();
-    return {
-      id,
-      ...fields,
-    };
+  /**
+   * @param {string} userId
+   * @param {import('../../components/atoms/Entities/TutorialEntity').default} tutorial
+   */
+  async delete(userId, tutorial) {
+    await this.getTutorialCollection(userId)
+      .doc(tutorial.id)
+      .delete();
+    return tutorial;
   }
 
-  async getPerformance(userId, {
-    id, from, to, source = 'default',
-  }) {
-    let query = await this.tutorialCollection.doc(id).collection('performances');
+  async getPerformance(
+    userId,
+    tutorialId,
+    {
+      from,
+      to,
+      source = 'default',
+    },
+  ) {
+    let query = await this.getTutorialCollection(userId)
+      .doc(tutorialId)
+      .collection('performances')
 
     if (from && to) {
-      query = query.where('createdAt', '>=', from);
-      query = query.where('createdAt', '<=', to);
+      query = query.where('createdAt', '>=', from)
+      query = query.where('createdAt', '<=', to)
     }
 
     const snapshot = await query.get({
       source,
     });
-    const performances = [];
-    snapshot.docs.forEach((doc) => {
-      performances.push(convertDocToObject(doc));
-    });
-    return {
-      id,
-      performances,
-    };
+
+    return snapshot.docs.map(doc => new PerformanceEntity(doc.data()));
   }
+
 }

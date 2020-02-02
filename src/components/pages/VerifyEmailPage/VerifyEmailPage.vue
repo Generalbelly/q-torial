@@ -43,12 +43,12 @@ export default {
     async onClickVerify() {
       try {
         await appFirebaseService.applyActionCode(this.code);
-        await this.$router.push({
-          name: 'instruction',
-        });
       } catch (e) {
         this.handleError(e);
       }
+      await this.$router.push({
+        name: 'instruction',
+      });
     },
     async handleError({ message, code }) {
       let field;

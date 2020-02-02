@@ -16,6 +16,8 @@
     @switch="onSwitch"
     @click:performance="onClickPerformance"
     ref="template"
+    :should-show-create-tutorial-form.sync="shouldShowCreateTutorialForm"
+    :should-show-extension-not-installed-modal.sync="shouldShowExtensionNotInstalledModal"
   />
 </template>
 <script>
@@ -43,12 +45,16 @@ export default {
       'repositoryReady',
     ]),
   },
-  watch: {
-    repositoryReady(value) {
-      if (value) {
-        this.listTutorials();
-      }
-    },
+  data() {
+    return {
+      shouldShowCreateTutorialForm: false,
+      shouldShowExtensionNotInstalledModal: false,
+    };
+  },
+  mounted() {
+    if (this.repositoryReady && this.tutorials.length === 0) {
+      this.listTutorials();
+    }
   },
   methods: {
     ...mapActions('tutorial', [
@@ -72,7 +78,6 @@ export default {
       this.listTutorials();
     },
     onClickEdit(tutorial) {
-      this.selectTutorial(tutorial);
       this.$router.push({
         name: 'tutorials.show',
         params: {
@@ -85,13 +90,11 @@ export default {
       if (selected) {
         window.open(tutorial.buildUrl, '_blank');
       } else {
-        this.$refs.template.showExtensionNotInstalledModal();
+        this.shouldShowExtensionNotInstalledModal = true;
       }
     },
     onClickDelete(tutorial) {
-      this.deleteTutorial({
-        data: tutorial.toPlainObject(),
-      });
+      this.deleteTutorial(tutorial);
     },
     onChangeQuery: debounce(function (query) {
       this.listTutorials({
@@ -99,16 +102,13 @@ export default {
       });
     }, 500),
     async onAddTutorial(tutorial) {
-      await this.addTutorial({
-        data: tutorial.toPlainObject(),
-      });
+      await this.addTutorial(tutorial);
       await chromeExtension.selectTutorial(tutorial);
+      this.shouldShowCreateTutorialForm = false;
       window.open(tutorial.buildUrl, '_blank');
     },
     onSwitch(tutorial) {
-      this.updateTutorial({
-        data: tutorial.toPlainObject(),
-      });
+      this.updateTutorial(tutorial);
     },
     onClickPerformance(tutorial) {
       this.$router.push({

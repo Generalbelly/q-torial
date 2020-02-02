@@ -3,25 +3,7 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/functions';
 
-export const { FieldValue } = firebase.firestore;
-
-export const convertDocToObject = (doc) => {
-  const data = {
-    id: doc.id,
-    ...doc.data(),
-  };
-  if (data.createdAt) {
-    data.createdAtAsDateString = data.createdAt.toDate().toLocaleDateString();
-  }
-  if (data.updatedAt) {
-    data.updatedAtAsDateString = data.updatedAt.toDate().toLocaleDateString();
-  }
-  return data;
-};
-
-export const convertDocumentsToArray = snapshot => snapshot.docs.map(
-  doc => convertDocToObject(doc),
-);
+export const { FieldValue, Timestamp } = firebase.firestore;
 
 export default class FirebaseService {
   app;
@@ -55,7 +37,7 @@ export default class FirebaseService {
 
   checkAuth() {
     return new Promise((resolve) => {
-      const unsubscribe = this.auth.onAuthStateChanged((user) => {
+      const unsubscribe = this.auth.onAuthStateChanged(user => {
         resolve(user);
         unsubscribe();
       });
@@ -63,8 +45,7 @@ export default class FirebaseService {
   }
 
   watchAuth(handler) {
-    if (this.app.name !== process.env.VUE_APP_NAME) return;
-    this.auth.onAuthStateChanged(handler);
+    return this.auth.onAuthStateChanged(handler);
   }
 
   async applyActionCode(code) {
@@ -100,74 +81,12 @@ export default class FirebaseService {
     });
   }
 
-  queryAccounts(gaId) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const queryAccounts = this.functions.httpsCallable('queryAccounts');
-        const accounts = await queryAccounts({
-          id: gaId,
-        });
-        resolve(accounts);
-      } catch (e) {
-        reject(e);
-      }
-    });
-  }
-
   /**
    * @return {firebase.firestore.Firestore}
    *
    */
   getDB() {
     return this.db;
-  }
-
-  /**
-   * @return {firebase.firestore.WriteBatch}
-   *
-   */
-  getBatch() {
-    return this.db.batch();
-  }
-
-  /**
-   * @return {firebase.firestore.CollectionReference}
-   *
-   */
-  getUserCollection() {
-    return this.db.collection('users');
-  }
-
-  /**
-   * @return {firebase.firestore.CollectionReference}
-   *
-   */
-  getStripeCustomerCollection(userId) {
-    return this.db.collection('users').doc(userId).collection('stripe_customers');
-  }
-
-  /**
-   * @return {firebase.firestore.CollectionReference}
-   *
-   */
-  getFirebaseConfigCollection(userId) {
-    return this.db.collection('users').doc(userId).collection('firebase_configs');
-  }
-
-  /**
-   * @return {firebase.firestore.CollectionReference}
-   *
-   */
-  getTutorialCollection(userId) {
-    return this.db.collection('users').doc(userId).collection('tutorials');
-  }
-
-  /**
-   * @return {firebase.firestore.CollectionReference}
-   *
-   */
-  getGaCollection(userId) {
-    return this.db.collection('users').doc(userId).collection('gas');
   }
 
   /**

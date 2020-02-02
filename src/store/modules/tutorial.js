@@ -15,15 +15,12 @@ import TutorialEntity from '../../components/atoms/Entities/TutorialEntity';
 import repositoryFactory from '../../repository';
 import { getUserFirebaseService } from '../../firebase';
 
-/** @typedef {import('../../repository/repositories/tutorial')} tutorialRepository */
-let tutorialRepository = repositoryFactory.get('tutorial');
-
 export const mutations = {
   [REPOSITORY_READY](state, payload) {
     state.repositoryReady = payload;
   },
   [ADD_TUTORIAL](state, payload) {
-    state.tutorials = [...state.tutorials, new TutorialEntity(payload)];
+    state.tutorials = [...state.tutorials, payload];
   },
   [UPDATE_TUTORIAL](state, payload) {
     const index = state.tutorials.findIndex(
@@ -78,20 +75,24 @@ export const mutations = {
   },
 };
 
+let tutorialRepository;
 let tutorialsLatestSnapshot = null;
 const actions = {
   initRepository: ({ rootState, state, commit }) => {
     if (!state.repositoryReady && rootState.user && rootState.user.firebaseConfig) {
-      const firebaseService = getUserFirebaseService(rootState.user.firebaseConfig, 'user');
-      tutorialRepository = tutorialRepository(
-        firebaseService.getTutorialCollection(rootState.user.firebaseConfig.uid),
-        firebaseService.getBatch(),
+      const firebaseService = getUserFirebaseService(rootState.user.firebaseConfig);
+      tutorialRepository = repositoryFactory.get('tutorial')(
+        firebaseService.getDB(),
       );
       commit(REPOSITORY_READY, true);
     }
   },
-  async listTutorials({ state, rootState, commit }, payload = {}) {
-    const { searchQuery = null, orderBy = ['createdAt', 'desc'], source = 'default' } = payload;
+  async listTutorials({ rootState, state, commit }, payload = {}) {
+    const {
+      searchQuery = null,
+      orderBy = ['createdAt', 'desc'],
+      source = 'default',
+    } = payload;
     commit(SET_REQUESTING, true);
     if (searchQuery !== state.searchQuery) {
       tutorialsLatestSnapshot = null;
@@ -108,19 +109,25 @@ const actions = {
       tutorials,
       allFetched = false,
       snapshot,
-    } = await tutorialRepository.list(rootState.user.uid, {
-      searchQuery,
-      orderBy,
-      source,
-      startAfter: (
-        tutorialsLatestSnapshot
+    } = await tutorialRepository.list(
+      rootState.user.firebaseConfig.uid,
+      {
+        searchQuery,
+        orderBy,
+        source,
+        startAfter:
+          tutorialsLatestSnapshot
           && tutorialsLatestSnapshot.docs
           && tutorialsLatestSnapshot.docs.length > 0
-      ) ? tutorialsLatestSnapshot.docs[tutorialsLatestSnapshot.docs.length - 1] : null,
-      limit: QUERY_LIMIT,
-    });
+            ? tutorialsLatestSnapshot.docs[
+              tutorialsLatestSnapshot.docs.length - 1
+            ]
+            : null,
+        limit: QUERY_LIMIT,
+      },
+    );
 
-    tutorials.forEach((tutorial) => {
+    tutorials.forEach(tutorial => {
       commit(ADD_TUTORIAL, tutorial);
     });
     commit(SET_ALL_FETCHED, allFetched);
@@ -129,10 +136,34 @@ const actions = {
       tutorialsLatestSnapshot = snapshot;
     }
   },
-  async getTutorial({ rootState, commit }, payload) {
+  async getTutorial({ commit, rootState }, payload) {
     commit(SET_REQUESTING, true);
-    const tutorial = await tutorialRepository.find(rootState.user.uid, payload);
+    const tutorial = await tutorialRepository.find(rootState.user.firebaseConfig.uid, payload);
     commit(ADD_TUTORIAL, tutorial);
+    commit(SET_REQUESTING, false);
+  },
+  async testTutorial({ rootState }) {
+    return tutorialRepository.test(
+      rootState.user.firebaseConfig.uid,
+    );
+  },
+  async addTutorial({ commit, rootState }, payload) {
+    commit(SET_REQUESTING, true);
+    const tutorial = await tutorialRepository.add(
+      rootState.user.firebaseConfig.uid,
+      payload,
+    );
+    commit(ADD_TUTORIAL, tutorial);
+    commit(SELECT_TUTORIAL, tutorial.id);
+    commit(SET_REQUESTING, false);
+  },
+  async updateTutorial({ commit, rootState }, payload) {
+    commit(SET_REQUESTING, true);
+    const tutorial = await tutorialRepository.update(
+      rootState.user.firebaseConfig.uid,
+      payload,
+    );
+    commit(UPDATE_TUTORIAL, tutorial);
     commit(SET_REQUESTING, false);
   },
   async selectTutorial({ commit }, payload) {
@@ -143,31 +174,33 @@ const actions = {
   sortTutorials({ commit }, payload) {
     commit(SORT_TUTORIALS, payload);
   },
-  async addTutorial({ commit, rootState }, payload) {
+  async getPerformance({ commit, rootState }, payload) {
+    const {
+      tutorial,
+      from,
+      to,
+      source = 'default',
+    } = payload;
+    const performances = await tutorialRepository
+      .getPerformance(rootState.user.firebaseConfig.uid, tutorial.id, {
+        from,
+        to,
+        source,
+      });
     commit(SET_REQUESTING, true);
-    const { data } = payload;
-    const tutorial = await tutorialRepository.add(rootState.user.uid, data);
-    commit(ADD_TUTORIAL, tutorial);
-    commit(SET_REQUESTING, false);
-  },
-  async updateTutorial({ commit, rootState }, payload) {
-    commit(SET_REQUESTING, true);
-    const { data } = payload;
-    const tutorial = await tutorialRepository.update(rootState.user.uid, data);
-    commit(UPDATE_TUTORIAL, tutorial);
+    commit(UPDATE_TUTORIAL, new TutorialEntity({
+      ...tutorial,
+      performances,
+    }));
     commit(SET_REQUESTING, false);
   },
   async deleteTutorial({ commit, rootState }, payload) {
     commit(SET_REQUESTING, true);
-    const { data } = payload;
-    const tutorial = await tutorialRepository.delete(rootState.user.uid, data);
+    const tutorial = await tutorialRepository.delete(
+      rootState.user.firebaseConfig.uid,
+      payload,
+    );
     commit(DELETE_TUTORIAL, tutorial);
-    commit(SET_REQUESTING, false);
-  },
-  async getPerformance({ commit, rootState }, payload = {}) {
-    const tutorial = await tutorialRepository.getPerformance(rootState.user.uid, payload);
-    commit(SET_REQUESTING, true);
-    commit(UPDATE_TUTORIAL, tutorial);
     commit(SET_REQUESTING, false);
   },
 };
