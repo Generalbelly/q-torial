@@ -49,6 +49,9 @@ export default {
     );
   },
   methods: {
+    ...mapActions('tutorial', [
+      'deleteGaId',
+    ]),
     ...mapActions('ga', [
       'listGas',
       'addGa',
@@ -69,11 +72,11 @@ export default {
     },
     async onClickAdd() {
       try {
-        const response = await this.addGa();
+        const ga = await this.addGa();
         await this.$router.push({
           name: 'gas.show',
           params: {
-            id: response.data.id,
+            id: ga.id,
           },
         });
       } catch (e) {
@@ -91,7 +94,8 @@ export default {
       });
     },
     async onClickDelete(ga) {
-      await this.deleteGa(ga);
+      // await this.deleteGa(ga);
+      await this.deleteGaId(ga);
     },
     onChangeQuery: debounce(async function (query) {
       await this.listGas({

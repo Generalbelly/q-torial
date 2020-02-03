@@ -8,8 +8,7 @@
     <base-fade-transition>
       <password-reset-complete-message
         v-show="passwordResetComplete"
-      >
-      </password-reset-complete-message>
+      />
     </base-fade-transition>
     <validation-observer ref="observer">
       <reset-password-form

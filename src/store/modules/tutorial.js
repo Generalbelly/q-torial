@@ -10,6 +10,7 @@ import {
   UPDATE_TUTORIAL,
   DELETE_TUTORIAL,
   REPOSITORY_READY,
+  DELETE_GA,
 } from '../mutation-types';
 import TutorialEntity from '../../components/atoms/Entities/TutorialEntity';
 import repositoryFactory from '../../repository';
@@ -202,6 +203,12 @@ const actions = {
     );
     commit(DELETE_TUTORIAL, tutorial);
     commit(SET_REQUESTING, false);
+  },
+  async deleteGaId({ rootState }, payload) {
+    await tutorialRepository.deleteGaId(
+      rootState.user.firebaseConfig.uid,
+      payload,
+    );
   },
 };
 

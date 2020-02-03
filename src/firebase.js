@@ -61,8 +61,9 @@ export default class FirebaseService {
   }
 
   async resetPassword(code, password) {
-    await this.auth.verifyPasswordResetCode(code);
+    const email = await this.auth.verifyPasswordResetCode(code);
     await this.auth.confirmPasswordReset(code, password);
+    return email;
   }
 
   async updatePassword(password) {

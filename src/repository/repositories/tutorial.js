@@ -141,6 +141,18 @@ export default class TutorialRepository {
     return tutorial;
   }
 
+  /**
+   * @param {string} userId
+   * @param {import('../../components/atoms/Entities/GaEntity').default} ga
+   */
+  async deleteGaId(userId, ga) {
+    const tutorialRefs = await this.getTutorialCollection(userId).where('gaId', '==', ga.id).get();
+    await Promise.all(tutorialRefs.docs.map(doc => doc.ref.update({
+      gaId: null,
+      gaPropertyId: null,
+    })));
+  }
+
   async getPerformance(
     userId,
     tutorialId,
@@ -152,11 +164,11 @@ export default class TutorialRepository {
   ) {
     let query = await this.getTutorialCollection(userId)
       .doc(tutorialId)
-      .collection('performances')
+      .collection('performances');
 
     if (from && to) {
-      query = query.where('createdAt', '>=', from)
-      query = query.where('createdAt', '<=', to)
+      query = query.where('createdAt', '>=', from);
+      query = query.where('createdAt', '<=', to);
     }
 
     const snapshot = await query.get({

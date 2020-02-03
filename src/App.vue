@@ -9,7 +9,7 @@
       />
       <router-view />
     </template>
-    <template v-else-if="isSignInPage || isSignUpPage || isInstructionPage || isEmailVerifiedPage">
+    <template v-else-if="isSignInPage || isSignUpPage || isInstructionPage || isEmailVerifiedPage || isPasswordReset || isPasswordForget">
       <the-main>
         <router-view />
       </the-main>
@@ -27,12 +27,12 @@
       >
         <router-view />
       </the-main>
+      <footer v-if="shouldShowFooter" class="footer">
+        <div class="content has-text-centered has-text-grey">
+          If you have any questions, feel free to contact us by email: {{ supportEmail }}
+        </div>
+      </footer>
     </template>
-    <footer v-if="shouldShowFooter" class="footer">
-      <div class="content has-text-centered has-text-grey">
-        If you have any questions, feel free to contact us by email: {{ supportEmail }}
-      </div>
-    </footer>
   </div>
 </template>
 
@@ -69,6 +69,12 @@ export default {
     },
     isInstructionPage() {
       return this.$route.name === 'instruction';
+    },
+    isPasswordReset() {
+      return this.$route.name === 'password.reset';
+    },
+    isPasswordForget() {
+      return this.$route.name === 'password.forget';
     },
     isSignInPage() {
       return this.$route.name === 'sign-in';
@@ -116,14 +122,14 @@ export default {
     },
     async signOut() {
       try {
-        await getUserFirebaseService(this.user.firebaseConfig).signOut();
+        //await getUserFirebaseService(this.user.firebaseConfig).signOut();
         await appFirebaseService.signOut();
-        await this.$router.push({
-          name: 'sign-in',
-        });
         if (await chromeExtension.getVersion()) {
           await chromeExtension.signOut();
         }
+        await this.$router.push({
+          name: 'sign-in',
+        });
       } catch (e) {
         console.error(e);
       }

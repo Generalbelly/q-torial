@@ -165,6 +165,9 @@ const actions = {
       }
     });
   },
+  getFirebaseConfig({ state }) {
+    return userRepository.getFirebaseConfig(state.user.uid);
+  },
 };
 
 const state = {

@@ -53,7 +53,9 @@ export const addGa = functions.https.onCall((data: any, context: functions.https
   oauth2Client.setCredentials({ refresh_token });
 
   try {
-    const ref = admin.firestore().collection('users').doc(auth.uid).collection('gas')
+    const ref = admin.firestore().collection('users')
+      .doc(auth.uid)
+      .collection('gas')
       .doc();
     await ref.set({
       id: ref.id,
@@ -143,14 +145,5 @@ export const onGaDelete = functions.firestore
 
     if (token) {
       await oauth2Client.revokeToken(token);
-      const userKey = context.params.userId;
-      const tutorials = await admin.firestore()
-        .collection('users').doc(userKey)
-        .collection('tutorials')
-        .where('gaId', '==', context.params.gaId)
-        .get();
-      await Promise.all(tutorials.docs.map(doc => doc.ref.update({
-        gaId: null,
-      })));
     }
   });

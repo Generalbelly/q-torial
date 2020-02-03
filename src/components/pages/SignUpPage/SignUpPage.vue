@@ -44,16 +44,11 @@ export default {
         appId: "1:498351222083:web:3eecc32a9ab989f886d3f6"
       }),
       step: 0,
+      requesting: false,
     };
-  },
-  computed: {
-    ...mapState([
-      'requesting',
-    ]),
   },
   methods: {
     ...mapActions([
-      'setRequesting',
       'setServerSideErrors',
       'addFirebaseConfig',
       'addUser',
@@ -112,7 +107,7 @@ export default {
       const isValid = await this.$refs.observer.validate();
       if (!isValid) return;
       try {
-        this.setRequesting(true);
+        this.requesting = true;
         const userFirebaseUnsubscribe = await getUserFirebaseService(this.firebaseConfig)
           .watchAuth(async user => {
             if (user) {
@@ -143,7 +138,7 @@ export default {
       } catch (e) {
         this.handleError(e);
       } finally {
-        this.setRequesting(false);
+        this.requesting = false;
       }
     },
     onClickLogo() {

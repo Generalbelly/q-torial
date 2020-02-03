@@ -1,4 +1,4 @@
-import Entity, { toPlainObject } from './Entity';
+import Entity from './Entity';
 import PerformanceEntity from './PerformanceEntity';
 
 export default class TutorialEntity extends Entity {
@@ -38,7 +38,7 @@ export default class TutorialEntity extends Entity {
   }
 
   toPlainObject() {
-    return toPlainObject(this, [
+    return super.toPlainObject([
       'createdAt',
       'updatedAt',
       'performances',

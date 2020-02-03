@@ -37,7 +37,7 @@ export default class UserEntity extends Entity {
   }
 
   toPlainObject() {
-    return toPlainObject(this, [
+    return super.toPlainObject([
       'createdAt',
       'updatedAt',
       'stripeCustomer',

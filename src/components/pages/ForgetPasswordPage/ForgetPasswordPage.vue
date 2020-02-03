@@ -2,6 +2,7 @@
   <forget-password-template
     @click:reset-link="onClickResetLink"
     :password-reset-link-sent="passwordResetLinkSent"
+    :loading="requesting"
   />
 </template>
 
@@ -17,16 +18,20 @@ export default {
   data() {
     return {
       passwordResetLinkSent: false,
+      requesting: false,
     };
   },
   methods: {
     async onClickResetLink({ email }) {
+      this.requesting = true;
       try {
         await appFirebaseService.sendPasswordResetEmail(email);
         this.passwordResetLinkSent = true;
       } catch (e) {
         console.log(e);
         this.handleError(e);
+      } finally {
+        this.requesting = false;
       }
     },
     async handleError({ message, code }) {

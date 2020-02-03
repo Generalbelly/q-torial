@@ -3,11 +3,8 @@
     type="is-success"
     active
   >
-    Password changed successfully.<br>
-    You can now sign in with your new password.<br>
-    <router-link :to="{ name: 'sign-in' }">
-      Sign in
-    </router-link>
+    Your password has been changed!<br>
+    We are redirecting you to tutorial index page.<br>
   </base-message>
 </template>
 

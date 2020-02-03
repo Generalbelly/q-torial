@@ -6,9 +6,11 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import { appFirebaseService, getUserFirebaseService } from '../../../firebase';
 import ResetPasswordTemplate from '../../templates/ResetPasswordTemplate';
+import UserEntity from '../../atoms/Entities/UserEntity';
+import chromeExtension from '../../../chromeExtension';
 
 export default {
   name: 'ResetPasswordPage',
@@ -33,13 +35,31 @@ export default {
     this.code = code;
   },
   methods: {
+    ...mapActions([
+      'updateUser',
+      'getFirebaseConfig',
+    ]),
     async onClickResetPassword({ password }) {
       try {
-        await appFirebaseService.resetPassword(this.code, password);
-        await getUserFirebaseService(this.firebaseConfig).updatePassword(password);
+        const email = await appFirebaseService.resetPassword(this.code, password);
         this.passwordResetComplete = true;
+        const unsubscribe = await appFirebaseService
+          .watchAuth(async user => {
+            if (user) {
+              unsubscribe();
+              const firebaseConfig = await this.getFirebaseConfig();
+              await getUserFirebaseService(firebaseConfig).updatePassword(password);
+              await getUserFirebaseService(firebaseConfig).signIn(email, password);
+              if (await chromeExtension.getVersion()) {
+                await chromeExtension.signIn(email, password);
+              }
+              await this.$router.push({
+                name: 'tutorials.index',
+              });
+            }
+          });
+        await appFirebaseService.signIn(email, password);
       } catch (e) {
-        console.log(e);
         this.handleError(e);
       }
     },

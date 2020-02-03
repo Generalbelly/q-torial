@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { ValidationObserver } from 'vee-validate';
 import { appFirebaseService, getUserFirebaseService } from '../../../firebase';
 import SignInTemplate from '../../templates/SignInTemplate';
@@ -26,14 +26,12 @@ export default {
     return {
       email: null,
       password: null,
+      requesting: false,
     };
   },
   computed: {
     ...mapGetters([
       'firebaseConfig',
-    ]),
-    ...mapState([
-      'requesting',
     ]),
   },
   watch: {
@@ -54,23 +52,19 @@ export default {
   },
   methods: {
     ...mapActions([
-      'setRequesting',
       'setServerSideErrors',
+      'getFirebaseConfig',
     ]),
     async onClickSignIn() {
       const isValid = await this.$refs.observer.validate();
       if (!isValid) return;
       try {
-        this.setRequesting(true);
+        this.requesting = true;
         await appFirebaseService.signIn(this.email, this.password);
-        if (await chromeExtension.getVersion()) {
-          await chromeExtension.signIn(this.email, this.password);
-        }
       } catch (e) {
-        console.log(e)
         this.handleError(e);
       } finally {
-        this.setRequesting(false);
+        this.requesting = false;
       }
     },
     async handleError({ message, code }) {

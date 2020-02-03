@@ -21,6 +21,7 @@ export default {
   data() {
     return {
       supportEmail: process.env.VUE_APP_CONTACT_EMAIL,
+      requesting: false,
     };
   },
   computed: {
@@ -30,7 +31,6 @@ export default {
     ]),
     ...mapState([
       'user',
-      'requesting',
     ]),
     ...mapState('tutorial', [
       'repositoryReady',
@@ -51,7 +51,6 @@ export default {
   methods: {
     ...mapActions([
       'setServerSideErrors',
-      'setRequesting',
       'updateUser',
     ]),
     ...mapActions('tutorial', [
@@ -75,7 +74,7 @@ export default {
         return;
       }
       try {
-        await this.setRequesting(true);
+        this.requesting = true;
         await this.updateUser(new UserEntity({
           ...this.user,
           setupComplete: true,
@@ -83,7 +82,7 @@ export default {
       } catch (error) {
         console.error(error);
       } finally {
-        await this.setRequesting(false);
+        this.requesting = false;
       }
     },
     async validateCloudFunctions() {
