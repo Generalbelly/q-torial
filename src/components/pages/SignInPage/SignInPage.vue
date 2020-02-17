@@ -1,10 +1,14 @@
 <template>
   <validation-observer ref="observer">
     <sign-in-template
+      :should-show-firebase-sign-in-modal="shouldShowFirebaseSignInModal"
       :loading="requesting"
       :email.sync="email"
       :password.sync="password"
+      :firebase-email.sync="firebaseEmail"
+      :firebase-password.sync="firebasePassword"
       @click:sign-in="onClickSignIn"
+      @click:firebase-sign-in="onClickFirebaseSignIn"
     />
   </validation-observer>
 </template>
@@ -26,7 +30,10 @@ export default {
     return {
       email: null,
       password: null,
+      firebaseEmail: null,
+      firebasePassword: null,
       requesting: false,
+      shouldShowFirebaseSignInModal: false,
     };
   },
   computed: {
@@ -35,19 +42,13 @@ export default {
     ]),
   },
   watch: {
-    async firebaseConfig(newValue, oldValue) {
-      if (newValue && !oldValue) {
-        await getUserFirebaseService(newValue).signIn(this.email, this.password);
-        const { source, redirect = '' } = this.$route.query;
-        if (source === 'extension') return;
-        if (redirect) {
-          await this.$router.push(redirect);
-        } else {
-          await this.$router.push({
-            name: 'tutorials.index',
-          });
+    firebaseConfig: {
+      immediate: true,
+      handler(value) {
+        if (value) {
+          this.shouldShowFirebaseSignInModal = true;
         }
-      }
+      },
     },
   },
   methods: {
@@ -61,6 +62,39 @@ export default {
       try {
         this.requesting = true;
         await appFirebaseService.signIn(this.email, this.password);
+        if (await chromeExtension.getVersion()) {
+          await chromeExtension.signIn(this.email, this.password);
+        }
+      } catch (e) {
+        this.handleError(e);
+      } finally {
+        this.requesting = false;
+      }
+    },
+    async onClickFirebaseSignIn() {
+      const isValid = await this.$refs.observer.validate();
+      if (!isValid) return;
+      try {
+        this.requesting = true;
+        await getUserFirebaseService(this.firebaseConfig).signIn(
+          this.firebaseEmail,
+          this.firebasePassword
+        );
+        if (await chromeExtension.getVersion()) {
+          await chromeExtension.firebaseSignIn(this.firebaseEmail, this.firebasePassword);
+        }
+        const { redirect = '' } = this.$route.query;
+        if (this.$route.query.redirect) {
+          if (redirect.includes(process.env.VUE_APP_URL)) {
+            await this.$router.push(redirect);
+          } else {
+            window.location.href = redirect;
+          }
+        } else {
+          await this.$router.push({
+            name: 'tutorials.index',
+          });
+        }
       } catch (e) {
         this.handleError(e);
       } finally {
@@ -88,9 +122,8 @@ export default {
           errorMessage = message;
           break;
       }
-      await this.setServerSideErrors({
-        [field]: errorMessage,
-      });
+      console.log(errorMessage);
+      await this.setServerSideErrors(errorMessage);
     },
   },
 };

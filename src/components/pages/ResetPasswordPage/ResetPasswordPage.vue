@@ -2,6 +2,7 @@
     <reset-password-template
       @click:reset-password="onClickResetPassword"
       :password-reset-complete="passwordResetComplete"
+      :loading="requesting"
     />
 </template>
 
@@ -21,6 +22,7 @@ export default {
     return {
       code: null,
       passwordResetComplete: false,
+      requesting: false,
     };
   },
   computed: {
@@ -41,26 +43,13 @@ export default {
     ]),
     async onClickResetPassword({ password }) {
       try {
-        const email = await appFirebaseService.resetPassword(this.code, password);
+        this.requesting = true;
+        await appFirebaseService.resetPassword(this.code, password);
         this.passwordResetComplete = true;
-        const unsubscribe = await appFirebaseService
-          .watchAuth(async user => {
-            if (user) {
-              unsubscribe();
-              const firebaseConfig = await this.getFirebaseConfig();
-              await getUserFirebaseService(firebaseConfig).updatePassword(password);
-              await getUserFirebaseService(firebaseConfig).signIn(email, password);
-              if (await chromeExtension.getVersion()) {
-                await chromeExtension.signIn(email, password);
-              }
-              await this.$router.push({
-                name: 'tutorials.index',
-              });
-            }
-          });
-        await appFirebaseService.signIn(email, password);
       } catch (e) {
         this.handleError(e);
+      } finally {
+        this.requesting = false;
       }
     },
     async handleError({ message, code }) {

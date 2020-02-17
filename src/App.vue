@@ -9,7 +9,15 @@
       />
       <router-view />
     </template>
-    <template v-else-if="isSignInPage || isSignUpPage || isInstructionPage || isEmailVerifiedPage || isPasswordReset || isPasswordForget">
+    <template v-else-if="
+      isSignInPage ||
+      isSignUpPage ||
+      isInstructionPage ||
+      isEmailVerifiedPage ||
+      isPasswordReset ||
+      isPasswordForget ||
+      isRegisterFirebasePage
+    ">
       <the-main>
         <router-view />
       </the-main>
@@ -18,7 +26,7 @@
       <the-navbar
         v-show="shouldShowNavbar"
         :navItems="navItems"
-        @click:sign-out="signOut"
+        @click:sign-out="clickSignOut"
         :user="user"
         :user-items="userItems"
       />
@@ -37,8 +45,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import { appFirebaseService, getUserFirebaseService } from './firebase';
+import { mapState, mapActions } from 'vuex';
 import chromeExtension from './chromeExtension';
 import TheNavbar from './components/organisms/global/TheNavbar';
 import TheMain from './components/organisms/global/TheMain';
@@ -62,7 +69,16 @@ export default {
       'user',
     ]),
     shouldShowNavbar() {
+      if (!this.$route.name) return false;
+      // if (
+      //   this.$route.name.includes('tutorials')
+      //   && this.$route.name.includes('tags')
+      //   && this.$route.name.includes('gas.index')
+      // ) return true;
       return !this.isGaShowPage;
+    },
+    isRegisterFirebasePage() {
+      return this.$route.name === 'register-firebase';
     },
     isEmailVerifiedPage() {
       return this.$route.name === 'email.verify';
@@ -88,15 +104,19 @@ export default {
     isIndexPage() {
       return this.$route.name === 'index';
     },
+    isPageNotFoundPage() {
+      return this.$route.name === 'page-not-found';
+    },
     shouldShowFooter() {
+      if (!this.$route.name) return false;
       return this.user && this.user.emailVerified;
     },
   },
   watch: {
     serverSideErrors() {
-      if (this.serverSideErrors.general) {
+      if (this.serverSideErrors) {
         return this.showSnackbar({
-          message: this.serverSideErrors.general,
+          message: this.serverSideErrors,
           position: 'is-top',
           type: 'is-warning',
           indefinite: true,
@@ -109,6 +129,9 @@ export default {
     await chromeExtension.getVersion();
   },
   methods: {
+    ...mapActions([
+      'signOut',
+    ]),
     // TODO コンポーネント化する
     showSnackbar({
       message = 'Oops! Something went wrong.', position = 'is-top', type = 'is-success', indefinite = false,
@@ -120,13 +143,9 @@ export default {
         message,
       });
     },
-    async signOut() {
+    async clickSignOut() {
       try {
-        //await getUserFirebaseService(this.user.firebaseConfig).signOut();
-        await appFirebaseService.signOut();
-        if (await chromeExtension.getVersion()) {
-          await chromeExtension.signOut();
-        }
+        await this.signOut();
         await this.$router.push({
           name: 'sign-in',
         });

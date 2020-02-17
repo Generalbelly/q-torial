@@ -10,7 +10,10 @@ export default [
     name: 'tutorials.index',
     component: TutorialsPage,
     props: true,
-    meta: { requireAuth: true },
+    meta: {
+      requireAuth: true,
+      requireFirebase: true,
+    },
     children: [
       {
         path: 'upgrade',
@@ -27,13 +30,19 @@ export default [
     name: 'tutorials.show',
     component: TutorialPage,
     props: true,
-    meta: { requireAuth: true },
+    meta: {
+      requireAuth: true,
+      requireFirebase: true,
+    },
   },
   {
     path: '/tutorials/:id/performance',
     name: 'tutorials.performance',
     component: TutorialPerformancePage,
     props: true,
-    meta: { requireAuth: true },
+    meta: {
+      requireAuth: true,
+      requireFirebase: true,
+    },
   },
 ];

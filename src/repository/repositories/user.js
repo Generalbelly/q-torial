@@ -28,7 +28,7 @@ export default class UserRepository {
     return this.db
       .collection('users')
       .doc(userId)
-      .collection('stripe_customers');
+      .collection('stripeCustomers');
   }
 
   /**
@@ -39,7 +39,7 @@ export default class UserRepository {
     return this.db
       .collection('users')
       .doc(userId)
-      .collection('firebase_configs');
+      .collection('firebaseConfigs');
   }
 
   async find(userId) {
@@ -125,19 +125,25 @@ export default class UserRepository {
       });
   }
 
-  /**
-   * @param {string} userId
-   */
+  /** @param {string} userId */
+  async getUserPaymentInfo(userId) {
+    const snapshot = await this.getStripeCustomerCollection(userId)
+      .where('deletedAt', '==', null)
+      .limit(1)
+      .get();
+    return snapshot.docs.length > 0
+      ? new StripeCustomerEntity(snapshot.docs[0].data())
+      : null;
+  }
+
+  /** @param {string} userId */
   async getFirebaseConfig(userId) {
     const snapshot = await this.getFirebaseConfigCollection(userId)
       .limit(1)
       .get();
-    if (snapshot.empty) {
-      return null;
-    }
-    return snapshot.docs.map(
-      doc => new FirebaseConfigEntity(doc.data()),
-    )[0];
+    return snapshot.docs.length > 0
+      ? new FirebaseConfigEntity(snapshot.docs[0].data())
+      : null;
   }
 
   /**

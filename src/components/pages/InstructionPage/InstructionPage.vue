@@ -65,12 +65,10 @@ export default {
         this.validateCloudStorage(),
       ]);
       if (!results.every(result => result.valid)) {
-        await this.setServerSideErrors({
-          general: results.reduce((acc, cv) => {
-            if (cv.valid) return acc;
-            return `${acc}${cv.message}<br />`;
-          }, ''),
-        });
+        await this.setServerSideErrors(results.reduce((acc, cv) => {
+          if (cv.valid) return acc;
+          return `${acc}${cv.message}<br />`;
+        }, ''));
         return;
       }
       try {

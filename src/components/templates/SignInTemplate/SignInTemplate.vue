@@ -1,6 +1,6 @@
 <template>
   <div>
-    <centering-layout>
+    <centering-layout v-if="!shouldShowFirebaseSignInModal">
       <template v-slot:content>
         <base-logo
           @click="onClickLogo"
@@ -11,11 +11,6 @@
           :email.sync="innerEmail"
           :password.sync="innerPassword"
         />
-        <p>
-          <router-link :to="{ name: 'password.forget' }">
-            Forget your password?
-          </router-link>
-        </p>
         <primary-button
           clickable-with-enter
           @click="onClickSignIn"
@@ -31,6 +26,33 @@
         </p>
       </template>
     </centering-layout>
+    <base-modal
+      :active="shouldShowFirebaseSignInModal"
+      hide-cancel
+    >
+      <template v-slot:content>
+        <base-heading>
+          Sign in your firebase project
+        </base-heading>
+        <p>
+          You need to sign in to create tutorials.
+        </p>
+        <sign-in-form
+          class="has-margin-top-5"
+          :email.sync="innerFirebaseEmail"
+          :password.sync="innerFirebasePassword"
+        />
+      </template>
+      <template v-slot:primary-action-button>
+        <primary-button
+          @click="onClickFirebaseSignIn"
+          class="has-margin-top-3 is-fullwidth"
+          clickable-with-enter
+        >
+          Sign in
+        </primary-button>
+      </template>
+    </base-modal>
     <base-loading is-full-page :active="loading" />
   </div>
 </template>
@@ -41,10 +63,14 @@ import BaseLogo from '../../atoms/BaseLogo/BaseLogo';
 import CenteringLayout from '../../molecules/layouts/CenteringLayout';
 import PrimaryButton from '../../atoms/buttons/PrimaryButton';
 import BaseLoading from '../../atoms/BaseLoading';
+import BaseModal from '../../molecules/BaseModal/BaseModal';
+import BaseHeading from '../../atoms/BaseHeading/BaseHeading';
 
 export default {
   name: 'SignInTemplate',
   components: {
+    BaseHeading,
+    BaseModal,
     BaseLoading,
     PrimaryButton,
     CenteringLayout,
@@ -52,6 +78,10 @@ export default {
     SignInForm,
   },
   props: {
+    shouldShowFirebaseSignInModal: {
+      type: Boolean,
+      default: false,
+    },
     loading: {
       type: Boolean,
       default: false,
@@ -61,6 +91,14 @@ export default {
       default: null,
     },
     password: {
+      type: String,
+      default: null,
+    },
+    firebaseEmail: {
+      type: String,
+      default: null,
+    },
+    firebasePassword: {
       type: String,
       default: null,
     },
@@ -82,15 +120,34 @@ export default {
         this.$emit('update:password', newValue);
       },
     },
+    innerFirebaseEmail: {
+      get() {
+        return this.firebaseEmail;
+      },
+      set(newValue) {
+        this.$emit('update:firebase-email', newValue);
+      },
+    },
+    innerFirebasePassword: {
+      get() {
+        return this.firebasePassword;
+      },
+      set(newValue) {
+        this.$emit('update:firebase-password', newValue);
+      },
+    },
   },
   methods: {
-    async onClickSignIn() {
+    onClickSignIn() {
       this.$emit('click:sign-in');
     },
-    onClickLogo() {
-      this.$router.push({
+    async onClickLogo() {
+      await this.$router.push({
         name: 'index',
       });
+    },
+    onClickFirebaseSignIn() {
+      this.$emit('click:firebase-sign-in');
     },
   },
 

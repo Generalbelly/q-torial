@@ -1,6 +1,6 @@
 <template>
   <div class="centering-container">
-    <div class="centering-content">
+    <div class="centering-content" :style="{'min-width': minWidth, 'max-width': maxWidth }">
       <slot name="content" />
     </div>
   </div>
@@ -9,6 +9,16 @@
 <script>
 export default {
   name: 'CenteringLayout',
+  props: {
+    minWidth: {
+      type: String,
+      default: '350px',
+    },
+    maxWidth: {
+      type: String,
+      default: '350px',
+    },
+  }
 };
 </script>
 
@@ -22,8 +32,6 @@ export default {
   flex-direction: column;
 }
 .centering-content {
-  min-width: 350px;
-  max-width: 350px;
   margin: auto;
 }
 </style>

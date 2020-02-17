@@ -47,7 +47,7 @@ export default {
         this.handleError(e);
       }
       await this.$router.push({
-        name: 'instruction',
+        name: 'register-firebase',
       });
     },
     async handleError({ message, code }) {

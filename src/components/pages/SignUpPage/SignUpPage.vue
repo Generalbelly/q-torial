@@ -2,27 +2,21 @@
   <validation-observer ref="observer">
     <sign-up-template
       :loading="requesting"
-      :step="step"
       :email.sync="email"
       :password.sync="password"
-      :firebase-config.sync="firebaseConfig"
       @click:sign-up="onClickSignUp"
       @click:logo="onClickLogo"
-      @click:next="onClickNext"
-      @click:back="prev"
     />
   </validation-observer>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions } from 'vuex';
 import { ValidationObserver } from 'vee-validate';
-import { appFirebaseService, getUserFirebaseService } from '../../../firebase';
+import { appFirebaseService } from '../../../firebase';
 import chromeExtension from '../../../chromeExtension';
 import SignUpTemplate from '../../templates/SignUpTemplate';
-import FirebaseConfigEntity from '../../atoms/Entities/FirebaseConfigEntity';
 import UserEntity from '../../atoms/Entities/UserEntity';
-import store from '../../../store';
 
 export default {
   name: 'SignUpPage',
@@ -34,23 +28,12 @@ export default {
     return {
       email: null,
       password: null,
-      firebaseConfig: new FirebaseConfigEntity({
-        apiKey: "AIzaSyDfS8QLjhE8JY2sx3oh9400rFIoIceaykU",
-        authDomain: "customer-001-233b1.firebaseapp.com",
-        databaseURL: "https://customer-001-233b1.firebaseio.com",
-        projectId: "customer-001-233b1",
-        storageBucket: "customer-001-233b1.appspot.com",
-        messagingSenderId: "498351222083",
-        appId: "1:498351222083:web:3eecc32a9ab989f886d3f6"
-      }),
-      step: 0,
       requesting: false,
     };
   },
   methods: {
     ...mapActions([
       'setServerSideErrors',
-      'addFirebaseConfig',
       'addUser',
     ]),
     async handleError({ message, code }) {
@@ -87,37 +70,13 @@ export default {
           errorMessage = message;
           break;
       }
-      await this.setServerSideErrors({
-        [field]: errorMessage,
-      });
-    },
-    async onClickNext() {
-      const isValid = await this.$refs.observer.validate();
-      if (isValid) {
-        this.next();
-      }
-    },
-    next() {
-      this.step += 1;
-    },
-    prev() {
-      this.step -= 1;
+      await this.setServerSideErrors(errorMessage);
     },
     async onClickSignUp() {
       const isValid = await this.$refs.observer.validate();
       if (!isValid) return;
       try {
         this.requesting = true;
-        const userFirebaseUnsubscribe = await getUserFirebaseService(this.firebaseConfig)
-          .watchAuth(async user => {
-            if (user) {
-              userFirebaseUnsubscribe();
-              this.firebaseConfig = new FirebaseConfigEntity({
-                ...this.firebaseConfig,
-                uid: user.uid,
-              });
-            }
-          });
         const appFirebaseUnsubscribe = await appFirebaseService
           .watchAuth(async user => {
             if (user) {
@@ -125,7 +84,6 @@ export default {
               if (await chromeExtension.getVersion()) {
                 await chromeExtension.signIn(this.email, this.password);
               }
-              await this.addFirebaseConfig(this.firebaseConfig);
               await this.addUser(new UserEntity(user));
               await appFirebaseService.sendEmailVerification();
               await this.$router.push({
@@ -133,7 +91,6 @@ export default {
               });
             }
           });
-        await getUserFirebaseService(this.firebaseConfig).signUp(this.email, this.password);
         await appFirebaseService.signUp(this.email, this.password);
       } catch (e) {
         this.handleError(e);

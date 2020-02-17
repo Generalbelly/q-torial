@@ -1,17 +1,24 @@
 <template>
   <div>
-    <validatable-email-field
-      name="email"
-      rules="email|required"
-      v-model="innerEmail"
-      label="Email"
-    />
-    <validatable-password-field
-      name="password"
-      rules="required|min:6"
-      v-model="innerPassword"
-      label="Password"
-    />
+    <form>
+      <validatable-email-field
+        name="email"
+        rules="email|required"
+        v-model="innerEmail"
+        label="Email"
+      />
+      <validatable-password-field
+        name="password"
+        rules="required|min:6"
+        v-model="innerPassword"
+        label="Password"
+      />
+    </form>
+    <p>
+      <router-link :to="{ name: 'password.forget', query: { appName: 'user' } }">
+        Forget your password?
+      </router-link>
+    </p>
   </div>
 </template>
 <script>

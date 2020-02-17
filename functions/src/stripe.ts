@@ -22,12 +22,12 @@ const cancel = async (
         snapshot = await admin.firestore()
           .collection('users')
           .doc(userKey)
-          .collection('stripe_customers')
+          .collection('stripeCustomers')
           .doc(stripeCustomerId)
           .get();
       } else if (customerId && subscriptionId) {
         const querySnapshot = await admin.firestore()
-          .collectionGroup('stripe_customers')
+          .collectionGroup('stripeCustomers')
           .where('customerId', '==', customerId)
           .where('subscriptionId', '==', subscriptionId)
           .where('deletedAt', '==', null)
@@ -87,7 +87,7 @@ export const stripeWebhook = functions.https.onRequest(async (request, response)
         const userKey = event.data.object.client_reference_id;
         const customerId = event.data.object.customer;
         const subscriptionId = event.data.object.subscription;
-        await admin.firestore().collection('users').doc(userKey).collection('stripe_customers')
+        await admin.firestore().collection('users').doc(userKey).collection('stripeCustomers')
           .add({
             customerId,
             subscriptionId,

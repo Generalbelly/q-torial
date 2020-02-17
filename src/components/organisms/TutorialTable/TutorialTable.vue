@@ -27,6 +27,7 @@
           @click.stop="$emit('click:edit', props.row)"
         />
         <external-link-icon
+          v-if="shouldShowLink"
           class="has-margin-right-4 has-cursor-pointer"
           @click.stop="$emit('click:go', props.row)"
         />
@@ -49,6 +50,12 @@ import ChartBarIcon from '../../atoms/icons/ChartBarIcon';
 
 export default {
   name: 'TutorialTable',
+  props: {
+    shouldShowLink: {
+      type: Boolean,
+      default: false,
+    },
+  },
   components: {
     ChartBarIcon,
     ExternalLinkIcon,

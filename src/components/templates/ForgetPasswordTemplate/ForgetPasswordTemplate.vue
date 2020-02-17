@@ -12,8 +12,16 @@
           />
         </base-fade-transition>
         <validation-observer ref="observer">
-          <p class="has-margin-bottom-4">Please enter the email registered on your account.</p>
+          <p
+            v-if="appName === 'user'"
+          >
+            Please enter the email registered for your firebase project ({{ firebaseConfig.projectId }})
+          </p>
+          <p v-else>
+             Please enter the email registered for Qtorial
+          </p>
           <forget-password-form
+            class="has-margin-top-4"
             :email.sync="innerEmail"
           />
           <forget-password-button
@@ -42,6 +50,7 @@ import CenteringLayout from '../../molecules/layouts/CenteringLayout';
 import ForgetPasswordButton from '../../atoms/buttons/ForgetPasswordButton';
 import BaseSubHeading from '../../atoms/BaseSubHeading';
 import BaseLoading from '../../atoms/BaseLoading';
+import FirebaseConfigEntity from '../../atoms/Entities/FirebaseConfigEntity';
 
 export default {
   name: 'ForgetPasswordTemplate',
@@ -57,6 +66,10 @@ export default {
     ValidationObserver,
   },
   props: {
+    appName: {
+      type: String,
+      default: null,
+    },
     loading: {
       type: Boolean,
       default: false,
@@ -68,6 +81,12 @@ export default {
     passwordResetLinkSent: {
       type: Boolean,
       default: false,
+    },
+    firebaseConfig: {
+      type: Object,
+      default() {
+        return new FirebaseConfigEntity();
+      },
     },
   },
   data() {
@@ -84,7 +103,6 @@ export default {
     async onClickResetLink() {
       const isValid = await this.$refs.observer.validate();
       if (isValid) {
-        console.log(isValid);
         this.$emit('click:reset-link', {
           email: this.innerEmail,
         });

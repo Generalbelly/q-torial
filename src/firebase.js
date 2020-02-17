@@ -36,7 +36,7 @@ export default class FirebaseService {
   }
 
   checkAuth() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const unsubscribe = this.auth.onAuthStateChanged(user => {
         resolve(user);
         unsubscribe();
@@ -53,11 +53,14 @@ export default class FirebaseService {
   }
 
   async sendEmailVerification() {
-    await this.auth.currentUser.sendEmailVerification();
+    const user = await this.checkAuth();
+    if (user) {
+      await user.sendEmailVerification();
+    }
   }
 
-  async sendPasswordResetEmail(email) {
-    await this.auth.sendPasswordResetEmail(email);
+  async sendPasswordResetEmail(email, settings = null) {
+    await this.auth.sendPasswordResetEmail(email, settings);
   }
 
   async resetPassword(code, password) {
@@ -67,7 +70,10 @@ export default class FirebaseService {
   }
 
   async updatePassword(password) {
-    await this.auth.currentUser.updatePassword(password);
+    const user = await this.checkAuth();
+    if (user) {
+      await user.updatePassword(password);
+    }
   }
 
   updateAssets() {

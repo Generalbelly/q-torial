@@ -4,6 +4,7 @@ import ResetPasswordPage from '../../components/pages/ResetPasswordPage';
 import ForgetPasswordPage from '../../components/pages/ForgetPasswordPage';
 import VerifyEmailPage from '../../components/pages/VerifyEmailPage';
 import InstructionPage from '../../components/pages/InstructionPage';
+import RegisterFirebasePage from '../../components/pages/RegisterFirebasePage';
 
 export default [
   {
@@ -66,9 +67,9 @@ export default [
     meta: { requireAuth: true },
   },
   {
-    path: '/instruction',
-    name: 'instruction',
-    component: InstructionPage,
+    name: 'register-firebase',
+    path: '/register-firebase',
+    component: RegisterFirebasePage,
     meta: { requireAuth: true },
   },
 ];

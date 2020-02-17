@@ -11,27 +11,45 @@ const router = new VueRouter({
   routes,
 });
 
-const routing = (to, from, next, user = null, setupComplete = false) => {
+const routing = async (to, from, next, user = null, setupComplete = false) => {
+  if (to.matched.length === 0) {
+    next({
+      name: 'page-not-found',
+    });
+    return;
+  }
   const requireAuth = to.matched.some(route => route.meta.requireAuth);
-  if (user && user.emailVerified) {
-    if (!setupComplete && to.name !== 'instruction') {
+  const requireFirebase = to.matched.some(route => route.meta.requireFirebase);
+  const firebaseUser = store.state.user && store.state.user.firebaseConfig
+    ? await getUserFirebaseService(store.state.user.firebaseConfig).checkAuth() : null;
+  if (requireFirebase) {
+    if (!firebaseUser) {
       next({
-        name: 'instruction',
+        name: 'sign-in',
+      });
+      return;
+    }
+  }
+  if (user && user.emailVerified) {
+    if (!setupComplete && to.name !== 'register-firebase') {
+      next({
+        name: 'register-firebase',
       });
     } else if (
       (
-        setupComplete && to.name === 'instruction')
+        setupComplete && (to.name === 'register-firebase' || to.name === 'instruction'))
       || to.name === 'sign-in'
       || to.name === 'sign-up'
       || to.name === 'email.verify'
       || to.path === '/'
     ) {
-      next({
-        name: 'tutorials.index',
-      });
-    } else {
-      next();
+      if (firebaseUser) {
+        next({
+          name: 'tutorials.index',
+        });
+      }
     }
+    next();
   } else if (user && !user.emailVerified) {
     if (to.name === 'email.verify') {
       next();
@@ -54,22 +72,27 @@ const routing = (to, from, next, user = null, setupComplete = false) => {
 router.beforeEach(async (to, from, next) => {
   const user = await appFirebaseService.checkAuth();
   if (!user) {
-    routing(to, from, next);
+    await routing(to, from, next);
     return;
+  }
+  if (!store.state.user) {
+    await store.dispatch('updateLocalUser', user);
   }
   if (!store.state.user.setupComplete) {
     await store.dispatch('getUser');
   }
-  if (to.name === 'sign-in' && to.query.source === 'extension') {
-    if (store.state.user.firebaseConfig) {
-      await getUserFirebaseService(store.state.user.firebaseConfig).signOut();
-    }
-    await appFirebaseService.signOut();
+  if (!store.state.user.stripeCustomer) {
+    await store.dispatch('getUserPaymentInfo');
   }
-  if (!user.emailVerified && from.name === 'email.verify') {
+  if (!store.state.user.firebaseConfig) {
+    await store.dispatch('getFirebaseConfig');
+  }
+  if (to.name === 'sign-in' && to.query.source === 'extension') {
+    await store.dispatch('signOut');
+  } else if (!user.emailVerified && from.name === 'email.verify') {
     await user.reload();
   }
-  routing(to, from, next, user, store.state.user.setupComplete);
+  await routing(to, from, next, user, store.state.user.setupComplete);
 });
 
 export default router;

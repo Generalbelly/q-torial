@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <form>
     <validatable-email-field
       label="Email"
       name="email"
@@ -19,7 +19,7 @@
       confirmation
       v-model="passwordConfirmation"
     />
-  </div>
+  </form>
 </template>
 <script>
 import ValidatablePasswordField from '../../../molecules/fields/ValidatablePasswordField';

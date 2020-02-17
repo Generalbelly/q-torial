@@ -1,5 +1,6 @@
 <template>
   <tutorials-template
+    :should-show-link="shouldShowLink"
     :query="searchQuery"
     :loading="requesting"
     :loadable="loadable"
@@ -49,11 +50,16 @@ export default {
     return {
       shouldShowCreateTutorialForm: false,
       shouldShowExtensionNotInstalledModal: false,
+      shouldShowLink: false,
     };
   },
-  mounted() {
+  async mounted() {
     if (this.repositoryReady && this.tutorials.length === 0) {
       this.listTutorials();
+    }
+    const auth = await chromeExtension.checkAuth();
+    if (auth) {
+      this.shouldShowLink = true;
     }
   },
   methods: {

@@ -10,9 +10,11 @@ import {
 } from './mutation-types';
 import UserEntity from '../components/atoms/Entities/UserEntity';
 import {
-  appFirebaseService,
+  appFirebaseService, getUserFirebaseService,
 } from '../firebase';
 import repositoryFactory from '../repository';
+import chromeExtension from '../chromeExtension';
+import { has } from '../utils';
 
 Vue.use(Vuex);
 
@@ -77,7 +79,7 @@ const mutations = {
           },
           {
             text: 'Sign out',
-            value: 'signout',
+            value: 'signOut',
           },
         ];
       } else {
@@ -88,7 +90,7 @@ const mutations = {
           },
           {
             text: 'Sign out',
-            value: 'signout',
+            value: 'signOut',
           },
         ];
       }
@@ -139,6 +141,9 @@ const actions = {
   async addFirebaseConfig({ state }, firebaseConfig) {
     await userRepository.addFirebaseConfig(state.user.uid, firebaseConfig);
   },
+  async updateFirebaseConfig({ state }, firebaseConfig) {
+    await userRepository.updateFirebaseConfig(state.user.uid, firebaseConfig);
+  },
   setServerSideErrors({ commit }, payload) {
     commit(SET_SERVER_SIDE_ERRORS, payload);
   },
@@ -165,15 +170,36 @@ const actions = {
       }
     });
   },
-  getFirebaseConfig({ state }) {
-    return userRepository.getFirebaseConfig(state.user.uid);
+  async getUserPaymentInfo({ commit, state }) {
+    const stripeCustomer = await userRepository.getUserPaymentInfo(state.user.uid,);
+    if (stripeCustomer) {
+      commit(UPDATE_USER, { stripeCustomer });
+    }
+  },
+  async getFirebaseConfig({ commit, state }) {
+    const firebaseConfig = await userRepository.getFirebaseConfig(state.user.uid);
+    if (firebaseConfig) {
+      commit(UPDATE_USER, { firebaseConfig });
+    }
+  },
+  async signOut({ state }) {
+    try {
+      await getUserFirebaseService(state.user.firebaseConfig).signOut();
+      await appFirebaseService.signOut();
+      const version = await chromeExtension.getVersion();
+      if (version) {
+        await chromeExtension.signOut();
+      }
+    } catch (e) {
+      console.log(e);
+    }
   },
 };
 
 const state = {
   user: null,
   requesting: false,
-  serverSideErrors: {},
+  serverSideErrors: null,
   auth: {
     emailVerificationLinkSent: false,
     emailVerificationLinkExpired: false,

@@ -5,6 +5,9 @@ export default [
     path: '/tags/:id',
     name: 'tags.show',
     component: TagPage,
-    meta: { requireAuth: true },
+    meta: {
+      requireAuth: true,
+      requireFirebase: true,
+    },
   },
 ];

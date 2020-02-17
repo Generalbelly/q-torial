@@ -234,7 +234,7 @@ export default {
           } else {
             this.showCancelFailedModal = true;
           }
-        } else if (value === 'signout') {
+        } else if (value === 'signOut') {
           this.$emit('click:sign-out');
         }
       }

@@ -14,20 +14,8 @@ import App from './App.vue';
 
 import { appFirebaseService } from './firebase';
 
-let checkUserPaymentInfo;
-let checkFirebaseConfig;
-appFirebaseService.watchAuth(async (user) => {
+appFirebaseService.watchAuth(async user => {
   await store.dispatch('updateLocalUser', user);
-  if (user) {
-    if (checkUserPaymentInfo) {
-      checkUserPaymentInfo();
-    }
-    if (checkFirebaseConfig) {
-      checkFirebaseConfig();
-    }
-    checkUserPaymentInfo = await store.dispatch('checkUserPaymentInfo');
-    checkFirebaseConfig = await store.dispatch('checkFirebaseConfig');
-  }
 });
 
 // Buefy

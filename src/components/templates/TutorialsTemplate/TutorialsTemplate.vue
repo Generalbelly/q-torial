@@ -17,6 +17,7 @@
       </template>
       <template v-slot:table>
         <tutorial-table
+          :should-show-link="shouldShowLink"
           :data="tutorials"
           :loading="loading"
           :loadable="loadable"
@@ -85,6 +86,10 @@ export default {
     TutorialTable,
   },
   props: {
+    shouldShowLink: {
+      type: Boolean,
+      default: false,
+    },
     query: {
       type: String,
       default: null,

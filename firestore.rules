@@ -24,7 +24,7 @@ service cloud.firestore {
       allow update: if signedIn() && isOwner(userId) &&
         incomingData().updatedAt is timestamp;
     }
-    match /users/{userId}/firebase_configs/{firebaseConfigId}/{document=**} {
+    match /users/{userId}/firebaseConfigs/{firebaseConfigId}/{document=**} {
       allow list, get, delete: if signedIn() && isOwner(userId);
       allow create: if signedIn() && isOwner(userId) &&
         incomingData().createdAt is timestamp &&
@@ -32,7 +32,7 @@ service cloud.firestore {
       allow update: if signedIn() && isOwner(userId) &&
         incomingData().updatedAt is timestamp;
     }
-    match /users/{userId}/stripe_customers/{stripeCustomerId}/{document=**} {
+    match /users/{userId}/stripeCustomers/{stripeCustomerId}/{document=**} {
       allow list, get, delete: if signedIn() && isOwner(userId);
       allow create: if signedIn() && isOwner(userId) &&
         incomingData().createdAt is timestamp &&
