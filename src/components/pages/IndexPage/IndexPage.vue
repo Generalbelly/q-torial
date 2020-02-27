@@ -17,7 +17,9 @@
               Try the demo
             </base-button>
           </div>
-          <span class="help">No credit card required • Risk free 14-day trial • Cancel anytime</span>
+          <span class="help">
+            No credit card required • Risk free 14-day trial • Cancel anytime
+          </span>
         </base-column>
         <base-column>
           <img src="/img/screen.png" />
@@ -121,11 +123,7 @@
         </primary-button>
       </div>
     </section>
-    <footer class="footer">
-      <div class="content has-text-centered">
-        © 2019 Qtorial
-      </div>
-    </footer>
+    <the-footer />
   </div>
 </template>
 
@@ -137,10 +135,20 @@ import BaseButton from '../../atoms/BaseButton';
 import PrimaryButton from '../../atoms/buttons/PrimaryButton';
 import BaseCard from '../../molecules/BaseCard';
 import BaseSlider from '../../molecules/BaseSlider';
+import BaseLevel from '../../atoms/BaseLevel/BaseLevel';
+import BaseLevelLeft from '../../atoms/BaseLevelLeft/BaseLevelLeft';
+import BaseLevelRight from '../../atoms/BaseLevelRight/BaseLevelRight';
+import BaseLevelItem from '../../atoms/BaseLevelItem/BaseLevelItem';
+import TheFooter from '../../organisms/global/TheFooter/TheFooter';
 
 export default {
   name: 'IndexPage',
   components: {
+    TheFooter,
+    BaseLevelItem,
+    BaseLevelRight,
+    BaseLevelLeft,
+    BaseLevel,
     BaseSlider,
     BaseCard,
     PrimaryButton,

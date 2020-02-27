@@ -1,6 +1,6 @@
 <template>
   <div>
-    <template v-if="isIndexPage">
+    <template v-if="isIndexPage || isNotationPage || isPrivacyPolicyPage">
       <the-navbar
         :navItems="navItems"
         :user="user"
@@ -103,6 +103,12 @@ export default {
     },
     isIndexPage() {
       return this.$route.name === 'index';
+    },
+    isPrivacyPolicyPage() {
+      return this.$route.name === 'privacy-policy';
+    },
+    isNotationPage() {
+      return this.$route.name === 'notation';
     },
     isPageNotFoundPage() {
       return this.$route.name === 'page-not-found';

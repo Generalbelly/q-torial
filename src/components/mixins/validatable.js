@@ -4,6 +4,10 @@ export default {
       type: String,
       required: true,
     },
+    tag: {
+      type: String,
+      required: false,
+    },
     rules: {
       type: [String, Object],
       default: '',

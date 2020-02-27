@@ -6,7 +6,6 @@ import {
   UPDATE_USER,
   SET_SERVER_SIDE_ERRORS,
   UPDATE_AUTH,
-  SET_REQUESTING,
 } from './mutation-types';
 import UserEntity from '../components/atoms/Entities/UserEntity';
 import {
@@ -14,7 +13,6 @@ import {
 } from '../firebase';
 import repositoryFactory from '../repository';
 import chromeExtension from '../chromeExtension';
-import { has } from '../utils';
 
 Vue.use(Vuex);
 
@@ -39,9 +37,6 @@ const getters = {
 };
 
 const mutations = {
-  [SET_REQUESTING](state, payload) {
-    state.requesting = payload;
-  },
   [UPDATE_USER](state, user) {
     if (user) {
       state.user = new UserEntity({
@@ -120,9 +115,6 @@ const mutations = {
 };
 
 const actions = {
-  async setRequesting({ commit }, payload) {
-    commit(SET_REQUESTING, payload);
-  },
   async getUser({ dispatch, state }) {
     const { setupComplete } = await userRepository.get(state.user.uid);
     dispatch('updateLocalUser', { setupComplete });
@@ -198,7 +190,6 @@ const actions = {
 
 const state = {
   user: null,
-  requesting: false,
   serverSideErrors: null,
   auth: {
     emailVerificationLinkSent: false,

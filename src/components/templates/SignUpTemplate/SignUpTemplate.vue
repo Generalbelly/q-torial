@@ -10,6 +10,7 @@
           class="has-margin-top-5"
           :email.sync="innerEmail"
           :password.sync="innerPassword"
+          :docs-checked.sync="innerDocsChecked"
         />
         <primary-button
           @click="onClickSignUp"
@@ -62,6 +63,10 @@ export default {
       type: String,
       default: null,
     },
+    docsChecked: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -83,6 +88,14 @@ export default {
       },
       set(newValue) {
         this.$emit('update:password', newValue);
+      },
+    },
+    innerDocsChecked: {
+      get() {
+        return this.docsChecked;
+      },
+      set(newValue) {
+        this.$emit('update:docs-checked', newValue);
       },
     },
   },

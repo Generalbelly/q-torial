@@ -1,4 +1,4 @@
-import Entity, { toPlainObject } from './Entity';
+import Entity from './Entity';
 
 export default class UserEntity extends Entity {
   uid = null;
@@ -15,25 +15,13 @@ export default class UserEntity extends Entity {
 
   setupComplete = false;
 
+  tosAgreed = false;
+
+  privacyPolicyAgreed = false;
+
   constructor(data = {}) {
     super();
     this.fill(data);
-  }
-
-  /**
-   * @param {firebase.User} auth
-   * @param {UserEntity|null} user
-   */
-
-  static createFromAuth(auth, user) {
-    if (user) {
-      const { setupComplete } = user;
-      return new UserEntity({
-        ...auth,
-        setupComplete,
-      });
-    }
-    return new UserEntity(auth);
   }
 
   toPlainObject() {

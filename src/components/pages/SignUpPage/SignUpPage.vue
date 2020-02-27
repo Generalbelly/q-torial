@@ -4,6 +4,7 @@
       :loading="requesting"
       :email.sync="email"
       :password.sync="password"
+      :docs-checked.sync="docsChecked"
       @click:sign-up="onClickSignUp"
       @click:logo="onClickLogo"
     />
@@ -28,6 +29,7 @@ export default {
     return {
       email: null,
       password: null,
+      docsChecked: false,
       requesting: false,
     };
   },
@@ -84,7 +86,11 @@ export default {
               if (await chromeExtension.getVersion()) {
                 await chromeExtension.signIn(this.email, this.password);
               }
-              await this.addUser(new UserEntity(user));
+              await this.addUser(new UserEntity({
+                ...user,
+                tosAgreed: true,
+                privacyPolicyAgreed: true,
+              }));
               await appFirebaseService.sendEmailVerification();
               await this.$router.push({
                 name: 'email.verify',
