@@ -89,6 +89,9 @@
                     Unlimited number of tutorials
                   </li>
                   <li>
+                    Multipage tutorials
+                  </li>
+                  <li>
                     Performance report
                   </li>
                   <li>
