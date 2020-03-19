@@ -37,12 +37,12 @@
           </tr>
           <tr>
             <th>Delivery Time</th>
-            <td>We will offer the Service as soon as the payment transaction becomes complete.</td>
+            <td>We will offer the Service as soon as the payment transaction is complete.</td>
           </tr>
           <tr>
             <th>Cancelling / Returning of Product(s)</th>
             <td>
-              In principle, order cancellations and product returns or exchange are not accepted
+              In principle, order cancellations and product returns or exchange are not accepted.
             </td>
           </tr>
           <tr>

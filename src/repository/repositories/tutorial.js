@@ -29,7 +29,7 @@ export default class TutorialRepository {
    * @param {string} userId
    * @param {import('../../components/atoms/Entities/TutorialEntity').default} tutorial
    */
-  async test(userId, tutorial) {
+  async test(userId) {
     const docRef = this.getTutorialCollection(userId).doc();
     await docRef.set({
       id: docRef.id,

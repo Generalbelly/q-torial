@@ -8,6 +8,7 @@
       :email.sync="email"
       :password.sync="password"
       :firebase-config.sync="firebaseConfig"
+      :use-existing-user.sync="useExistingUser"
       @click:create="onClickCreate"
       @click:register="onClickRegister"
       @click:done="onClickDone"
@@ -35,19 +36,12 @@ export default {
     return {
       email: null,
       password: null,
-      firebaseConfig: new FirebaseConfigEntity({
-        apiKey: "AIzaSyDfS8QLjhE8JY2sx3oh9400rFIoIceaykU",
-        authDomain: "customer-001-233b1.firebaseapp.com",
-        databaseURL: "https://customer-001-233b1.firebaseio.com",
-        projectId: "customer-001-233b1",
-        storageBucket: "customer-001-233b1.appspot.com",
-        messagingSenderId: "498351222083",
-        appId: "1:498351222083:web:3eecc32a9ab989f886d3f6"
-      }),
+      firebaseConfig: new FirebaseConfigEntity(),
       shouldShowCreateUserModal: false,
       shouldShowInstructionModal: false,
       requesting: false,
       supportEmail: process.env.VUE_APP_CONTACT_EMAIL,
+      useExistingUser: false,
     };
   },
   computed: {
@@ -69,8 +63,10 @@ export default {
             });
           } else if (value.firebaseConfig.uid) {
             this.shouldShowInstructionModal = true;
+            this.shouldShowCreateUserModal = false;
           } else {
             this.shouldShowCreateUserModal = true;
+            this.shouldShowInstructionModal = false;
           }
         }
       },
@@ -85,10 +81,9 @@ export default {
     ]),
     ...mapActions('tutorial', [
       'testTutorial',
+      'initRepository',
     ]),
-    async handleError( e = { message, code }) {
-      console.log(e);
-      const field = 'general';
+    async handleError({ message, code }) {
       let errorMessage;
       switch (code) {
         case 'auth/email-already-in-use':
@@ -111,11 +106,19 @@ export default {
             </div>
           `;
           break;
+        case 'auth/user-not-found':
+          errorMessage = 'We couldn\'t find an account with the email.';
+          break;
+        case 'auth/wrong-password':
+          errorMessage = 'The password is incorrect.';
+          break;
         default:
           errorMessage = message;
           break;
       }
-      await this.setServerSideErrors(errorMessage);
+      if (errorMessage) {
+        await this.setServerSideErrors(errorMessage);
+      }
     },
     async onClickRegister() {
       const isValid = await this.$refs.observer.validate();
@@ -123,10 +126,11 @@ export default {
       try {
         this.requesting = true;
         await this.addFirebaseConfig(this.firebaseConfig);
-      } catch (e) {
-        this.handleError(e);
-      } finally {
         this.requesting = false;
+        this.shouldShowCreateUserModal = true;
+      } catch (e) {
+        this.requesting = false;
+        this.handleError(e);
       }
     },
     async onClickCreate() {
@@ -145,9 +149,14 @@ export default {
                 ...this.user.firebaseConfig,
                 uid: user.uid,
               }));
+              await this.initRepository();
             }
           });
-        await getUserFirebaseService(this.firebaseConfig).signUp(this.email, this.password);
+        if (this.useExistingUser) {
+          await getUserFirebaseService(this.user.firebaseConfig).signIn(this.email, this.password);
+        } else {
+          await getUserFirebaseService(this.user.firebaseConfig).signUp(this.email, this.password);
+        }
       } catch (e) {
         this.handleError(e);
       } finally {
@@ -157,16 +166,20 @@ export default {
     async onClickDone() {
       // Firestore, Storageはローケーションの選択が必須
       // Cloud Functionsはus-central1でデプロイされるよう
-      const results = await Promise.all([
-        this.validateCloudFunctions(),
-        this.validateFirestore(),
-        this.validateCloudStorage(),
-      ]);
-      if (!results.every(result => result.valid)) {
-        await this.setServerSideErrors(results.reduce((acc, cv) => {
-          if (cv.valid) return acc;
-          return `${acc}${cv.message}<br />`;
-        }, ''));
+      // const firestoreValidation = await this.validateFirestore();
+      // if (!firestoreValidation.valid) {
+      //   await this.setServerSideErrors(firestoreValidation.message);
+      //   return;
+      // }
+      // const storageValidation = await this.validateCloudStorage();
+      // if (!storageValidation.valid) {
+      //   await this.setServerSideErrors(storageValidation.message);
+      //   return;
+      // }
+      const cloudFunctionValidation = await this.validateCloudFunctions();
+      console.log(cloudFunctionValidation)
+      if (!cloudFunctionValidation.valid) {
+        await this.setServerSideErrors(cloudFunctionValidation.message);
         return;
       }
       try {
@@ -175,18 +188,21 @@ export default {
           ...this.user,
           setupComplete: true,
         }));
+        this.requesting = false;
+        await this.$router.push({
+          name: 'tutorials.index',
+        });
       } catch (error) {
         console.error(error);
-      } finally {
         this.requesting = false;
       }
     },
     async validateCloudFunctions() {
       let valid = false;
-      let message = 'It looks like that Cloud Function hasn\'t been correctly set up.';
+      let message = 'It looks like that you haven\'t finished the setup yet.';
       try {
         await axios.post(
-          `https://us-central1-${this.firebaseConfig.projectId}.cloudfunctions.net/getTutorial`,
+          `https://us-central1-${this.user.firebaseConfig.projectId}.cloudfunctions.net/getTutorial`,
           {},
         );
       } catch (error) {
@@ -204,33 +220,34 @@ export default {
         message,
       };
     },
-    async validateFirestore() {
-      if (!this.repositoryReady) {
-        return {
-          valid: false,
-          message: 'Unknown error occurred, Please contact us by email.',
-        };
-      }
-      let valid = false;
-      let message = 'It looks like that Firestore hasn\'t been correctly set up.';
-      try {
-        await this.testTutorial();
-      } catch (error) {
-        if (error.name === 'FirebaseError' && error.message === 'Missing or insufficient permissions.') {
-          valid = true;
-          message = 'ok';
-        }
-      }
-      return {
-        valid,
-        message,
-      };
-    },
+    // async validateFirestore() {
+    //   if (!this.repositoryReady) {
+    //     return {
+    //       valid: false,
+    //       message: 'Unknown error occurred, Please contact us by email.',
+    //     };
+    //   }
+    //   let valid = false;
+    //   let message = 'It looks like that Firestore hasn\'t been correctly set up.';
+    //   try {
+    //     await this.testTutorial();
+    //   } catch (error) {
+    //     if (error.name === 'FirebaseError' && error.message === 'Missing or insufficient permissions.') {
+    //       valid = true;
+    //       message = 'ok';
+    //     }
+    //   }
+    //   console.log(message)
+    //   return {
+    //     valid,
+    //     message,
+    //   };
+    // },
     async validateCloudStorage() {
       let valid = true;
       let message = 'ok';
       try {
-        await getUserFirebaseService(this.firebaseConfig).updateAssets();
+        await getUserFirebaseService(this.user.firebaseConfig).updateAssets();
       } catch (error) {
         valid = false;
         message = 'It looks like that Cloud Storage hasn\'t been correctly set up.';

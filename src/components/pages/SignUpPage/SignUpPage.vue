@@ -39,7 +39,6 @@ export default {
       'addUser',
     ]),
     async handleError({ message, code }) {
-      const field = 'general';
       let errorMessage;
       switch (code) {
         case 'auth/email-already-in-use':

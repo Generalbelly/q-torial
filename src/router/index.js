@@ -92,7 +92,7 @@ router.beforeEach(async (to, from, next) => {
   } else if (!user.emailVerified && from.name === 'email.verify') {
     await user.reload();
   }
-  await routing(to, from, next, user, store.state.user.setupComplete);
+  await routing(to, from, next, user, store.state.user ? store.state.user.setupComplete : false);
 });
 
 export default router;

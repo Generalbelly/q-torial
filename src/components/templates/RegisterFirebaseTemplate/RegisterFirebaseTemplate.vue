@@ -1,6 +1,7 @@
 <template>
   <div>
     <centering-layout
+      v-if="!shouldShowCreateUserModal && !shouldShowInstructionModal"
       min-width="unset"
       max-width="unset"
     >
@@ -37,20 +38,34 @@
     </centering-layout>
     <base-modal
       :active="shouldShowCreateUserModal"
+      :can-cancel="false"
       hide-cancel
     >
       <template v-slot:content>
         <base-heading>
-          Create a user account for your firebase project
+          Register a user of the firebase project
         </base-heading>
-        <p>
-          All the tutorials you make in Qtorial belong to the user account you are about to create.
-        </p>
-        <sign-up-form
-          class="has-margin-top-5"
-          :email.sync="innerEmail"
-          :password.sync="innerPassword"
-        />
+        <p>All the tutorials you build on Qtorial will belong to a user account you register.</p>
+        <template v-if="useExistingUser">
+          <p class="has-margin-bottom-5">
+            If you would like to create a new user for this project, click <span @click="innerUseExistingUser = false" class="has-text-link has-cursor-pointer">here</span>
+          </p>
+          <sign-in-form
+            :email.sync="innerEmail"
+            :password.sync="innerPassword"
+            :has-forget-password-link="false"
+          />
+        </template>
+        <template v-else>
+          <p class="has-margin-bottom-5">
+            If you would like to register an existing user of this project, click <span @click="innerUseExistingUser = true" class="has-text-link has-cursor-pointer">here</span>
+          </p>
+          <sign-up-form
+            :email.sync="innerEmail"
+            :password.sync="innerPassword"
+            :has-docs-check="false"
+          />
+        </template>
       </template>
       <template v-slot:primary-action-button>
         <primary-button
@@ -58,12 +73,13 @@
           class="has-margin-top-3 is-fullwidth"
           clickable-with-enter
         >
-          Create
+          Register User
         </primary-button>
       </template>
     </base-modal>
     <base-modal
       :active="shouldShowInstructionModal"
+      :can-cancel="false"
       hide-footer
     >
       <template v-slot:content>
@@ -86,7 +102,7 @@
               </ul>
             </li>
             <li>
-              Follow the instruction of this <a href="https://github.com/Qtorial/firebase">repository</a> to complete the setup.
+              Follow the instruction of this <a href="https://github.com/Qtorial/firebase" target="_blank">repository</a> to complete the setup.
             </li>
           </ol>
           <primary-button
@@ -119,10 +135,12 @@ import BaseHeading from '../../atoms/BaseHeading/BaseHeading';
 import BaseColumns from '../../atoms/BaseColumns/BaseColumns';
 import BaseColumn from '../../atoms/BaseColumn/BaseColumn';
 import BaseModal from '../../molecules/BaseModal/BaseModal';
+import SignInForm from '../../organisms/forms/SignInForm/SignInForm';
 
 export default {
   name: 'RegisterFirebaseTemplate',
   components: {
+    SignInForm,
     BaseModal,
     BaseColumn,
     BaseColumns,
@@ -175,6 +193,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    useExistingUser: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -206,6 +228,14 @@ export default {
         this.$emit('update:firebase-config', newValue);
       },
     },
+    innerUseExistingUser: {
+      get() {
+        return this.useExistingUser;
+      },
+      set(newValue) {
+        this.$emit('update:use-existing-user', newValue);
+      },
+    }
   },
   methods: {
     onClickRegister() {

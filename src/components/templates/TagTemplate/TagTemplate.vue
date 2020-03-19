@@ -27,6 +27,12 @@
           Copy to clipboard
       </base-button>
     </b-tooltip>
+    <span
+      class="has-text-link is-block has-margin-top-4 has-cursor-pointer" 
+      style="text-decoration: underline;"
+    >
+      I would like to associate data with my users
+    </span>
   </div>
 </template>
 
@@ -53,6 +59,7 @@ export default {
     return {
       copiedInClipboard: false,
       url: `https://storage.googleapis.com/${this.user.firebaseConfig.storageBucket}/js/q-torial.js`,
+      assosiatedWithUserData: true,
     };
   },
   created() {

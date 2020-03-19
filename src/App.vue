@@ -1,11 +1,12 @@
 <template>
   <div>
-    <template v-if="isIndexPage || isNotationPage || isPrivacyPolicyPage">
+    <template v-if="isIndexPage || isNotationPage || isPrivacyPolicyPage || isTermsOfServicePage">
       <the-navbar
         :navItems="navItems"
         :user="user"
         :user-items="userItems"
         :is-on-index-page="isIndexPage"
+        @click:logo="onClickLogo"
       />
       <router-view />
     </template>
@@ -29,6 +30,7 @@
         @click:sign-out="clickSignOut"
         :user="user"
         :user-items="userItems"
+        @click:logo="onClickLogo"
       />
       <the-main
         :class="{'has-padding-5': shouldShowNavbar || shouldShowFooter}"
@@ -110,6 +112,9 @@ export default {
     isNotationPage() {
       return this.$route.name === 'notation';
     },
+    isTermsOfServicePage() {
+      return this.$route.name === 'terms-of-service';
+    },
     isPageNotFoundPage() {
       return this.$route.name === 'page-not-found';
     },
@@ -159,6 +164,20 @@ export default {
         console.error(e);
       }
     },
+    async onClickLogo() {
+      if (this.isIndexPage) return;
+      if (this.user) {
+        if (this.$route.name !== 'tutorials.index') {
+          await this.$router.push({
+            name: 'tutorials.index',
+          });
+        }
+        return;
+      }
+      await this.$router.push({
+        name: 'index',
+      });
+    }
   },
 };
 </script>

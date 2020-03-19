@@ -14,7 +14,7 @@
         label="Password"
       />
     </form>
-    <p>
+    <p v-if="hasForgetPasswordLink">
       <router-link :to="{ name: 'password.forget', query: { appName: 'user' } }">
         Forget your password?
       </router-link>
@@ -39,6 +39,10 @@ export default {
     password: {
       type: String,
       default: null,
+    },
+    hasForgetPasswordLink: {
+      type: Boolean,
+      default: true,
     },
   },
   computed: {

@@ -20,13 +20,14 @@
       v-model="passwordConfirmation"
     />
     <validatable-checkbox-field
-      name="terms of service and privacy policy"
+      v-if="hasDocsCheck"
+      name="agreement to terms of service and privacy policy"
       rules="required:true"
       v-model="innerDocsChecked"
       tag="div"
       class="has-margin-top-4"
     >
-      <small>I accept the <a href="https://storage.cloud.google.com/docs.q-torial.app/terms-of-service.pdf" target="_blank">Terms Of Service</a> and <a href="https://storage.cloud.google.com/docs.q-torial.app/privacy-policy.pdf" target="_blank">Privacy Policy</a></small>
+      <small>I accept the <a href="/terms-of-service" target="_blank">Terms Of Service</a> and <a href="/privacy-policy" target="_blank">Privacy Policy</a></small>
     </validatable-checkbox-field>
   </form>
 </template>
@@ -54,6 +55,10 @@ export default {
     docsChecked: {
       type: Boolean,
       default: false,
+    },
+    hasDocsCheck: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {

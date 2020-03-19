@@ -28,6 +28,7 @@
     </centering-layout>
     <base-modal
       :active="shouldShowFirebaseSignInModal"
+      :can-cancel="false"
       hide-cancel
     >
       <template v-slot:content>

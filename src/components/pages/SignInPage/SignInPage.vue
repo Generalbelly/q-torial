@@ -19,6 +19,7 @@ import { ValidationObserver } from 'vee-validate';
 import { appFirebaseService, getUserFirebaseService } from '../../../firebase';
 import SignInTemplate from '../../templates/SignInTemplate';
 import chromeExtension from '../../../chromeExtension';
+import store from '../../../store';
 
 export default {
   name: 'SignInPage',
@@ -65,10 +66,11 @@ export default {
         if (await chromeExtension.getVersion()) {
           await chromeExtension.signIn(this.email, this.password);
         }
-      } catch (e) {
-        this.handleError(e);
-      } finally {
+        await this.getFirebaseConfig();
         this.requesting = false;
+      } catch (e) {
+        this.requesting = false;
+        this.handleError(e);
       }
     },
     async onClickFirebaseSignIn() {
@@ -78,7 +80,7 @@ export default {
         this.requesting = true;
         await getUserFirebaseService(this.firebaseConfig).signIn(
           this.firebaseEmail,
-          this.firebasePassword
+          this.firebasePassword,
         );
         if (await chromeExtension.getVersion()) {
           await chromeExtension.firebaseSignIn(this.firebaseEmail, this.firebasePassword);
@@ -102,27 +104,21 @@ export default {
       }
     },
     async handleError({ message, code }) {
-      let field;
       let errorMessage;
       switch (code) {
         case 'auth/invalid-email':
-          field = 'email';
           errorMessage = 'The email is not valid.';
           break;
         case 'auth/user-not-found':
-          field = 'email';
           errorMessage = 'We couldn\'t find an account with the email.';
           break;
         case 'auth/wrong-password':
-          field = 'password';
           errorMessage = 'The password is incorrect.';
           break;
         default:
-          field = 'general';
           errorMessage = message;
           break;
       }
-      console.log(errorMessage);
       await this.setServerSideErrors(errorMessage);
     },
   },

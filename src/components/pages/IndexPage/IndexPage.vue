@@ -1,13 +1,13 @@
 <template>
-  <div>
-    <section class="section" style="background-color: #fff !important;">
+  <div class="container">
+    <section class="section">
       <base-columns>
         <base-column class="is-flex">
-          <h1 class="has-text-weight-bold is-size-2">
-            Build product tutorials code-free
+          <h1 class="has-text-weight-bold" style="font-size: 60px;">
+            Tutorial builder for indie hackers
           </h1>
-          <p class="has-margin-top-4 has-text-weight-semibold">
-            Increase user engagements and satisfactions without engineers help.<br />
+          <p class="has-margin-top-4 is-size-3">
+            Seamlessly integrates with Firebase<br />
           </p>
           <div class="has-margin-top-6 buttons">
             <primary-button size="is-large">
@@ -17,9 +17,9 @@
               Try the demo
             </base-button>
           </div>
-          <span class="help">
-            No credit card required • Risk free 14-day trial • Cancel anytime
-          </span>
+<!--          <span class="is-siz-5">-->
+<!--            Risk free 14-day trial • Cancel anytime-->
+<!--          </span>-->
         </base-column>
         <base-column>
           <img src="/img/screen.png" />
@@ -28,98 +28,144 @@
     </section>
     <section class="section">
       <base-columns>
-        <base-column class="is-flex">
-          <h2 class="is-size-3 has-text-weight-semibold has-margin-bottom-5">
-            Show your product value at a glance
-          </h2>
-          <p>
-            Create engaging onboarding experiences, so that new users know they can improve their lives with your product from day one.
-          </p>
-        </base-column>
         <base-column>
           <img src="/img/welcome.png" />
         </base-column>
+        <base-column class="is-flex">
+          <h2 class="is-size-1 has-text-weight-semibold has-margin-bottom-5">
+            Build tutorials code-free
+          </h2>
+          <p class="is-size-4">
+            Use Qtorial to easily build tutorials and to separate tutorial-related code from your product-related code.
+          </p>
+        </base-column>
       </base-columns>
       <base-columns>
+        <base-column class="is-flex">
+          <h2 class="is-size-1 has-text-weight-semibold has-margin-bottom-5">
+            Host tutorials at almost no cost or reasonable price
+          </h2>
+          <p class="is-size-4">
+            We store tutorials you build in your firebase project, so that your can serve them from there.
+          </p>
+        </base-column>
         <base-column>
-          <img src="/img/new_feature.png" />
-        </base-column>
-        <base-column class="is-flex">
-          <h2 class="is-size-3 has-text-weight-semibold has-margin-bottom-5">
-            Drive adoption of your product new feature
-          </h2>
-          <p>
-            Guide them with step by step tutorial. The sooner users get familiar with your product new feature, the more active they become.
-          </p>
+          <img src="/img/firebase-integration.png" />
         </base-column>
       </base-columns>
       <base-columns>
-        <base-column class="is-flex">
-          <h2 class="is-size-3 has-text-weight-semibold has-margin-bottom-5">
-            Measure effectiveness
-          </h2>
-          <p>
-            Measure how effective tutorials are to improve entire you product experience.<br />
-            Google Analytics integration is also supported.
-          </p>
-        </base-column>
         <base-column>
           <img src="/img/measure.png" />
+        </base-column>
+        <base-column class="is-flex">
+          <h2 class="is-size-1 has-text-weight-semibold has-margin-bottom-5">
+            Measure effectiveness
+          </h2>
+          <p class="is-size-4">
+            See how effective tutorials are.<br />
+            Google Analytics integration is also supported.
+          </p>
         </base-column>
       </base-columns>
     </section>
     <section class="section has-background-info">
-      <p class="has-padding-top-3 has-text-centered is-size-3 has-text-weight-semibold has-text-grey">
+      <p class="has-padding-top-3 has-text-centered is-size-1 has-text-weight-semibold  has-text-grey">
         Pricing
       </p>
       <base-columns class="has-padding-y-5">
         <base-column>
           <base-card class="has-text-centered">
-            <div class="label is-size-5 has-padding-bottom-4">{{ commaSeparationFormatter(monthlyActiveUsers) }} Monthly Active Users</div>
-            <base-slider
-              size="is-medium"
-              :min="0"
-              :max="20000"
-              v-model="monthlyActiveUsers"
-              :items="[1000, 2500, 5000, 10000, 20000]"
-            />
-            <div class="has-margin-top-5 is-size-2">
-              ${{ calculateBasicPrice(monthlyActiveUsers) }}
-              <span class="is-size-6">
-                /Mo
-              </span>
+            <div class="has-text-primary is-size-5">Basic Plan</div>
+            <div class="is-size-2">
+              Free
             </div>
-            <ul class="has-margin-top-4">
-              <li>
-                Code-free tutorials builder
-              </li>
-              <li>
-                Unlimited number of tutorials
-              </li>
-              <li>
-                Tutorials performance reporting
-              </li>
-              <li>
-                Google Analytics Integration
-              </li>
-              <li>
-                Email support
-              </li>
-            </ul>
-            <p class="has-margin-top-4 help">
-              Do you have more than 20,000 users?
-              Contact us for a customized Enterprise plan
-            </p>
+            <base-level>
+              <base-level-item>
+                <ul class="has-margin-top-4 has-text-left is-size-6">
+                  <li>
+                    Code-free tutorials builder
+                  </li>
+                  <li>
+                    Unlimited number of tutorials
+                  </li>
+                  <li>
+                    Performance report
+                  </li>
+                  <li>
+                    Google Analytics Integration
+                  </li>
+                  <li>
+                    Email support
+                  </li>
+                </ul>
+              </base-level-item>
+            </base-level>
           </base-card>
         </base-column>
+        <base-column>
+          <base-card class="has-text-centered has-background-grey" style="height: 100%;">
+            <div class="is-size-5 has-text-grey-light">Advanced Plan</div>
+<!--            <div class="is-size-2">-->
+<!--              ???<span class="is-size-7">/Mo</span>-->
+<!--            </div>-->
+            <div class="has-margin-top-6 is-size-2 has-text-grey-light">Coming soon</div>
+          </base-card>
+        </base-column>
+<!--        <base-column>-->
+<!--          <base-card class="has-text-centered">-->
+<!--            <div class="label is-size-5 has-padding-bottom-4">{{ commaSeparationFormatter(monthlyActiveUsers) }} Monthly Active Users</div>-->
+<!--            <base-slider-->
+<!--              size="is-medium"-->
+<!--              :min="0"-->
+<!--              :max="20000"-->
+<!--              v-model="monthlyActiveUsers"-->
+<!--              :items="[1000, 2500, 5000, 10000, 20000]"-->
+<!--            />-->
+<!--            <div class="has-margin-top-5 is-size-2">-->
+<!--              ${{ calculateBasicPrice(monthlyActiveUsers) }}-->
+<!--              <span class="is-size-6">-->
+<!--                /Mo-->
+<!--              </span>-->
+<!--            </div>-->
+<!--            <ul class="has-margin-top-4">-->
+<!--              <li>-->
+<!--                Code-free tutorials builder-->
+<!--              </li>-->
+<!--              <li>-->
+<!--                Unlimited number of tutorials-->
+<!--              </li>-->
+<!--              <li>-->
+<!--                Tutorials performance reporting-->
+<!--              </li>-->
+<!--              <li>-->
+<!--                Google Analytics Integration-->
+<!--              </li>-->
+<!--              <li>-->
+<!--                Email support-->
+<!--              </li>-->
+<!--            </ul>-->
+<!--            <p class="has-margin-top-4 help">-->
+<!--              Do you have more than 20,000 users?-->
+<!--              Contact us for a customized Enterprise plan-->
+<!--            </p>-->
+<!--          </base-card>-->
+<!--        </base-column>-->
       </base-columns>
+      <div class="has-text-centered">
+        <p>
+          Cloud Firestore, Cloud Functions, Storage &amp; SLA are determined by your Firebase plan.<br />
+          Remember, You need a Firebase* project to hook Qtorial up to. For more on Firebase pricing check out:<br />
+          <a href="https://firebase.google.com/pricing">https://firebase.google.com/pricing</a><br /><br />
+          *Firebase plan limitations apply
+        </p>
+      </div>
     </section>
     <section class="has-text-centered section">
-      <p class="has-padding-top-3 has-text-centered is-size-3 has-text-weight-semibold has-margin-bottom-5">30 Days Money-Back Guarantee</p>
-      <p>Try Qtorial for free up to 14 Days. After the free trial period, we give you an extra 30 days to decide. Completely risk-free!</p>
+<!--      <p class="has-padding-top-3 has-text-centered is-size-1 has-text-weight-semibold has-margin-bottom-5">30 Days Money-Back Guarantee</p>-->
+<!--      <p>Try Qtorial for free up to 14 Days now!</p>-->
       <div class="has-margin-5">
         <primary-button size="is-large">
-          Start free
+          Start free now !
         </primary-button>
       </div>
     </section>

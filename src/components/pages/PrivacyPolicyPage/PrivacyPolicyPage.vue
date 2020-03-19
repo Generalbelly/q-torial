@@ -69,10 +69,12 @@
           <p class="has-margin-top-3">
           While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you (“<span class="has-text-weight-bold">Personal Data</span>”).<br />
           Personally identifiable information may include, but is not limited to:
+          </p>
             <ol style="list-style-type: lower-alpha">
               <li>Email address</li>
               <li>Cookies and Usage Data</li>
             </ol>
+          <p>
           We may use your Personal Data to contact you with newsletters, marketing or promotional materials, and other information that may be of interest to you. <br />
           You may opt out of receiving any, or all, of these communications from us by following the unsubscribe link or by emailing at support@q-torial.app.
           </p>
@@ -85,7 +87,7 @@
           When you access our Service with a mobile device, this Usage Data may include information such as the type of mobile device you use, your mobile device unique ID, the IP address of your mobile device, your mobile operating system, , the type of mobile Internet browser you use, unique device identifiers, and other diagnostic data.
           </p>
         </div>
-        <p class="has-margin-bottom-3">
+        <div class="has-margin-bottom-3">
           <span class="has-text-weight-bold">Tracking Cookies Data</span>
           <p class="has-margin-top-3">
           We use cookies and similar tracking technologies to track the activity on our Service, and we hold certain information.<br />
@@ -94,15 +96,15 @@
           You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.<br />
           However, if you do not accept cookies, you may not be able to use some portions of our Service.<br />
           Examples of Cookies we use:
-            <ol style="list-style-type: lower-alpha">
-              <li>Session Cookies: We use Session Cookies to operate our Service.</li>
-              <li>Preference Cookies: We use Preference Cookies to remember your preferences and various settings.</li>
-              <li>Security Cookies: We use Security Cookies for security purposes.</li>
-              <li>Advertising Cookies: Advertising Cookies are used to serve you with advertisements that
-                may be relevant to you and your interests.</li>
-            </ol>
           </p>
-        </p>
+          <ol style="list-style-type: lower-alpha">
+            <li>Session Cookies: We use Session Cookies to operate our Service.</li>
+            <li>Preference Cookies: We use Preference Cookies to remember your preferences and various settings.</li>
+            <li>Security Cookies: We use Security Cookies for security purposes.</li>
+            <li>Advertising Cookies: Advertising Cookies are used to serve you with advertisements that
+              may be relevant to you and your interests.</li>
+          </ol>
+      </div>
     </section>
     <section class="paragraph">
       <h3>5. Use of Data</h3>
@@ -155,20 +157,21 @@
       <h3>8. Disclosure of Data</h3>
       <p>
         We may disclose personal information that we collect, or you provide:
-        <ol style="list-style-type: lower-alpha">
-          <li>
-            <span class="has-text-weight-bold is-block">Disclosure for Law Enforcement.</span>
-            Under certain circumstances, we may be required to disclose your Personal Data if required
-            to do so by law or in response to valid requests by public authorities.</li>
-          <li>
-            <span class="has-text-weight-bold is-block">Business Transaction.</span>
-            If we or our subsidiaries are involved in a merger, acquisition or asset sale, your Personal
-            Data may be transferred.</li>
-          <li>
-            <span class="has-text-weight-bold is-block">Other cases. </span>
-            We may disclose your information also to our subsidiaries and affiliates.
-          </li>
-        </ol>
+      </p>
+      <ol style="list-style-type: lower-alpha">
+        <li>
+          <span class="has-text-weight-bold is-block">Disclosure for Law Enforcement.</span>
+          Under certain circumstances, we may be required to disclose your Personal Data if required
+          to do so by law or in response to valid requests by public authorities.</li>
+        <li>
+          <span class="has-text-weight-bold is-block">Business Transaction.</span>
+          If we or our subsidiaries are involved in a merger, acquisition or asset sale, your Personal
+          Data may be transferred.</li>
+        <li>
+          <span class="has-text-weight-bold is-block">Other cases. </span>
+          We may disclose your information also to our subsidiaries and affiliates.
+        </li>
+      </ol>
       </p>
     </section>
     <section class="paragraph">
@@ -191,8 +194,8 @@
     </section>
     <section class="paragraph">
       <h3>11. Analytics</h3>
-      <p>
-        We may use third-party Service Providers to monitor and analyze the use of our Service.
+      <div>
+        <p>We may use third-party Service Providers to monitor and analyze the use of our Service.</p>
         <div class="has-margin-y-3">
           <span class="has-text-weight-bold">Google Analytics</span>
           <p class="has-margin-top-3">
@@ -217,12 +220,12 @@
             Privacy Terms web page: https://policies.google.com/privacy?hl=en
           </p>
         </div>
-      </p>
+      </div>
     </section>
     <section class="paragraph">
       <h3>12. CI/CD tools</h3>
-      <p>
-        We may use third-party Service Providers to automate the development process of our Service.
+      <div>
+        <p>We may use third-party Service Providers to automate the development process of our Service.</p>
         <div class="has-margin-y-3">
           <span class="has-text-weight-bold">GitHub</span>
           <p class="has-margin-top-3">
@@ -246,29 +249,31 @@
             https://circleci.com/privacy/.
           </p>
         </div>
-      </p>
+      </div>
     </section>
     <section class="paragraph">
       <h3>13. Payments</h3>
-      <p>
-        We may provide paid products and/or services within our Service. In that case, we use third-party
-        services for payment processing (e.g. payment processors).<br />
-        We will not store or collect your payment card details - that information is provided directly to our
-        third-party payment processors whose use of your personal information is governed by their Privacy
-        Policy. These payment processors adhere to the standards set by PCI-DSS as managed by the PCI
-        Security Standards Council, which is a joint effort of brands like Visa, Mastercard, American
-        Express and Discover. PCI-DSS requirements help ensure the secure handling of payment
-        information.<br />
-        The payment processors we work with are:
+      <div>
+        <p>
+          We may provide paid products and/or services within our Service. In that case, we use third-party
+          services for payment processing (e.g. payment processors).<br />
+          We will not store or collect your payment card details - that information is provided directly to our
+          third-party payment processors whose use of your personal information is governed by their Privacy
+          Policy. These payment processors adhere to the standards set by PCI-DSS as managed by the PCI
+          Security Standards Council, which is a joint effort of brands like Visa, Mastercard, American
+          Express and Discover. PCI-DSS requirements help ensure the secure handling of payment
+          information.<br />The payment processors we work with are:
+        </p>
         <div class="has-margin-y-3">
           <span class="has-text-weight-bold">Stripe</span>
           <p class="has-margin-top-3">
             Their Privacy Policy can be viewed at: https://stripe.com/us/privacy
           </p>
         </div>
+      </div>
       </section>
-      <section class="paragraph">
-        <h3>14. Links to Other Sites</h3>
+    <section class="paragraph">
+      <h3>14. Links to Other Sites</h3>
         <p>
           Our Service may contain links to other sites that are not operated by us. If you click a third party
           link, you will be directed to that third party's site. We strongly advise you to review the Privacy Policy
@@ -301,7 +306,7 @@
       <section class="paragraph">
         <h3>17. Contact Us</h3>
         <p>
-          If you have any questions about this Privacy Policy, please contact us by email: support@q-torial.app
+          If you have any questions about this Privacy Policy, please contact us: By email: support@q-torial.app
         </p>
       </section>
     <the-footer />
@@ -335,5 +340,9 @@ export default {
   .paragraph > p {
     width: 100%;
     max-width: 100%;
+  }
+  .paragraph ol, .paragraph ul {
+    margin-left: 0;
+    padding-left: 40px;
   }
 </style>

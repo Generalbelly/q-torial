@@ -3,7 +3,6 @@ import SignUpPage from '../../components/pages/SignUpPage';
 import ResetPasswordPage from '../../components/pages/ResetPasswordPage';
 import ForgetPasswordPage from '../../components/pages/ForgetPasswordPage';
 import VerifyEmailPage from '../../components/pages/VerifyEmailPage';
-import InstructionPage from '../../components/pages/InstructionPage';
 import RegisterFirebasePage from '../../components/pages/RegisterFirebasePage';
 
 export default [

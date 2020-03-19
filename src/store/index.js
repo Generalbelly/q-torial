@@ -130,11 +130,19 @@ const actions = {
   async updateLocalUser({ commit }, payload) {
     commit(UPDATE_USER, payload);
   },
-  async addFirebaseConfig({ state }, firebaseConfig) {
-    await userRepository.addFirebaseConfig(state.user.uid, firebaseConfig);
+  async addFirebaseConfig({ state, dispatch }, firebaseConfig) {
+    const addedFirebaseConfig = await userRepository.addFirebaseConfig(
+      state.user.uid,
+      firebaseConfig
+    );
+    dispatch('updateLocalUser', { firebaseConfig: addedFirebaseConfig });
   },
-  async updateFirebaseConfig({ state }, firebaseConfig) {
-    await userRepository.updateFirebaseConfig(state.user.uid, firebaseConfig);
+  async updateFirebaseConfig({ state, dispatch }, firebaseConfig) {
+    const updatedFirebaseConfig = await userRepository.updateFirebaseConfig(
+      state.user.uid,
+      firebaseConfig
+    );
+    dispatch('updateLocalUser', { firebaseConfig: updatedFirebaseConfig });
   },
   setServerSideErrors({ commit }, payload) {
     commit(SET_SERVER_SIDE_ERRORS, payload);
@@ -149,29 +157,17 @@ const actions = {
       emailVerificationLinkExpired: value,
     });
   },
-  checkUserPaymentInfo({ commit, state }) {
-    return userRepository.checkUserPaymentInfo(state.user.uid, stripeCustomer => {
-      commit(UPDATE_USER, { stripeCustomer });
-    });
-  },
-  checkFirebaseConfig({state, dispatch }) {
-    return userRepository.checkFirebaseConfig(state.user.uid, async firebaseConfig => {
-      dispatch('updateLocalUser', { firebaseConfig });
-      if (firebaseConfig) {
-        await dispatch('tutorial/initRepository');
-      }
-    });
-  },
-  async getUserPaymentInfo({ commit, state }) {
+  async getUserPaymentInfo({ state, dispatch }) {
     const stripeCustomer = await userRepository.getUserPaymentInfo(state.user.uid,);
     if (stripeCustomer) {
-      commit(UPDATE_USER, { stripeCustomer });
+      await dispatch('updateLocalUser', { stripeCustomer });
     }
   },
-  async getFirebaseConfig({ commit, state }) {
+  async getFirebaseConfig({ state, dispatch }) {
     const firebaseConfig = await userRepository.getFirebaseConfig(state.user.uid);
     if (firebaseConfig) {
-      commit(UPDATE_USER, { firebaseConfig });
+      await dispatch('updateLocalUser', { firebaseConfig });
+      await dispatch('tutorial/initRepository');
     }
   },
   async signOut({ state }) {
