@@ -1,38 +1,63 @@
 <template>
   <div>
     <p class="has-padding-3">Copy and paste this code into the &lt;HEAD&gt; of a webpage you want to show tutorials.</p>
-    <textarea
-      id="tag"
-      @click="$event.target.select()"
-      readonly
-      rows="3"
-      cols="80"
-      class="textarea"
-    >
-      <script>(function(w,d,s,o,i){if(!w[o]){var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='{{ url }}';j.onload=function(){w[o].init(i);};f.parentNode.insertBefore(j,f);}})(window,document,'script','Qtorial','{{ user.uid }}')</script>
-    </textarea>
-    <b-tooltip
-      type="is-black"
-      :active="copiedInClipboard"
-      label="Copied!"
-      position="is-bottom"
-      animated
-    >
-      <base-button
-        id="copy-in-clipboard"
-        class="has-margin-top-4"
-        data-clipboard-target="#tag"
-        @mouseenter="copiedInClipboard = false"
-      >
-          Copy to clipboard
-      </base-button>
-    </b-tooltip>
-    <span
-      class="has-text-link is-block has-margin-top-4 has-cursor-pointer" 
-      style="text-decoration: underline;"
-    >
-      I would like to associate data with my users
-    </span>
+    <b-tabs v-model="activeTab">
+      <b-tab-item label="Standard">
+        <textarea
+          id="tag"
+          @click="$event.target.select()"
+          readonly
+          rows="3"
+          cols="80"
+          class="textarea"
+        ><script>(function(w,d,s,o,i){if(!w[o]){var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='{{ url }}';j.onload=function(){w[o].init(i);};f.parentNode.insertBefore(j,f);}})(window,document,'script','Qtorial','{{ user.uid }}')</script></textarea>
+        <b-tooltip
+          type="is-black"
+          :active="copiedInClipboard"
+          label="Copied!"
+          position="is-bottom"
+          animated
+        >
+          <base-button
+            id="copy-in-clipboard"
+            class="has-margin-top-4"
+            data-clipboard-target="#tag"
+            @mouseenter="copiedInClipboard = false"
+          >
+            Copy to clipboard
+          </base-button>
+        </b-tooltip>
+      </b-tab-item>
+      <b-tab-item label="Custom">
+        <textarea
+          id="tag-custom"
+          @click="$event.target.select()"
+          readonly
+          rows="3"
+          cols="80"
+          class="textarea"
+        ><script>(function(w,d,s,o,i,c){if(!w[o]){var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='{{ url }}';j.onload=function(){w[o].init(i,c);};f.parentNode.insertBefore(j,f);}})(window,document,'script','Qtorial','{{ user.uid }}', YOUR_CUSTOMER_ID)</script></textarea>
+        <p class="has-margin-top-3">
+          Use this code if you would like to associate data with your user data. Replace YOUR_CUSTOMER_ID in the code with your actual user id.
+        </p>
+        <b-tooltip
+          type="is-black"
+          :active="copiedInClipboard"
+          label="Copied!"
+          position="is-bottom"
+          animated
+        >
+          <base-button
+            id="copy-in-clipboard"
+            class="has-margin-top-4"
+            data-clipboard-target="#tag-custom"
+            @mouseenter="copiedInClipboard = false"
+          >
+            Copy to clipboard
+          </base-button>
+        </b-tooltip>
+      </b-tab-item>
+    </b-tabs>
   </div>
 </template>
 
@@ -59,7 +84,7 @@ export default {
     return {
       copiedInClipboard: false,
       url: `https://storage.googleapis.com/${this.user.firebaseConfig.storageBucket}/js/q-torial.js`,
-      assosiatedWithUserData: true,
+      activeTab: null,
     };
   },
   created() {

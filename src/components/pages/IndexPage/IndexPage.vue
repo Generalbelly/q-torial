@@ -183,10 +183,7 @@ import BaseColumn from '../../atoms/BaseColumn';
 import BaseButton from '../../atoms/BaseButton';
 import PrimaryButton from '../../atoms/buttons/PrimaryButton';
 import BaseCard from '../../molecules/BaseCard';
-import BaseSlider from '../../molecules/BaseSlider';
 import BaseLevel from '../../atoms/BaseLevel/BaseLevel';
-import BaseLevelLeft from '../../atoms/BaseLevelLeft/BaseLevelLeft';
-import BaseLevelRight from '../../atoms/BaseLevelRight/BaseLevelRight';
 import BaseLevelItem from '../../atoms/BaseLevelItem/BaseLevelItem';
 import TheFooter from '../../organisms/global/TheFooter/TheFooter';
 
@@ -195,10 +192,7 @@ export default {
   components: {
     TheFooter,
     BaseLevelItem,
-    BaseLevelRight,
-    BaseLevelLeft,
     BaseLevel,
-    BaseSlider,
     BaseCard,
     PrimaryButton,
     BaseButton,
