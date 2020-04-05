@@ -115,7 +115,6 @@ import BaseButton from '../../../atoms/BaseButton/BaseButton';
 export default {
   name: 'TutorialForm',
   components: {
-    BaseButton,
     QuestionCircleIcon,
     BaseMessage,
     TextField,

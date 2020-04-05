@@ -10,7 +10,6 @@ import {
   UPDATE_TUTORIAL,
   DELETE_TUTORIAL,
   REPOSITORY_READY,
-  DELETE_GA,
 } from '../mutation-types';
 import TutorialEntity from '../../components/atoms/Entities/TutorialEntity';
 import repositoryFactory from '../../repository';
@@ -155,7 +154,7 @@ const actions = {
       payload,
     );
     commit(ADD_TUTORIAL, tutorial);
-    commit(SELECT_TUTORIAL, tutorial.id);
+    commit(SELECT_TUTORIAL, tutorial);
     commit(SET_REQUESTING, false);
   },
   async updateTutorial({ commit, rootState }, payload) {

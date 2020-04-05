@@ -79,10 +79,10 @@ const mutations = {
         ];
       } else {
         state.userItems = [
-          {
-            text: 'Upgrade to Pro Plan',
-            value: 'upgrade',
-          },
+          // {
+          //   text: 'Upgrade to Pro Plan',
+          //   value: 'upgrade',
+          // },
           {
             text: 'Sign out',
             value: 'signOut',
@@ -116,8 +116,12 @@ const mutations = {
 
 const actions = {
   async getUser({ dispatch, state }) {
-    const { setupComplete } = await userRepository.get(state.user.uid);
-    dispatch('updateLocalUser', { setupComplete });
+    const { setupComplete, tosAgreed, privacyPolicyAgreed } = await userRepository.get(state.user.uid);
+    dispatch('updateLocalUser', {
+      setupComplete,
+      tosAgreed,
+      privacyPolicyAgreed,
+    });
   },
   async addUser({ dispatch }, payload) {
     const user = await userRepository.add(payload);
@@ -133,14 +137,14 @@ const actions = {
   async addFirebaseConfig({ state, dispatch }, firebaseConfig) {
     const addedFirebaseConfig = await userRepository.addFirebaseConfig(
       state.user.uid,
-      firebaseConfig
+      firebaseConfig,
     );
     dispatch('updateLocalUser', { firebaseConfig: addedFirebaseConfig });
   },
   async updateFirebaseConfig({ state, dispatch }, firebaseConfig) {
     const updatedFirebaseConfig = await userRepository.updateFirebaseConfig(
       state.user.uid,
-      firebaseConfig
+      firebaseConfig,
     );
     dispatch('updateLocalUser', { firebaseConfig: updatedFirebaseConfig });
   },

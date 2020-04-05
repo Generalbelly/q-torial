@@ -97,3 +97,7 @@ firebase.json
 firebase.local.json
 
 public/js/q-torial.js
+
+# google application credentials file
+still-protocol-228301-firebase-adminsdk-i9ol4-8b98dccfe2.json
+client-000-b49aa-firebase-adminsdk-b3stl-b36f8a6942.json

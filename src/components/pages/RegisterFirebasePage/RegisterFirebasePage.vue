@@ -164,22 +164,14 @@ export default {
       }
     },
     async onClickDone() {
-      // Firestore, Storageはローケーションの選択が必須
-      // Cloud Functionsはus-central1でデプロイされるよう
-      // const firestoreValidation = await this.validateFirestore();
-      // if (!firestoreValidation.valid) {
-      //   await this.setServerSideErrors(firestoreValidation.message);
-      //   return;
-      // }
-      // const storageValidation = await this.validateCloudStorage();
-      // if (!storageValidation.valid) {
-      //   await this.setServerSideErrors(storageValidation.message);
-      //   return;
-      // }
       const cloudFunctionValidation = await this.validateCloudFunctions();
-      console.log(cloudFunctionValidation)
       if (!cloudFunctionValidation.valid) {
         await this.setServerSideErrors(cloudFunctionValidation.message);
+        return;
+      }
+      const storageValidation = await this.validateCloudStorage();
+      if (!storageValidation.valid) {
+        await this.setServerSideErrors(storageValidation.message);
         return;
       }
       try {
@@ -220,34 +212,11 @@ export default {
         message,
       };
     },
-    // async validateFirestore() {
-    //   if (!this.repositoryReady) {
-    //     return {
-    //       valid: false,
-    //       message: 'Unknown error occurred, Please contact us by email.',
-    //     };
-    //   }
-    //   let valid = false;
-    //   let message = 'It looks like that Firestore hasn\'t been correctly set up.';
-    //   try {
-    //     await this.testTutorial();
-    //   } catch (error) {
-    //     if (error.name === 'FirebaseError' && error.message === 'Missing or insufficient permissions.') {
-    //       valid = true;
-    //       message = 'ok';
-    //     }
-    //   }
-    //   console.log(message)
-    //   return {
-    //     valid,
-    //     message,
-    //   };
-    // },
     async validateCloudStorage() {
       let valid = true;
       let message = 'ok';
       try {
-        await getUserFirebaseService(this.user.firebaseConfig).updateAssets();
+        await getUserFirebaseService(this.firebaseConfig).updateAssets();
       } catch (error) {
         valid = false;
         message = 'It looks like that Cloud Storage hasn\'t been correctly set up.';

@@ -59,13 +59,14 @@ export default {
     }
     return version;
   },
-  async selectTutorial(tutorial = {}) {
-    const response = await this.sendMessage({
-      command: SELECT_TUTORIAL,
-      data: tutorial,
-    });
-    return response && response.status === 'OK';
-  },
+  // async selectTutorial(tutorial = {}) {
+  //   console.log(tutorial);
+  //   const response = await this.sendMessage({
+  //     command: SELECT_TUTORIAL,
+  //     data: tutorial,
+  //   });
+  //   return response && response.status === 'OK';
+  // },
   async checkAuth() {
     const response = await this.sendMessage({
       command: CHECK_AUTH,

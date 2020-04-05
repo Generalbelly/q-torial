@@ -8,7 +8,7 @@
       rules="required"
     />
     <div class="label">
-      Start building this tutorial on
+      Build url (This is the url you build this tutorial on and you cannot change later)
     </div>
     <validatable-text-field
       v-model="innerBuildUrl"
@@ -22,6 +22,7 @@
       name="path value"
       rules="required"
     />
+    <p class="help has-text-primary">We recommend that you use a url in your web app's staging/development environment</p>
     <base-message
       active
       type="is-warning"

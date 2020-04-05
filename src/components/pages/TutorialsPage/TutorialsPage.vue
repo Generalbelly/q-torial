@@ -22,7 +22,7 @@
   />
 </template>
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import { debounce } from 'debounce';
 import TutorialsTemplate from '../../templates/TutorialsTemplate';
 import { QUERY_LIMIT } from '../../../utils/constants';
@@ -44,6 +44,7 @@ export default {
       'allFetched',
       'orderBy',
       'repositoryReady',
+      'selectedTutorialID',
     ]),
   },
   data() {
@@ -92,12 +93,7 @@ export default {
       });
     },
     async onClickGo(tutorial) {
-      const selected = await chromeExtension.selectTutorial(tutorial);
-      if (selected) {
-        window.open(tutorial.buildUrl, '_blank');
-      } else {
-        this.shouldShowExtensionNotInstalledModal = true;
-      }
+      window.open(tutorial.buildUrl, '_blank');
     },
     onClickDelete(tutorial) {
       this.deleteTutorial(tutorial);
@@ -109,8 +105,11 @@ export default {
     }, 500),
     async onAddTutorial(tutorial) {
       await this.addTutorial(tutorial);
-      await chromeExtension.selectTutorial(tutorial);
       this.shouldShowCreateTutorialForm = false;
+      // await chromeExtension.selectTutorial({
+      //   ...tutorial,
+      //   id: this.selectedTutorialID,
+      // });
       window.open(tutorial.buildUrl, '_blank');
     },
     onSwitch(tutorial) {

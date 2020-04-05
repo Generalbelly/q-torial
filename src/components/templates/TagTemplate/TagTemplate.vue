@@ -10,7 +10,7 @@
           rows="3"
           cols="80"
           class="textarea"
-        ><script>(function(w,d,s,o,i){if(!w[o]){var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='{{ url }}';j.onload=function(){w[o].init(i);};f.parentNode.insertBefore(j,f);}})(window,document,'script','Qtorial','{{ user.uid }}')</script></textarea>
+        ><script>(function(w,d,s,o,i){if(!w[o]){var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='{{ url }}';j.onload=function(){w[o].init(i);};f.parentNode.insertBefore(j,f);}})(window,document,'script','Qtorial','{{ user.firebaseConfig.uid }}')</script></textarea>
         <b-tooltip
           type="is-black"
           :active="copiedInClipboard"
@@ -36,7 +36,7 @@
           rows="3"
           cols="80"
           class="textarea"
-        ><script>(function(w,d,s,o,i,c){if(!w[o]){var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='{{ url }}';j.onload=function(){w[o].init(i,c);};f.parentNode.insertBefore(j,f);}})(window,document,'script','Qtorial','{{ user.uid }}', YOUR_CUSTOMER_ID)</script></textarea>
+        ><script>(function(w,d,s,o,i,c){if(!w[o]){var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='{{ url }}';j.onload=function(){w[o].init(i,c);};f.parentNode.insertBefore(j,f);}})(window,document,'script','Qtorial','{{ user.firebaseConfig.uid }}', YOUR_CUSTOMER_ID)</script></textarea>
         <p class="has-margin-top-3">
           Use this code if you would like to associate data with your user data. Replace YOUR_CUSTOMER_ID in the code with your actual user id.
         </p>
@@ -64,8 +64,8 @@
 <script>
 import ClipboardJS from 'clipboard';
 import BaseButton from '../../atoms/BaseButton';
-import assetManager from '../../../assets-manager';
 import UserEntity from '../../atoms/Entities/UserEntity';
+import { getUserFirebaseService } from '../../../firebase';
 
 export default {
   name: 'TagTemplate',
@@ -91,12 +91,12 @@ export default {
     const clipboard = new ClipboardJS('#copy-in-clipboard');
     clipboard.on('success', this.onCopySuccess);
   },
+  async mounted() {
+    await getUserFirebaseService(this.user.firebaseConfig).updateAssets();
+  },
   methods: {
     onCopySuccess() {
       this.copiedInClipboard = true;
-    },
-    updateAssets() {
-      assetManager.updateAssets();
     },
   },
 };
