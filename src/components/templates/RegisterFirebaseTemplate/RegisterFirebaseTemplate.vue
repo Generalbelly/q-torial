@@ -42,8 +42,11 @@
       hide-cancel
     >
       <template v-slot:content>
-        <base-heading>
-          Register a user of the firebase project
+        <base-heading v-if="useExistingUser">
+          Sign in for your firebase project
+        </base-heading>
+        <base-heading v-else>
+          Sign up for your firebase project
         </base-heading>
         <p>All the tutorials you build on Qtorial will belong to a user account you register.</p>
         <template v-if="useExistingUser">
