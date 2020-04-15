@@ -259,7 +259,7 @@ export default {
     },
     stepsData() {
       if (this.tutorial && this.tutorial.id) {
-        const data = {}
+        const data = {};
         this.tutorial.performances.forEach((performance) => {
           for (let i = 1; i <= performance.allSteps; i++) {
             if (!data[i]) {
@@ -270,7 +270,7 @@ export default {
               completed: i <= performance.completeSteps,
             });
           }
-        })
+        });
         return Object.keys(data).map((step) => {
           const shown = data[step].filter(s => s.shown).length;
           const completed = data[step].filter(s => s.completed).length;
@@ -332,7 +332,7 @@ export default {
           from = startOfDay(subDays(to, parseInt(value.replace(/\D/g, ''), 10)));
           break;
         case THIS_MONTH:
-          to = yesterday
+          to = yesterday;
           from = startOfDay(startOfMonth(to));
           break;
         case LAST_MONTH:
@@ -349,7 +349,7 @@ export default {
     numberWithCommas(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     },
-  }
+  },
 };
 </script>
 

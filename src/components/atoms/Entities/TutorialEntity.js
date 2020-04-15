@@ -1,6 +1,4 @@
 import Entity from './Entity';
-import { validateUrlPath } from './PathOperators';
-import GaEntity from './GaEntity';
 import PerformanceEntity from './PerformanceEntity';
 
 export default class TutorialEntity extends Entity {
@@ -41,14 +39,10 @@ export default class TutorialEntity extends Entity {
 
   toPlainObject() {
     return super.toPlainObject([
-      'createdAtAsDateString',
-      'updatedAtAsDateString',
       'createdAt',
       'updatedAt',
+      'performances',
+      'steps',
     ]);
-  }
-
-  couldBeShownOn(urlPath) {
-    return validateUrlPath(this.pathOperator, this.pathValue, urlPath);
   }
 }

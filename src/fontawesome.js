@@ -25,6 +25,7 @@ import {
   faBolt,
   faUserCircle,
   faHammer,
+  faEyeSlash,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -61,4 +62,5 @@ library.add(
   faChartBar,
   faBolt,
   faUserCircle,
+  faEyeSlash,
 );

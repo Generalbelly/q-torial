@@ -2,12 +2,16 @@
   <forget-password-template
     @click:reset-link="onClickResetLink"
     :password-reset-link-sent="passwordResetLinkSent"
-  ></forget-password-template>
+    :loading="requesting"
+    :app-name="appName"
+    :firebase-config="firebaseConfig"
+  />
 </template>
 
 <script>
-import firebase from '../../../firebase';
-import ForgetPasswordTemplate from '../../templates/ForgetPasswordTemplate/ForgetPasswordTemplate';
+import { mapGetters } from 'vuex';
+import { appFirebaseService, getUserFirebaseService } from '../../../firebase';
+import ForgetPasswordTemplate from '../../templates/ForgetPasswordTemplate';
 
 export default {
   name: 'ForgetPasswordPage',
@@ -17,16 +21,35 @@ export default {
   data() {
     return {
       passwordResetLinkSent: false,
+      requesting: false,
+      appName: null,
     };
+  },
+  created() {
+    const {
+      appName = null,
+    } = this.$route.query;
+    this.appName = appName;
+  },
+  computed: {
+    ...mapGetters([
+      'firebaseConfig',
+    ]),
   },
   methods: {
     async onClickResetLink({ email }) {
+      this.requesting = true;
       try {
-        await firebase.sendPasswordResetEmail(email);
+        if (this.appName === 'user') {
+          await getUserFirebaseService(this.firebaseConfig).sendPasswordResetEmail(email);
+        } else {
+          await appFirebaseService.sendPasswordResetEmail(email);
+        }
         this.passwordResetLinkSent = true;
       } catch (e) {
-        console.log(e);
         this.handleError(e);
+      } finally {
+        this.requesting = false;
       }
     },
     async handleError({ message, code }) {
@@ -46,8 +69,6 @@ export default {
           errorMessage = message;
           break;
       }
-      console.log(field);
-      console.log(errorMessage);
       await this.$store.dispatch('setServerSideErrors', {
         [field]: errorMessage,
       });

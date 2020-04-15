@@ -1,3 +1,3 @@
-import ExtensionNotInstalledModal from './ExtensionNotInstalledModal'
+import ExtensionNotInstalledModal from './ExtensionNotInstalledModal';
 
-export default ExtensionNotInstalledModal
+export default ExtensionNotInstalledModal;

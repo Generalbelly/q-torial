@@ -3,20 +3,30 @@ import Vuex from 'vuex';
 import { vuexfireMutations } from 'vuexfire';
 import modules from './modules';
 import {
-  SET_ERROR_CODE,
   UPDATE_USER,
   SET_SERVER_SIDE_ERRORS,
   UPDATE_AUTH,
 } from './mutation-types';
 import UserEntity from '../components/atoms/Entities/UserEntity';
-import firebase, { convertDocToObject, convertDocumentsToArray } from '../firebase';
-import StripeCustomerEntity from '../components/atoms/Entities/StripeCustomerEntity';
+import {
+  appFirebaseService, getUserFirebaseService,
+} from '../firebase';
+import repositoryFactory from '../repository';
+import chromeExtension from '../chromeExtension';
 
 Vue.use(Vuex);
+
+const userRepository = repositoryFactory.get('user')(appFirebaseService.getDB());
 
 const getters = {
   email(state) {
     return state.user ? state.user.email : null;
+  },
+  firebaseConfig(state) {
+    return state.user ? state.user.firebaseConfig : null;
+  },
+  setupComplete(state) {
+    return state.user ? state.user.setupComplete : false;
   },
   emailVerificationLinkSent(state) {
     return state.auth.emailVerificationLinkSent;
@@ -27,16 +37,12 @@ const getters = {
 };
 
 const mutations = {
-  [SET_ERROR_CODE](state, code) {
-    state.errorCode = code;
-  },
   [UPDATE_USER](state, user) {
     if (user) {
       state.user = new UserEntity({
         ...state.user,
         ...user,
       });
-
       state.navItems = [
         {
           icon: 'book',
@@ -68,44 +74,24 @@ const mutations = {
           },
           {
             text: 'Sign out',
-            value: 'signout',
+            value: 'signOut',
           },
         ];
       } else {
         state.userItems = [
-          {
-            text: 'Upgrade to Pro Plan',
-            value: 'upgrade',
-          },
+          // {
+          //   text: 'Upgrade to Pro Plan',
+          //   value: 'upgrade',
+          // },
           {
             text: 'Sign out',
-            value: 'signout',
+            value: 'signOut',
           },
         ];
       }
-
     } else {
       state.user = null;
-      state.navItems = [
-        // {
-        //   text: 'Solution',
-        //   to: {
-        //     name: 'index.solution',
-        //   },
-        // },
-        // {
-        //   text: 'Feature',
-        //   to: {
-        //     name: 'index.feature',
-        //   },
-        // },
-        // {
-        //   text: 'Pricing',
-        //   to: {
-        //     name: 'index.pricing',
-        //   },
-        // },
-      ];
+      state.navItems = [];
       state.userItems = [
         {
           text: 'Sign in',
@@ -129,8 +115,38 @@ const mutations = {
 };
 
 const actions = {
-  updateUser({ commit }, user) {
-    commit(UPDATE_USER, user);
+  async getUser({ dispatch, state }) {
+    const { setupComplete, tosAgreed, privacyPolicyAgreed } = await userRepository.get(state.user.uid);
+    dispatch('updateLocalUser', {
+      setupComplete,
+      tosAgreed,
+      privacyPolicyAgreed,
+    });
+  },
+  async addUser({ dispatch }, payload) {
+    const user = await userRepository.add(payload);
+    dispatch('updateLocalUser', user);
+  },
+  async updateUser({ dispatch }, payload) {
+    const user = await userRepository.update(payload);
+    dispatch('updateLocalUser', user);
+  },
+  async updateLocalUser({ commit }, payload) {
+    commit(UPDATE_USER, payload);
+  },
+  async addFirebaseConfig({ state, dispatch }, firebaseConfig) {
+    const addedFirebaseConfig = await userRepository.addFirebaseConfig(
+      state.user.uid,
+      firebaseConfig,
+    );
+    dispatch('updateLocalUser', { firebaseConfig: addedFirebaseConfig });
+  },
+  async updateFirebaseConfig({ state, dispatch }, firebaseConfig) {
+    const updatedFirebaseConfig = await userRepository.updateFirebaseConfig(
+      state.user.uid,
+      firebaseConfig,
+    );
+    dispatch('updateLocalUser', { firebaseConfig: updatedFirebaseConfig });
   },
   setServerSideErrors({ commit }, payload) {
     commit(SET_SERVER_SIDE_ERRORS, payload);
@@ -145,32 +161,36 @@ const actions = {
       emailVerificationLinkExpired: value,
     });
   },
-  getUserPaymentInfo: async ({ state, commit }, payload = {}) => {
-    if (!state.user) return;
-    firebase
-      .getDB()
-      .collection('users')
-      .doc(state.user.uid)
-      .collection('stripe_customers')
-      .where('deletedAt', '==', null)
-      .limit(1)
-      .onSnapshot((snapshot) => {
-        if (snapshot.docs.length > 0) {
-          const stripeCustomer = new StripeCustomerEntity(
-            convertDocumentsToArray(snapshot)[0]
-          );
-          commit(UPDATE_USER, { stripeCustomer });
-        } else {
-          commit(UPDATE_USER, { stripeCustomer: null });
-        }
-      });
+  async getUserPaymentInfo({ state, dispatch }) {
+    const stripeCustomer = await userRepository.getUserPaymentInfo(state.user.uid,);
+    if (stripeCustomer) {
+      await dispatch('updateLocalUser', { stripeCustomer });
+    }
+  },
+  async getFirebaseConfig({ state, dispatch }) {
+    const firebaseConfig = await userRepository.getFirebaseConfig(state.user.uid);
+    if (firebaseConfig) {
+      await dispatch('updateLocalUser', { firebaseConfig });
+      await dispatch('tutorial/initRepository');
+    }
+  },
+  async signOut({ state }) {
+    try {
+      await getUserFirebaseService(state.user.firebaseConfig).signOut();
+      await appFirebaseService.signOut();
+      const version = await chromeExtension.getVersion();
+      if (version) {
+        await chromeExtension.signOut();
+      }
+    } catch (e) {
+      console.log(e);
+    }
   },
 };
 
 const state = {
   user: null,
-  errorCode: null,
-  serverSideErrors: {},
+  serverSideErrors: null,
   auth: {
     emailVerificationLinkSent: false,
     emailVerificationLinkExpired: false,

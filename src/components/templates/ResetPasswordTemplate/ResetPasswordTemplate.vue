@@ -1,22 +1,24 @@
 <template>
-  <div class="form-container">
-    <base-logo class="has-margin-bottom-6">
-    </base-logo>
-    <base-heading>
-      Reset your password
-    </base-heading>
-    <base-fade-transition>
-      <password-reset-complete-message
-        v-show="passwordResetComplete"
-      >
-      </password-reset-complete-message>
-    </base-fade-transition>
-    <validation-observer ref="observer">
-      <reset-password-form
-        :password.sync="password"
-        @click:reset-password="onClickResetPassword"
-      ></reset-password-form>
-    </validation-observer>
+  <div>
+    <div class="form-container">
+      <base-logo class="has-margin-bottom-6">
+      </base-logo>
+      <base-heading>
+        Reset your password
+      </base-heading>
+      <base-fade-transition>
+        <password-reset-complete-message
+          v-show="passwordResetComplete"
+        />
+      </base-fade-transition>
+      <validation-observer ref="observer">
+        <reset-password-form
+          :password.sync="password"
+          @click:reset-password="onClickResetPassword"
+        />
+      </validation-observer>
+    </div>
+    <base-loading is-full-page :active="loading" />
   </div>
 </template>
 
@@ -28,10 +30,12 @@ import BaseLogo from '../../atoms/BaseLogo';
 import BaseFadeTransition from '../../atoms/transitions/BaseFadeTransition';
 import PasswordResetCompleteMessage
   from '../../organisms/messages/PasswordResetCompleteMessage/PasswordResetCompleteMessage';
+import BaseLoading from '../../atoms/BaseLoading/BaseLoading';
 
 export default {
   name: 'ResetPasswordTemplate',
   components: {
+    BaseLoading,
     PasswordResetCompleteMessage,
     BaseFadeTransition,
     BaseLogo,
@@ -40,6 +44,10 @@ export default {
     ValidationObserver,
   },
   props: {
+    loading: {
+      type: Boolean,
+      default: false,
+    },
     passwordResetComplete: {
       type: Boolean,
       default: false,

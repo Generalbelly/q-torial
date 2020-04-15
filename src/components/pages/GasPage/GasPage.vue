@@ -49,37 +49,44 @@ export default {
     );
   },
   methods: {
+    ...mapActions('tutorial', [
+      'deleteGaId',
+    ]),
     ...mapActions('ga', [
       'listGas',
       'addGa',
       'deleteGa',
       'sortGas',
-      'selectGa',
     ]),
     async onSort(orderBy) {
       if (this.loadable) {
-        this.listGas({
+        await this.listGas({
           orderBy,
         });
       } else {
-        this.sortGas(orderBy);
+        await this.sortGas(orderBy);
       }
     },
-    onClickShowMore() {
-      this.listGas();
+    async onClickShowMore() {
+      await this.listGas();
     },
     async onClickAdd() {
-      const response = await this.addGa();
-      this.$router.push({
-        name: 'gas.show',
-        params: {
-          id: response.data.id,
-        },
-      });
+      try {
+        const ga = await this.addGa();
+        await this.$router.push({
+          name: 'gas.show',
+          params: {
+            id: ga.id,
+          },
+        });
+      } catch (e) {
+        if (e.error !== 'popup_closed_by_user') {
+          console.log(e);
+        }
+      }
     },
     async onClickEdit(ga) {
-      await this.selectGa(ga);
-      this.$router.push({
+      await this.$router.push({
         name: 'gas.show',
         params: {
           id: ga.id,
@@ -87,12 +94,11 @@ export default {
       });
     },
     async onClickDelete(ga) {
-      this.deleteGa({
-        data: ga.toPlainObject(),
-      });
+      // await this.deleteGa(ga);
+      await this.deleteGaId(ga);
     },
-    onChangeQuery: debounce(function (query) {
-      this.listGas({
+    onChangeQuery: debounce(async function (query) {
+      await this.listGas({
         searchQuery: query,
       });
     }, 500),

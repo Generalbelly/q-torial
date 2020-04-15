@@ -1,35 +1,92 @@
 <template>
-  <div class="form-container">
-    <base-logo class="has-margin-bottom-6" @click="onClickLogo" />
-    <validation-observer ref="observer">
-      <sign-in-form
-        :email.sync="innerEmail"
-        :password.sync="innerPassword"
-        @click:sign-in="onClickSignIn"
-      />
-    </validation-observer>
-    <p class="has-margin-top-5">
-      You don't have an account?
-      <router-link :to="{ name: 'sign-up' }">
-        Create account
-      </router-link>
-    </p>
+  <div>
+    <centering-layout v-if="!shouldShowFirebaseSignInModal">
+      <template v-slot:content>
+        <base-logo
+          @click="onClickLogo"
+          :width="300"
+        />
+        <sign-in-form
+          class="has-margin-top-5"
+          :email.sync="innerEmail"
+          :password.sync="innerPassword"
+        />
+        <primary-button
+          clickable-with-enter
+          @click="onClickSignIn"
+          class="has-margin-top-5 is-fullwidth"
+        >
+          Sign in
+        </primary-button>
+        <p class="has-margin-top-5">
+          You don't have an account?
+          <router-link :to="{ name: 'sign-up' }">
+            Create account
+          </router-link>
+        </p>
+      </template>
+    </centering-layout>
+    <base-modal
+      :active="shouldShowFirebaseSignInModal"
+      :can-cancel="false"
+      hide-cancel
+    >
+      <template v-slot:content>
+        <base-heading>
+          Sign in your firebase project
+        </base-heading>
+        <p>
+          You need to sign in to create tutorials.
+        </p>
+        <sign-in-form
+          class="has-margin-top-5"
+          :email.sync="innerFirebaseEmail"
+          :password.sync="innerFirebasePassword"
+        />
+      </template>
+      <template v-slot:primary-action-button>
+        <primary-button
+          @click="onClickFirebaseSignIn"
+          class="has-margin-top-3 is-fullwidth"
+          clickable-with-enter
+        >
+          Sign in
+        </primary-button>
+      </template>
+    </base-modal>
+    <base-loading is-full-page :active="loading" />
   </div>
 </template>
 
 <script>
-import { ValidationObserver } from 'vee-validate';
 import SignInForm from '../../organisms/forms/SignInForm';
 import BaseLogo from '../../atoms/BaseLogo/BaseLogo';
+import CenteringLayout from '../../molecules/layouts/CenteringLayout';
+import PrimaryButton from '../../atoms/buttons/PrimaryButton';
+import BaseLoading from '../../atoms/BaseLoading';
+import BaseModal from '../../molecules/BaseModal/BaseModal';
+import BaseHeading from '../../atoms/BaseHeading/BaseHeading';
 
 export default {
   name: 'SignInTemplate',
   components: {
+    BaseHeading,
+    BaseModal,
+    BaseLoading,
+    PrimaryButton,
+    CenteringLayout,
     BaseLogo,
     SignInForm,
-    ValidationObserver,
   },
   props: {
+    shouldShowFirebaseSignInModal: {
+      type: Boolean,
+      default: false,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
     email: {
       type: String,
       default: null,
@@ -38,46 +95,60 @@ export default {
       type: String,
       default: null,
     },
-  },
-  data() {
-    return {
-      innerEmail: null,
-      innerPassword: null,
-    };
-  },
-  watch: {
-    email(value) {
-      this.innerEmail = value;
+    firebaseEmail: {
+      type: String,
+      default: null,
     },
-    password(value) {
-      this.innerPassword = value;
+    firebasePassword: {
+      type: String,
+      default: null,
     },
   },
-  mounted() {
-    window.addEventListener('keyup', this.onKeyup);
-  },
-  beforeDestroy() {
-    window.removeEventListener('keyup', this.onKeyup);
+  computed: {
+    innerEmail: {
+      get() {
+        return this.email;
+      },
+      set(newValue) {
+        this.$emit('update:email', newValue);
+      },
+    },
+    innerPassword: {
+      get() {
+        return this.password;
+      },
+      set(newValue) {
+        this.$emit('update:password', newValue);
+      },
+    },
+    innerFirebaseEmail: {
+      get() {
+        return this.firebaseEmail;
+      },
+      set(newValue) {
+        this.$emit('update:firebase-email', newValue);
+      },
+    },
+    innerFirebasePassword: {
+      get() {
+        return this.firebasePassword;
+      },
+      set(newValue) {
+        this.$emit('update:firebase-password', newValue);
+      },
+    },
   },
   methods: {
-    onKeyup(e) {
-      if (e.keyCode === 13) {
-        this.onClickSignIn();
-      }
+    onClickSignIn() {
+      this.$emit('click:sign-in');
     },
-    async onClickSignIn() {
-      const isValid = await this.$refs.observer.validate();
-      if (isValid) {
-        this.$emit('click:sign-in', {
-          email: this.innerEmail,
-          password: this.innerPassword,
-        });
-      }
-    },
-    onClickLogo() {
-      this.$router.push({
+    async onClickLogo() {
+      await this.$router.push({
         name: 'index',
       });
+    },
+    onClickFirebaseSignIn() {
+      this.$emit('click:firebase-sign-in');
     },
   },
 
@@ -85,18 +156,4 @@ export default {
 </script>
 
 <style scoped>
-.form-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-.form-container > span {
-  min-width: 350px;
-}
 </style>

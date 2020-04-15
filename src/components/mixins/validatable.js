@@ -1,38 +1,16 @@
-import { mapState } from 'vuex';
-
 export default {
   props: {
     name: {
       type: String,
       required: true,
     },
+    tag: {
+      type: String,
+      required: false,
+    },
     rules: {
       type: [String, Object],
       default: '',
-    },
-  },
-  computed: {
-    ...mapState([
-      'serverSideErrors',
-    ]),
-    fieldErrors() {
-      if (this.serverSideErrors[this.name]) {
-        return this.serverSideErrors[this.name];
-      }
-      return [];
-    },
-  },
-  watch: {
-    fieldErrors: {
-      immediate: true,
-      handler(value) {
-        if (!this.$refs.provider) return;
-        this.$refs.provider.applyResult({
-          errors: value,
-          valid: false, // boolean state
-          failedRules: {}, // should be empty since this is a manual error.
-        });
-      },
     },
   },
   methods: {

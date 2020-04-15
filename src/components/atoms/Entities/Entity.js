@@ -1,32 +1,27 @@
 import { has } from '../../../utils';
 
 export default class Entity {
-  createdAt = null
+  createdAt = null;
 
-  createdAtAsDateString = null
-
-  updatedAt = null
-
-  updatedAtAsDateString = null
-
-  // deletedAt = null
-  //
-  // deletedAtAsDateString = null
+  updatedAt = null;
 
   fill(data = {}) {
     Object.keys(data).forEach(field => {
       if (has.call(this, field)) {
-        this[field] = data[field]
+        this[field] = data[field];
       }
     });
   }
 
-  toPlainObject(privateProperty = []) {
+  toPlainObject(excludes = [
+    'createdAt',
+    'updatedAt',
+  ]) {
     const object = {};
-    Object.keys(this).forEach((propertyName) => {
+    Object.keys(this).forEach(propertyName => {
       if (
-        !privateProperty.includes(propertyName)
-        && has.call(this, propertyName)
+        !excludes.includes(propertyName)
+        && Object.prototype.hasOwnProperty.call(this, propertyName)
       ) {
         object[propertyName] = this[propertyName];
       }

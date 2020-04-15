@@ -11,19 +11,10 @@ export default class PerformanceEntity extends Entity {
 
   elapsedTime = 0
 
-  euId = null
+  customerId = null
 
   constructor(data = {}) {
     super();
     this.fill(data);
-  }
-
-  toPlainObject() {
-    return super.toPlainObject([
-      'createdAtAsDateString',
-      'updatedAtAsDateString',
-      'createdAt',
-      'updatedAt',
-    ]);
   }
 }

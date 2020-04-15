@@ -1,10 +1,10 @@
 <template>
-    <base-button
-        class="button is-primary"
-        @click="$emit('click')"
-    >
-        Sign up
-    </base-button>
+  <base-button
+    class="button is-primary"
+    @click="$emit('click')"
+  >
+    Sign up
+  </base-button>
 </template>
 
 <script>

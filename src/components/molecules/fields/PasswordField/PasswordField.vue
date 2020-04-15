@@ -6,6 +6,7 @@
         icon="key"
         v-bind="slotProps"
         v-on="$listeners"
+        password-reveal
       />
     </template>
   </base-field>

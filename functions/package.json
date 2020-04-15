@@ -3,10 +3,11 @@
   "scripts": {
     "lint": "tslint --project tsconfig.json",
     "build": "tsc",
-    "serve": "yarn run build && firebase functions:config:get > .runtimeconfig.json && firebase serve --only functions",
-    "shell": "yarn run build && firebase functions:shell",
-    "start": "yarn run shell",
-    "deploy": "firebase use staging && firebase deploy --only functions",
+    "serve": "npm run build && firebase functions:config:get > .runtimeconfig.json && firebase serve --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy:prod": "firebase use production && firebase deploy --only functions",
+    "deploy:dev": "firebase use staging && firebase deploy --only functions",
     "logs": "firebase functions:log"
   },
   "engines": {
@@ -20,6 +21,7 @@
     "firebase-functions": "^3.0.2",
     "firebase-tools": "^7.0.2",
     "googleapis": "^41.0.1",
+    "replace-in-file": "^5.0.2",
     "stripe": "^7.9.1"
   },
   "devDependencies": {

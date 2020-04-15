@@ -17,6 +17,7 @@
       </template>
       <template v-slot:table>
         <tutorial-table
+          :should-show-link="shouldShowLink"
           :data="tutorials"
           :loading="loading"
           :loadable="loadable"
@@ -34,14 +35,16 @@
       </template>
     </index-page-layout>
     <base-modal
-      :active="shouldShowCreateTutorialForm"
-      @click:cancel="shouldShowCreateTutorialForm=false"
+      :active="innerShouldShowCreateTutorialForm"
+      @click:cancel="innerShouldShowCreateTutorialForm=false"
+      @click:close="innerShouldShowCreateTutorialForm=false"
     >
       <template v-slot:content>
         <validation-observer ref="tutorialForm">
           <create-tutorial-form
             :name.sync="innerTutorial.name"
             :build-url.sync="innerTutorial.buildUrl"
+            :path-value.sync="innerTutorial.pathValue"
           />
         </validation-observer>
       </template>
@@ -50,8 +53,8 @@
       </template>
     </base-modal>
     <extension-not-installed-modal
-      :active="shouldShowExtensionNotInstalledModal"
-      @click:close="shouldShowExtensionNotInstalledModal=false"
+      :active="innerShouldShowExtensionNotInstalledModal"
+      @click:close="innerShouldShowExtensionNotInstalledModal=false"
     ></extension-not-installed-modal>
   </div>
 </template>
@@ -83,6 +86,10 @@ export default {
     TutorialTable,
   },
   props: {
+    shouldShowLink: {
+      type: Boolean,
+      default: false,
+    },
     query: {
       type: String,
       default: null,
@@ -111,13 +118,37 @@ export default {
         return [];
       },
     },
+    shouldShowCreateTutorialForm: {
+      type: Boolean,
+      default: false,
+    },
+    shouldShowExtensionNotInstalledModal: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
-      shouldShowCreateTutorialForm: false,
-      shouldShowExtensionNotInstalledModal: false,
       innerTutorial: new TutorialEntity(),
     };
+  },
+  computed: {
+    innerShouldShowCreateTutorialForm: {
+      get() {
+        return this.shouldShowCreateTutorialForm;
+      },
+      set(newValue) {
+        this.$emit('update:should-show-create-tutorial-form', newValue);
+      },
+    },
+    innerShouldShowExtensionNotInstalledModal: {
+      get() {
+        return this.shouldShowExtensionNotInstalledModal;
+      },
+      set(newValue) {
+        this.$emit('update:should-show-extension-not-installed-modal', newValue);
+      },
+    },
   },
   methods: {
     async onClickCreate() {
@@ -127,10 +158,7 @@ export default {
       }
     },
     onClickAdd() {
-      this.shouldShowCreateTutorialForm = true;
-    },
-    showExtensionNotInstalledModal() {
-      this.shouldShowExtensionNotInstalledModal = true
+      this.innerShouldShowCreateTutorialForm = true;
     },
   },
 };

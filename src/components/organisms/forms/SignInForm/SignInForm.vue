@@ -1,40 +1,35 @@
 <template>
   <div>
-    <validatable-email-field
-      name="email"
-      rules="email|required"
-      v-model="innerEmail"
-      label="Email"
-    ></validatable-email-field>
-    <validatable-password-field
-      name="password"
-      rules="required|min:6"
-      v-model="innerPassword"
-      label="Password"
-    ></validatable-password-field>
-    <p>
-      <router-link :to="{ name: 'password.forget' }">
+    <form>
+      <validatable-email-field
+        name="email"
+        rules="email|required"
+        v-model="innerEmail"
+        label="Email"
+      />
+      <validatable-password-field
+        name="password"
+        rules="required|min:6"
+        v-model="innerPassword"
+        label="Password"
+      />
+    </form>
+    <p v-if="hasForgetPasswordLink">
+      <router-link :to="{ name: 'password.forget', query: { appName: 'user' } }">
         Forget your password?
       </router-link>
     </p>
-    <sign-in-button
-      @click="$emit('click:sign-in')"
-      class="has-margin-top-5 is-fullwidth"
-    >
-    </sign-in-button>
   </div>
 </template>
 <script>
 import ValidatableEmailField from '../../../molecules/fields/ValidatableEmailField';
 import ValidatablePasswordField from '../../../molecules/fields/ValidatablePasswordField';
-import SignInButton from '../../../atoms/buttons/SignInButton';
 
 export default {
   name: 'SignInForm',
   components: {
     ValidatablePasswordField,
     ValidatableEmailField,
-    SignInButton,
   },
   props: {
     email: {
@@ -44,6 +39,10 @@ export default {
     password: {
       type: String,
       default: null,
+    },
+    hasForgetPasswordLink: {
+      type: Boolean,
+      default: true,
     },
   },
   computed: {

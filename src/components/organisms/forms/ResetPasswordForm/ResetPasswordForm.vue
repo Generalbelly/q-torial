@@ -5,18 +5,18 @@
       name="password"
       rules="required|min:6|confirmed:confirmation"
       v-model="innerPassword"
-    ></validatable-password-field>
+    />
     <validatable-password-field
       label="Password Confirmation"
       name="password confirmation"
       rules="required"
       confirmation
       v-model="passwordConfirmation"
-    ></validatable-password-field>
+    />
     <reset-password-button
       class="has-margin-top-5 is-fullwidth"
       @click="$emit('click:reset-password')"
-    ></reset-password-button>
+    />
   </div>
 </template>
 <script>

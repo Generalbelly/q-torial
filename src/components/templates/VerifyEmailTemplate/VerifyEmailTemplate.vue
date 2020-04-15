@@ -1,21 +1,18 @@
 <template>
   <div class="form-container">
-    <base-logo class="has-margin-bottom-6">
-    </base-logo>
+    <base-logo class="has-margin-bottom-6" />
     <email-verification-link-sent-message
       v-if="emailVerificationLinkSent"
-    >
-    ></email-verification-link-sent-message>
+    />
     <email-verification-link-expired-message
       v-else-if="emailVerificationLinkExpired"
       @click:resend="$emit('click:resend', $event)"
-    >
-    </email-verification-link-expired-message>
+    />
     <verify-email-message
       v-else
       :email="email"
       @click:verify="$emit('click:verify', $event)"
-    ></verify-email-message>
+    />
   </div>
 </template>
 

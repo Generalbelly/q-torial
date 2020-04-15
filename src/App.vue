@@ -1,32 +1,53 @@
 <template>
-  <div v-if="isIndexPage">
-    <the-navbar
-      :navItems="navItems"
-      :user="user"
-      :user-items="userItems"
-      :is-on-index-page="isIndexPage"
-    />
-    <router-view />
-  </div>
-  <div v-else>
-    <the-navbar
-      v-if="shouldShowNavbar"
-      :navItems="navItems"
-      @click:sign-out="signOut"
-      :user="user"
-      :user-items="userItems"
-    />
-    <the-main
-      class="has-padding-5"
-    >
+  <div>
+    <template v-if="isIndexPage || isNotationPage || isPrivacyPolicyPage || isTermsOfServicePage">
+      <the-navbar
+        :navItems="navItems"
+        :user="user"
+        :user-items="userItems"
+        :is-on-index-page="isIndexPage"
+        @click:logo="onClickLogo"
+      />
       <router-view />
-    </the-main>
+    </template>
+    <template v-else-if="
+      isSignInPage ||
+      isSignUpPage ||
+      isInstructionPage ||
+      isEmailVerifiedPage ||
+      isPasswordReset ||
+      isPasswordForget ||
+      isRegisterFirebasePage
+    ">
+      <the-main>
+        <router-view />
+      </the-main>
+    </template>
+    <template v-else>
+      <the-navbar
+        v-show="shouldShowNavbar"
+        :navItems="navItems"
+        @click:sign-out="clickSignOut"
+        :user="user"
+        :user-items="userItems"
+        @click:logo="onClickLogo"
+      />
+      <the-main
+        :class="{'has-padding-5': shouldShowNavbar || shouldShowFooter}"
+      >
+        <router-view />
+      </the-main>
+      <footer v-if="shouldShowFooter" class="footer">
+        <div class="content has-text-centered has-text-grey">
+          If you have any questions, feel free to contact us by email: {{ supportEmail }}
+        </div>
+      </footer>
+    </template>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import firebase from './firebase';
 import chromeExtension from './chromeExtension';
 import TheNavbar from './components/organisms/global/TheNavbar';
 import TheMain from './components/organisms/global/TheMain';
@@ -37,31 +58,80 @@ export default {
     TheMain,
     TheNavbar,
   },
+  data() {
+    return {
+      supportEmail: process.env.VUE_APP_CONTACT_EMAIL,
+    };
+  },
   computed: {
     ...mapState([
       'navItems',
       'userItems',
-      'errorCode',
       'serverSideErrors',
       'user',
     ]),
     shouldShowNavbar() {
-      if (this.isIndexPage) {
-        return true;
-      }
-      if (this.$route.name === 'sign-in' || this.$route.name === 'sign-up' || this.$route.name === 'gas.show') {
-        return false;
-      }
-      return this.user && this.user.emailVerified;
+      if (!this.$route.name) return false;
+      // if (
+      //   this.$route.name.includes('tutorials')
+      //   && this.$route.name.includes('tags')
+      //   && this.$route.name.includes('gas.index')
+      // ) return true;
+      return !this.isGaShowPage;
+    },
+    isRegisterFirebasePage() {
+      return this.$route.name === 'register-firebase';
+    },
+    isEmailVerifiedPage() {
+      return this.$route.name === 'email.verify';
+    },
+    isInstructionPage() {
+      return this.$route.name === 'instruction';
+    },
+    isPasswordReset() {
+      return this.$route.name === 'password.reset';
+    },
+    isPasswordForget() {
+      return this.$route.name === 'password.forget';
+    },
+    isSignInPage() {
+      return this.$route.name === 'sign-in';
+    },
+    isSignUpPage() {
+      return this.$route.name === 'sign-up';
+    },
+    isGaShowPage() {
+      return this.$route.name === 'gas.show';
     },
     isIndexPage() {
       return this.$route.name === 'index';
     },
+    isPrivacyPolicyPage() {
+      return this.$route.name === 'privacy-policy';
+    },
+    isNotationPage() {
+      return this.$route.name === 'notation';
+    },
+    isTermsOfServicePage() {
+      return this.$route.name === 'terms-of-service';
+    },
+    isPageNotFoundPage() {
+      return this.$route.name === 'page-not-found';
+    },
+    shouldShowFooter() {
+      if (!this.$route.name) return false;
+      return this.user && this.user.emailVerified;
+    },
   },
   watch: {
     serverSideErrors() {
-      if (this.serverSideErrors.general) {
-        return this.showSnackbar(this.serverSideErrors.general);
+      if (this.serverSideErrors) {
+        return this.showSnackbar({
+          message: this.serverSideErrors,
+          position: 'is-top',
+          type: 'is-warning',
+          indefinite: true,
+        });
       }
       return [];
     },
@@ -70,27 +140,44 @@ export default {
     await chromeExtension.getVersion();
   },
   methods: {
-    ...mapActions(['getUserPaymentInfo']),
-    showSnackbar(message = 'Oops! Something went wrong.') {
-      this.$snackbar.open({
-        position: 'is-top',
-        type: 'is-warning',
+    ...mapActions([
+      'signOut',
+    ]),
+    // TODO コンポーネント化する
+    showSnackbar({
+      message = 'Oops! Something went wrong.', position = 'is-top', type = 'is-success', indefinite = false,
+    }) {
+      this.$buefy.snackbar.open({
+        position,
+        type,
+        indefinite,
         message,
       });
     },
-    async signOut() {
+    async clickSignOut() {
       try {
-        await firebase.signOut();
+        await this.signOut();
         await this.$router.push({
           name: 'sign-in',
         });
-        if (await chromeExtension.getVersion()) {
-          await chromeExtension.signOut();
-        }
       } catch (e) {
         console.error(e);
       }
     },
+    async onClickLogo() {
+      if (this.isIndexPage) return;
+      if (this.user) {
+        if (this.$route.name !== 'tutorials.index') {
+          await this.$router.push({
+            name: 'tutorials.index',
+          });
+        }
+        return;
+      }
+      await this.$router.push({
+        name: 'index',
+      });
+    }
   },
 };
 </script>

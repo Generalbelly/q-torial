@@ -135,7 +135,7 @@ export default {
     googleAnalyticWebProperty() {
       if (this.googleAnalyticsAccount && this.innerPropertyId) {
         return this.googleAnalyticsAccount.webProperties.find(
-          account => account.id === this.innerPropertyId
+          account => account.id === this.innerPropertyId,
         );
       }
       return null;
@@ -172,7 +172,7 @@ export default {
       const property = this.googleAnalyticsProfileOptions.find(a => a.value === value);
       this.$emit('update:view-name', property ? property.text : null);
     },
-  }
+  },
 };
 </script>
 

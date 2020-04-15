@@ -1,5 +1,6 @@
 <template>
   <tutorials-template
+    :should-show-link="shouldShowLink"
     :query="searchQuery"
     :loading="requesting"
     :loadable="loadable"
@@ -16,10 +17,12 @@
     @switch="onSwitch"
     @click:performance="onClickPerformance"
     ref="template"
+    :should-show-create-tutorial-form.sync="shouldShowCreateTutorialForm"
+    :should-show-extension-not-installed-modal.sync="shouldShowExtensionNotInstalledModal"
   />
 </template>
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import { debounce } from 'debounce';
 import TutorialsTemplate from '../../templates/TutorialsTemplate';
 import { QUERY_LIMIT } from '../../../utils/constants';
@@ -40,10 +43,25 @@ export default {
       'requesting',
       'allFetched',
       'orderBy',
+      'repositoryReady',
+      'selectedTutorialID',
     ]),
   },
-  created() {
-    this.listTutorials();
+  data() {
+    return {
+      shouldShowCreateTutorialForm: false,
+      shouldShowExtensionNotInstalledModal: false,
+      shouldShowLink: false,
+    };
+  },
+  async mounted() {
+    if (this.repositoryReady && this.tutorials.length === 0) {
+      this.listTutorials();
+    }
+    const auth = await chromeExtension.checkAuth();
+    if (auth) {
+      this.shouldShowLink = true;
+    }
   },
   methods: {
     ...mapActions('tutorial', [
@@ -67,7 +85,6 @@ export default {
       this.listTutorials();
     },
     onClickEdit(tutorial) {
-      this.selectTutorial(tutorial);
       this.$router.push({
         name: 'tutorials.show',
         params: {
@@ -76,17 +93,10 @@ export default {
       });
     },
     async onClickGo(tutorial) {
-      const selected = await chromeExtension.selectTutorial(tutorial);
-      if (selected) {
-        window.open(tutorial.buildUrl, '_blank')
-      } else {
-        this.$refs.template.showExtensionNotInstalledModal()
-      }
+      window.open(tutorial.buildUrl, '_blank');
     },
     onClickDelete(tutorial) {
-      this.deleteTutorial({
-        data: tutorial.toPlainObject(),
-      });
+      this.deleteTutorial(tutorial);
     },
     onChangeQuery: debounce(function (query) {
       this.listTutorials({
@@ -94,16 +104,16 @@ export default {
       });
     }, 500),
     async onAddTutorial(tutorial) {
-      await this.addTutorial({
-        data: tutorial.toPlainObject(),
-      });
-      await chromeExtension.selectTutorial(tutorial);
+      await this.addTutorial(tutorial);
+      this.shouldShowCreateTutorialForm = false;
+      // await chromeExtension.selectTutorial({
+      //   ...tutorial,
+      //   id: this.selectedTutorialID,
+      // });
       window.open(tutorial.buildUrl, '_blank');
     },
     onSwitch(tutorial) {
-      this.updateTutorial({
-        data: tutorial.toPlainObject(),
-      });
+      this.updateTutorial(tutorial);
     },
     onClickPerformance(tutorial) {
       this.$router.push({

@@ -1,3 +1,3 @@
-import BaseDropdown from './BaseDropdown'
+import BaseDropdown from './BaseDropdown';
 
-export default BaseDropdown
+export default BaseDropdown;

@@ -1,42 +1,47 @@
 <template>
-  <div class="form">
+  <form>
     <validatable-email-field
       label="Email"
       name="email"
       rules="email|required"
       v-model="innerEmail"
-    ></validatable-email-field>
+    />
     <validatable-password-field
       label="Password"
       name="password"
       rules="required|min:6|confirmed:confirmation"
       v-model="innerPassword"
-    ></validatable-password-field>
+    />
     <validatable-password-field
       label="Password Confirmation"
       name="password confirmation"
       rules="required"
       confirmation
       v-model="passwordConfirmation"
-    ></validatable-password-field>
-    <sign-up-button
-      @click="$emit('click:sign-up')"
-      class="has-margin-top-5 is-fullwidth"
+    />
+    <validatable-checkbox-field
+      v-if="hasDocsCheck"
+      name="agreement to terms of service and privacy policy"
+      rules="required:true"
+      v-model="innerDocsChecked"
+      tag="div"
+      class="has-margin-top-4"
     >
-    </sign-up-button>
-  </div>
+      <small>I accept the <a href="/terms-of-service" target="_blank">Terms Of Service</a> and <a href="/privacy-policy" target="_blank">Privacy Policy</a></small>
+    </validatable-checkbox-field>
+  </form>
 </template>
 <script>
 import ValidatablePasswordField from '../../../molecules/fields/ValidatablePasswordField';
 import ValidatableEmailField from '../../../molecules/fields/ValidatableEmailField';
-import SignUpButton from '../../../atoms/buttons/SignUpButton';
+import ValidatableCheckboxField from '../../../molecules/fields/ValidatableCheckboxField';
 
 export default {
   name: 'SignUpForm',
   components: {
+    ValidatableCheckboxField,
     ValidatableEmailField,
     ValidatablePasswordField,
-    SignUpButton,
   },
   props: {
     email: {
@@ -46,6 +51,14 @@ export default {
     password: {
       type: String,
       default: null,
+    },
+    docsChecked: {
+      type: Boolean,
+      default: false,
+    },
+    hasDocsCheck: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {
@@ -68,6 +81,14 @@ export default {
       },
       set(newValue) {
         this.$emit('update:password', newValue);
+      },
+    },
+    innerDocsChecked: {
+      get() {
+        return this.docsChecked;
+      },
+      set(newValue) {
+        this.$emit('update:docs-checked', newValue);
       },
     },
   },

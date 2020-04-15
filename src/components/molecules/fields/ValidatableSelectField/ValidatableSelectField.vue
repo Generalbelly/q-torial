@@ -43,7 +43,7 @@ export default {
         this.fakeValue = value;
       },
     },
-  }
+  },
 };
 </script>
 

@@ -7,7 +7,7 @@ import UpgradeTemplate from '../../templates/UpgradeTemplate';
 
 export default {
   name: 'UpgradePage',
-  components: { UpgradeTemplate }
+  components: { UpgradeTemplate },
 };
 </script>
 

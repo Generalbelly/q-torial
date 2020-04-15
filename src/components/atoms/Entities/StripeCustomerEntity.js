@@ -13,5 +13,4 @@ export default class StripeCustomerEntity extends Entity {
     super();
     this.fill(data);
   }
-
 }

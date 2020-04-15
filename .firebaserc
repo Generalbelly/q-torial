@@ -2,6 +2,7 @@
   "projects": {
     "staging": "still-protocol-228301",
     "default": "still-protocol-228301",
-    "production": "q-torial"
+    "production": "q-torial",
+    "client001": "client-000-b49aa"
   }
 }

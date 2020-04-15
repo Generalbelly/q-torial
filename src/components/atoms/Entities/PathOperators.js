@@ -9,11 +9,11 @@ export const PATH_REGEX = 'REGEX';
 export default [
   {
     value: PATH_ALL,
-    text: 'All the url path',
+    text: 'All the url paths',
   },
   {
     value: PATH_EQUALS,
-    text: 'url paths that equal to',
+    text: 'url paths that are equal to',
   },
   {
     value: PATH_STARTS_WITH,

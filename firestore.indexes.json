@@ -1,7 +1,7 @@
 {
   "indexes": [
     {
-      "collectionGroup": "stripe_customers",
+      "collectionGroup": "stripeCustomers",
       "queryScope": "COLLECTION_GROUP",
       "fields": [
         {

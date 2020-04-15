@@ -18,6 +18,7 @@ export default {
   },
   computed: {
     ...mapState('tutorial', [
+      'tutorials',
       'requesting',
     ]),
     ...mapGetters('tutorial', [
@@ -27,15 +28,13 @@ export default {
       'gas',
     ]),
   },
-  async created() {
-    if (!this.tutorial || this.tutorial.id !== this.$route.params.id) {
-      await this.getTutorial({
-        id: this.$route.params.id,
-      });
-      this.selectTutorial({
-        id: this.$route.params.id,
-      });
+  async mounted() {
+    if (!this.tutorials.find(tutorial => tutorial.id === this.$route.params.id)) {
+      await this.getTutorial(this.$route.params.id);
     }
+    this.selectTutorial({
+      id: this.$route.params.id,
+    });
     if (this.gas.length === 0) {
       this.listGas();
     }
@@ -50,9 +49,7 @@ export default {
       'getTutorial',
     ]),
     async onUpdateTutorial(tutorial) {
-      await this.updateTutorial({
-        data: tutorial.toPlainObject(),
-      });
+      await this.updateTutorial(tutorial);
       this.$router.push({
         name: 'tutorials.index',
       });
@@ -61,7 +58,7 @@ export default {
       this.$router.push({
         name: 'tutorials.index',
       });
-    }
+    },
   },
 };
 </script>

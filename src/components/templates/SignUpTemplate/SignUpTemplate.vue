@@ -1,35 +1,60 @@
 <template>
-  <div class="form-container">
-    <base-logo class="has-margin-bottom-6" @click="onClickLogo" />
-    <validation-observer ref="observer">
-      <sign-up-form
-        :email.sync="innerEmail"
-        :password.sync="innerPassword"
-        @click:sign-up="onClickSignUp"
-      />
-    </validation-observer>
-    <p class="has-margin-top-5">
-      Do you have an account?
-      <router-link :to="{ name: 'sign-in' }">
-        Sign in
-      </router-link>
-    </p>
+  <div>
+    <centering-layout>
+      <template v-slot:content>
+        <base-logo
+          @click="onClickLogo"
+          :width="300"
+        />
+        <sign-up-form
+          class="has-margin-top-5"
+          :email.sync="innerEmail"
+          :password.sync="innerPassword"
+          :docs-checked.sync="innerDocsChecked"
+        />
+        <primary-button
+          @click="onClickSignUp"
+          class="has-margin-top-5 is-fullwidth"
+          clickable-with-enter
+        >
+          Sign up
+        </primary-button>
+        <p class="has-margin-top-5 has-text-centered">
+          Do you have an account?
+          <router-link :to="{ name: 'sign-in' }">
+            Sign in
+          </router-link>
+        </p>
+      </template>
+    </centering-layout>
+    <base-loading is-full-page :active="loading" />
   </div>
 </template>
 
 <script>
-import { ValidationObserver } from 'vee-validate';
 import SignUpForm from '../../organisms/forms/SignUpForm';
 import BaseLogo from '../../atoms/BaseLogo';
+import CenteringLayout from '../../molecules/layouts/CenteringLayout';
+import PrimaryButton from '../../atoms/buttons/PrimaryButton';
+import FirebaseConfigForm from '../../organisms/forms/FirebaseConfigForm';
+import BaseButton from '../../atoms/BaseButton';
+import BaseSubHeading from '../../atoms/BaseSubHeading';
+import BaseLoading from '../../atoms/BaseLoading/BaseLoading';
 
 export default {
   name: 'SignUpTemplate',
   components: {
+    BaseLoading,
+    PrimaryButton,
+    CenteringLayout,
     BaseLogo,
     SignUpForm,
-    ValidationObserver,
   },
   props: {
+    loading: {
+      type: Boolean,
+      default: false,
+    },
     email: {
       type: String,
       default: null,
@@ -38,64 +63,51 @@ export default {
       type: String,
       default: null,
     },
+    docsChecked: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
-      innerEmail: null,
-      innerPassword: null,
+      shouldShowHelp: false,
     };
   },
-  watch: {
-    email(value) {
-      this.innerEmail = value;
+  computed: {
+    innerEmail: {
+      get() {
+        return this.email;
+      },
+      set(newValue) {
+        this.$emit('update:email', newValue);
+      },
     },
-    password(value) {
-      this.innerPassword = value;
+    innerPassword: {
+      get() {
+        return this.password;
+      },
+      set(newValue) {
+        this.$emit('update:password', newValue);
+      },
     },
-  },
-  mounted() {
-    window.addEventListener('keyup', this.onKeyup);
-  },
-  beforeDestroy() {
-    window.removeEventListener('keyup', this.onKeyup);
+    innerDocsChecked: {
+      get() {
+        return this.docsChecked;
+      },
+      set(newValue) {
+        this.$emit('update:docs-checked', newValue);
+      },
+    },
   },
   methods: {
-    onKeyup(e) {
-      if (e.keyCode === 13) {
-        this.onClickSignUp();
-      }
-    },
-    async onClickSignUp() {
-      const isValid = await this.$refs.observer.validate();
-      if (isValid) {
-        this.$emit('click:sign-up', {
-          email: this.innerEmail,
-          password: this.innerPassword,
-        });
-      }
+    onClickSignUp() {
+      this.$emit('click:sign-up');
     },
     onClickLogo() {
-      this.$router.push({
-        name: 'index',
-      });
+      this.$emit('click:logo');
     },
   },
 };
 </script>
 
-<style scoped>
-  .form-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-  }
-  .form-container > span {
-    min-width: 350px;
-  }
-</style>
+<style scoped></style>

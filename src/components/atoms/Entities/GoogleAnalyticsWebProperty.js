@@ -10,7 +10,7 @@ export default class GoogleAnalyticsWebProperty extends Entity {
 
   profiles = null
 
-    constructor(data = {}) {
+  constructor(data = {}) {
     super();
     const { profiles = [], ...props } = data;
     this.fill(props);

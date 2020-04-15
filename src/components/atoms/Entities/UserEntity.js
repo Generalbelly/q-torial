@@ -11,8 +11,28 @@ export default class UserEntity extends Entity {
 
   stripeCustomer = null;
 
+  firebaseConfig = null;
+
+  setupComplete = false;
+
+  tosAgreed = false;
+
+  privacyPolicyAgreed = false;
+
   constructor(data = {}) {
     super();
     this.fill(data);
+  }
+
+  toPlainObject() {
+    return super.toPlainObject([
+      'createdAt',
+      'updatedAt',
+      'stripeCustomer',
+      'firebaseConfig',
+      'emailVerified',
+      'displayName',
+      'email',
+    ]);
   }
 }

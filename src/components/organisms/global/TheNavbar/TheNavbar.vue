@@ -5,11 +5,15 @@
       role="navigation"
       aria-label="main navigation"
     >
-      <div class="container" :style="navStyle">
+      <div class="container">
         <template>
           <base-navbar-brand>
-            <base-navbar-item @click="onClickLogo">
-              <base-logo :width="180" :height="48" />
+            <base-navbar-item>
+              <base-logo
+                @click="onClickLogo"
+                :width="180"
+                :height="48"
+              />
             </base-navbar-item>
             <base-navbar-burger
               :is-active="burgerMenuActive"
@@ -31,6 +35,7 @@
                   <span>{{ item.text }}</span>
                 </router-link>
                 <a
+                  :key="item.text"
                   v-else
                   :href="item.to"
                   :class="routerLinkClass(item.to)"
@@ -41,26 +46,29 @@
             </base-navbar-start>
             <base-navbar-end>
               <base-navbar-item>
-                <router-link
-                  v-if="userItems.length === 1"
-                  :to="userItems[0].to"
-                  :key="userItems[0].text"
-                >
-                  <base-icon
-                    :icon="userItems[0].icon"
-                  />
-                  <span>{{ userItems[0].text }}</span>
-                </router-link>
-                <base-dropdown
-                  v-else
-                  :items="userItems"
-                  @click:item="onClickItem"
-                >
-                  <div class="is-flex has-cursor-pointer">
-                    <base-icon icon="user-circle" />
-                    <span>Account</span>
-                  </div>
-                </base-dropdown>
+                <template v-if="user">
+                  <base-dropdown
+                    :items="userItems"
+                    @click:item="onClickItem"
+                  >
+                    <div class="is-flex has-cursor-pointer">
+                      <base-icon icon="user-circle" />
+                      <span>Account</span>
+                    </div>
+                  </base-dropdown>
+                </template>
+                <template v-else>
+                  <router-link
+                    v-for="item in userItems"
+                    :to="item.to"
+                    :key="item.text"
+                  >
+                    <base-icon
+                      :icon="item.icon"
+                    />
+                    <span>{{ item.text }}</span>
+                  </router-link>
+                </template>
               </base-navbar-item>
             </base-navbar-end>
           </base-navbar-menu>
@@ -171,19 +179,9 @@ export default {
       showCancelCompleteModal: false,
       showCancelFailedModal: false,
       showUpgradeCompleteModal: false,
-      //showUpgradeFailedModal: false,
+      // showUpgradeFailedModal: false,
       loading: false,
     };
-  },
-  computed: {
-    navStyle() {
-      if (this.isOnIndexPage) {
-        return {
-          'min-width': '95%',
-        };
-      }
-      return {};
-    }
   },
   watch: {
     user(value) {
@@ -229,7 +227,7 @@ export default {
           } else {
             this.showCancelFailedModal = true;
           }
-        } else if (value === 'signout') {
+        } else if (value === 'signOut') {
           this.$emit('click:sign-out');
         }
       }
@@ -253,12 +251,7 @@ export default {
       };
     },
     onClickLogo() {
-      if (this.isOnIndexPage) return;
-      if (this.$route.name !== 'tutorials.index') {
-        this.$router.push({
-          name: 'tutorials.index',
-        });
-      }
+      this.$emit('click:logo');
     },
   },
 };

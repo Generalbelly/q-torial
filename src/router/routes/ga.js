@@ -7,14 +7,20 @@ export default [
     name: 'gas.index',
     exact: true,
     component: GasPage,
-    meta: { requireAuth: true },
+    meta: {
+      requireAuth: true,
+      requireFirebase: true,
+    },
     children: [
       {
         path: ':id',
         name: 'gas.show',
         component: GaPage,
         props: true,
-        meta: { requireAuth: true },
+        meta: {
+          requireAuth: true,
+          requireFirebase: true,
+        },
       },
     ],
   },

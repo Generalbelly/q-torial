@@ -1,34 +1,34 @@
 <template>
-    <div>
-      <base-loading is-full-page :active="loading" />
-      <base-heading>
-        {{ tutorial.name }}
-      </base-heading>
-      <validation-observer ref="observer">
-        <tutorial-form
-          :id="innerTutorial.id"
-          :name.sync="innerTutorial.name"
-          :description.sync="innerTutorial.description"
-          :path-value.sync="innerTutorial.pathValue"
-          :path-operator.sync="innerTutorial.pathOperator"
-          :parameters.sync="innerTutorial.parameters"
-          :domain.sync="innerTutorial.domain"
-          :ga-id.sync="innerTutorial.gaId"
-          :gas="gas"
-          :build-url="innerTutorial.buildUrl"
-          :settings.sync="innerTutorial.settings"
-          @update:ga-property-id="updateGaPropertyId"
-        />
-      </validation-observer>
-      <grouped-buttons-layout is-right class="has-margin-top-5">
-          <back-button
-              @click="onCancel"
-          />
-          <save-button
-              @click="onSave"
-          />
-      </grouped-buttons-layout>
-    </div>
+  <div v-if="tutorial">
+    <base-loading is-full-page :active="loading" />
+    <base-heading>
+      {{ tutorial.name }}
+    </base-heading>
+    <validation-observer ref="observer">
+      <tutorial-form
+        :id="innerTutorial.id"
+        :name.sync="innerTutorial.name"
+        :description.sync="innerTutorial.description"
+        :path-value.sync="innerTutorial.pathValue"
+        :path-operator.sync="innerTutorial.pathOperator"
+        :parameters.sync="innerTutorial.parameters"
+        :domain.sync="innerTutorial.domain"
+        :ga-id.sync="innerTutorial.gaId"
+        :gas="gas"
+        :build-url="innerTutorial.buildUrl"
+        :settings.sync="innerTutorial.settings"
+        @update:ga-property-id="updateGaPropertyId"
+      />
+    </validation-observer>
+    <grouped-buttons-layout is-right class="has-margin-top-5">
+      <back-button
+        @click="onCancel"
+      />
+      <save-button
+        @click="onSave"
+      />
+    </grouped-buttons-layout>
+  </div>
 </template>
 
 <script>

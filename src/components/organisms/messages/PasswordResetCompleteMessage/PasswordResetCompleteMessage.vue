@@ -3,11 +3,9 @@
     type="is-success"
     active
   >
-    Password changed successfully.<br>
+    Your password has been changed!<br>
     You can now sign in with your new password.<br>
-    <router-link :to="{ name: 'sign-in' }">
-      Sign in
-    </router-link>
+    <router-link :to="{ name: 'sign-in' }" />
   </base-message>
 </template>
 

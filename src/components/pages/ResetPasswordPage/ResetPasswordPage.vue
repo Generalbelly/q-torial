@@ -2,12 +2,16 @@
     <reset-password-template
       @click:reset-password="onClickResetPassword"
       :password-reset-complete="passwordResetComplete"
-    ></reset-password-template>
+      :loading="requesting"
+    />
 </template>
 
 <script>
-import firebase from '../../../firebase';
+import { mapGetters, mapActions } from 'vuex';
+import { appFirebaseService, getUserFirebaseService } from '../../../firebase';
 import ResetPasswordTemplate from '../../templates/ResetPasswordTemplate';
+import UserEntity from '../../atoms/Entities/UserEntity';
+import chromeExtension from '../../../chromeExtension';
 
 export default {
   name: 'ResetPasswordPage',
@@ -18,7 +22,13 @@ export default {
     return {
       code: null,
       passwordResetComplete: false,
+      requesting: false,
     };
+  },
+  computed: {
+    ...mapGetters([
+      'firebaseConfig',
+    ]),
   },
   created() {
     const {
@@ -27,13 +37,19 @@ export default {
     this.code = code;
   },
   methods: {
+    ...mapActions([
+      'updateUser',
+      'getFirebaseConfig',
+    ]),
     async onClickResetPassword({ password }) {
       try {
-        await firebase.resetPassword(this.code, password);
+        this.requesting = true;
+        await appFirebaseService.resetPassword(this.code, password);
         this.passwordResetComplete = true;
       } catch (e) {
-        console.log(e);
         this.handleError(e);
+      } finally {
+        this.requesting = false;
       }
     },
     async handleError({ message, code }) {
@@ -61,8 +77,6 @@ export default {
           errorMessage = message;
           break;
       }
-      console.log(field);
-      console.log(errorMessage);
       await this.$store.dispatch('setServerSideErrors', {
         [field]: errorMessage,
       });

@@ -1,4 +1,5 @@
 import * as https from 'https';
+import * as http from 'http';
 
 interface requestOptions {
   protocol: string,
@@ -7,22 +8,18 @@ interface requestOptions {
   path: string,
 }
 
-export const makeRequest = async (options: requestOptions): Promise<any> => {
-  return new Promise((resolve, reject) => {
+export const makeRequest = async (options: requestOptions): Promise<http.IncomingMessage> => new Promise(
+  (resolve, reject) => {
     const req = https.request({
       protocol: options.protocol,
       method: options.method,
       hostname: options.hostname,
       path: options.path,
     }, (res) => {
-      res.on('data', (data: any) => {
-        console.log(data)
-        resolve(data)
-      });
+      resolve(res);
     });
     req.on('error', (e) => {
-      reject(e)
+      reject(e);
     });
     req.end();
-  })
-};
+  });

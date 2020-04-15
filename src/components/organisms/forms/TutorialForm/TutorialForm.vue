@@ -55,6 +55,7 @@
             <validatable-domain-field
               name="domain"
               label="Domain"
+              :rules="`${domainRequired ? 'required' : ''}`"
               v-model="innerDomain"
             />
           </div>
@@ -85,6 +86,7 @@
         :items="gasOptions"
         placeholder="Select Google Analytics Web Property to connect."
       />
+      <router-link :to="{name: 'gas.index'}">Add Google Analytics Account</router-link>
     </div>
     <div>
       <text-field
@@ -108,6 +110,7 @@ import BaseFadeTransition from '../../../atoms/transitions/BaseFadeTransition';
 import TextField from '../../../molecules/fields/TextField/TextField';
 import BaseMessage from '../../../atoms/BaseMessage/BaseMessage';
 import QuestionCircleIcon from '../../../atoms/icons/QuestionCircleIcon/QuestionCircleIcon';
+import BaseButton from '../../../atoms/BaseButton/BaseButton';
 
 export default {
   name: 'TutorialForm',
@@ -174,9 +177,9 @@ export default {
       default() {
         return {
           once: true,
-        }
+        };
       },
-    }
+    },
   },
   data() {
     return {
@@ -257,13 +260,13 @@ export default {
     },
     settingsOnce: {
       get() {
-        return this.settings.once
+        return this.settings.once;
       },
       set(newValue) {
         this.$emit('update:settings', {
           ...this.settings,
           once: newValue,
-        })
+        });
       },
     },
   },
@@ -288,20 +291,35 @@ export default {
         }
       },
     },
+    innerDomain: {
+      immediate: true,
+      handler(value) {
+        if (value && !this.domainRequired) {
+          this.domainRequired = true;
+        }
+      },
+    },
     innerParameters: {
+      immediate: true,
       handler(newValue, oldValue) {
+        if (!Array.isArray(newValue) || !Array.isArray(oldValue)) return;
         if (
           oldValue.length === 1
             && newValue.length === 0
             && this.parametersRequired
         ) {
           this.parametersRequired = false;
+        } else if (
+          newValue.length > 0
+          && !this.parametersRequired
+        ) {
+          this.parametersRequired = true;
         }
       },
     },
     innerGaId: {
       handler(value) {
-        const ga = this.gas.find(ga => ga.id === value)
+        const ga = this.gas.find(ga => ga.id === value);
         if (ga) {
           this.$emit('update:ga-property-id', ga.propertyId);
         }
