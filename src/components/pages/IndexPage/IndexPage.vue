@@ -10,7 +10,7 @@
             Seamlessly integrates with Firebase<br />
           </p>
           <div class="has-margin-top-6 buttons">
-            <primary-button size="is-large" @click="redirectToSignIn">
+            <primary-button size="is-large" @click="redirectToSignUp">
               Start free
             </primary-button>
             <base-button size="is-large">
@@ -167,7 +167,7 @@
 <!--      <p class="has-padding-top-3 has-text-centered is-size-1 has-text-weight-semibold has-margin-bottom-5">30 Days Money-Back Guarantee</p>-->
 <!--      <p>Try Qtorial for free up to 14 Days now!</p>-->
       <div class="has-margin-5">
-        <primary-button size="is-large" @click="redirectToSignIn">
+        <primary-button size="is-large" @click="redirectToSignUp">
           Start free now !
         </primary-button>
       </div>
@@ -226,9 +226,9 @@ export default {
     commaSeparationFormatter(value) {
       return String(value).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
     },
-    async redirectToSignIn() {
+    async redirectToSignUp() {
       await this.$router.push({
-        name: 'sign-in',
+        name: 'sign-up',
       });
     },
   },
