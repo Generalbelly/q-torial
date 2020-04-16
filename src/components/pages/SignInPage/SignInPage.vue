@@ -65,7 +65,12 @@ export default {
         await appFirebaseService.signIn(this.email, this.password);
         const { redirect = '' } = this.$route.query;
         if (redirect.startsWith('/email/verify')) {
-          await this.$router.push(`${process.env.VUE_APP_URL}/${redirect}`);
+          await this.$router.push({
+            name: 'email.verify',
+            query: {
+              code: redirect.split('code%3')[1],
+            },
+          });
         }
         if (await chromeExtension.getVersion()) {
           await chromeExtension.signIn(this.email, this.password);
@@ -92,12 +97,7 @@ export default {
         const { redirect = '' } = this.$route.query;
         if (this.$route.query.redirect) {
           if (redirect.includes(process.env.VUE_APP_URL)) {
-            await this.$router.push({
-              name: 'email.verify',
-              query: {
-                code: redirect.split('code%3')[1],
-              },
-            });
+            await this.$router.push(redirect);
           } else {
             window.location.href = redirect;
           }
