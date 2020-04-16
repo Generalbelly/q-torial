@@ -12,15 +12,15 @@ jobs:
       - restore_cache:
           name: Restore cache
           keys:
-            - v1-npm-deps-{{ checksum "package-lock.json" }}-{{ checksum "functions/package-lock.json" }}
+            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "functions/package-lock.json" }}
 
       - run:
           name: install dependency for the project
-          command: npm install && cd functions && npm install && cd ../
+          command: yarn install && cd functions && npm install && cd ../
 
       - save_cache:
           name: Save cache
-          key: v1-npm-deps-{{ checksum "package-lock.json" }}-{{ checksum "functions/package-lock.json" }}
+          key: v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "functions/package-lock.json" }}
           paths:
             - node_modules
             - functions/node_modules
@@ -39,7 +39,7 @@ jobs:
 
       - run:
           name: build
-          command: npm run build && cd functions && npm run build && cd ../
+          command: yarn run build && cd functions && npm run build && cd ../
 
       - run:
           name: deploy firebase hosting
