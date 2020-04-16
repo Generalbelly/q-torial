@@ -86,11 +86,16 @@ export default {
           await chromeExtension.firebaseSignIn(this.firebaseEmail, this.firebasePassword);
         }
         const { redirect = '' } = this.$route.query;
-        if (this.$route.query.redirect) {
+        if (redirect) {
           if (redirect.includes(process.env.VUE_APP_URL)) {
             await this.$router.push(redirect);
           } else {
-            window.location.href = redirect;
+            try {
+              const url = new URL(redirect);
+              window.location.href = redirect;
+            } catch (_) {
+              await this.$router.push(`${process.env.VUE_APP_URL}/${redirect}`);
+            }
           }
         } else {
           await this.$router.push({
