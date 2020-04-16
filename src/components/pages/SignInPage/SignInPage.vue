@@ -63,6 +63,10 @@ export default {
       try {
         this.requesting = true;
         await appFirebaseService.signIn(this.email, this.password);
+        const { redirect = '' } = this.$route.query;
+        if (redirect.startsWith('/email/verify')) {
+          await this.$router.push(`${process.env.VUE_APP_URL}/${redirect}`);
+        }
         if (await chromeExtension.getVersion()) {
           await chromeExtension.signIn(this.email, this.password);
         }
@@ -86,17 +90,11 @@ export default {
           await chromeExtension.firebaseSignIn(this.firebaseEmail, this.firebasePassword);
         }
         const { redirect = '' } = this.$route.query;
-        console.log(redirect);
-        if (redirect) {
+        if (this.$route.query.redirect) {
           if (redirect.includes(process.env.VUE_APP_URL)) {
             await this.$router.push(redirect);
           } else {
-            try {
-              const url = new URL(redirect);
-              window.location.href = redirect;
-            } catch (_) {
-              await this.$router.push(`${process.env.VUE_APP_URL}/${redirect}`);
-            }
+            window.location.href = redirect;
           }
         } else {
           await this.$router.push({
