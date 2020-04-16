@@ -92,7 +92,12 @@ export default {
         const { redirect = '' } = this.$route.query;
         if (this.$route.query.redirect) {
           if (redirect.includes(process.env.VUE_APP_URL)) {
-            await this.$router.push(redirect);
+            await this.$router.push({
+              name: 'email.verify',
+              query: {
+                code: redirect.split('code%3')[1],
+              },
+            });
           } else {
             window.location.href = redirect;
           }
