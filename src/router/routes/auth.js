@@ -8,7 +8,7 @@ import RegisterFirebasePage from '../../components/pages/RegisterFirebasePage';
 export default [
   {
     path: '/auth',
-    redirect: (to) => {
+    redirect: to => {
       const {
         mode = null,
         oobCode = null,

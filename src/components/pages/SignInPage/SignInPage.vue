@@ -68,9 +68,10 @@ export default {
           await this.$router.push({
             name: 'email.verify',
             query: {
-              code: redirect.split('code%3')[1],
+              code: redirect.split('code=')[1],
             },
           });
+          return;
         }
         if (await chromeExtension.getVersion()) {
           await chromeExtension.signIn(this.email, this.password);
