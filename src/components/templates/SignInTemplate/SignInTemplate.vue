@@ -33,7 +33,7 @@
     >
       <template v-slot:content>
         <base-heading>
-          Sign in your firebase project
+          Sign in for your firebase project
         </base-heading>
         <p>
           You need to sign in to create tutorials.
