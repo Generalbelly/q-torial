@@ -5,8 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "serve:secure": "vue-cli-service serve --https",
-    "build": "rm -rf public/js && vue-cli-service build --mode production",
-    "build:dev": "rm -rf public/js && vue-cli-service build --mode staging",
+    "build": "rm -rf vue.config.js && cp vue.config.production.js vue.config.js && vue-cli-service build --mode production",
+    "build:dev": "rm -rf vue.config.js && cp vue.config.staging.js vue.config.js && vue-cli-service build --mode staging",
     "deploy": "yarn build && firebase use production && cp firebase.production.json firebase.json && firebase deploy --only hosting",
     "deploy:dev": "yarn build:dev && firebase use staging && cp firebase.staging.json firebase.json && firebase deploy --only hosting",
     "developer": "sh copy_for_developer.sh",
