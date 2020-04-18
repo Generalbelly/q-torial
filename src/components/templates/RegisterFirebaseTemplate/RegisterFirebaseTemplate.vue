@@ -72,11 +72,20 @@
       </template>
       <template v-slot:primary-action-button>
         <primary-button
+          v-if="useExistingUser"
           @click="onClickCreate"
           class="has-margin-top-3 is-fullwidth"
           clickable-with-enter
         >
-          Register User
+          Sign in
+        </primary-button>
+        <primary-button
+          v-else
+          @click="onClickCreate"
+          class="has-margin-top-3 is-fullwidth"
+          clickable-with-enter
+        >
+          Sign up
         </primary-button>
       </template>
     </base-modal>
