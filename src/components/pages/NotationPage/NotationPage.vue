@@ -26,7 +26,7 @@
             <th>Contact</th>
             <td>
               <ul>
-                <li>Email: support@q-torial.ap</li>
+                <li>Email: support@q-torial.app</li>
                 <li>Tel: +817040874039</li>
               </ul>
             </td>
