@@ -16,7 +16,7 @@ jobs:
 
       - run:
           name: install dependency for the project
-          command: yarn install && cd functions && npm install && cd ../
+          command: yarn upgrade && yarn install && cd functions && npm install && cd ../
 
       - save_cache:
           name: Save cache
