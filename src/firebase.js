@@ -2,6 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/functions';
+import 'firebase/analytics';
 
 export const { FieldValue, Timestamp } = firebase.firestore;
 
