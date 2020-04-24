@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { vuexfireMutations } from 'vuexfire';
 import modules from './modules';
 import {
   UPDATE_USER,
@@ -111,7 +110,6 @@ const mutations = {
       ...payload,
     };
   },
-  ...vuexfireMutations,
 };
 
 const actions = {
