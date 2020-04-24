@@ -94,7 +94,7 @@ export default {
       });
     },
     async onClickDelete(ga) {
-      // await this.deleteGa(ga);
+      await this.deleteGa(ga);
       await this.deleteGaId(ga);
     },
     onChangeQuery: debounce(async function (query) {
