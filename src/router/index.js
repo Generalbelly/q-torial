@@ -95,4 +95,7 @@ router.beforeEach(async (to, from, next) => {
   await routing(to, from, next, user, store.state.user ? store.state.user.setupComplete : false);
 });
 
+// router.afterEach((to, from) => {
+// });
+
 export default router;
