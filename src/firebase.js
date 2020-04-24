@@ -105,7 +105,7 @@ export default class FirebaseService {
   }
 }
 
-export const appFirebaseService = new FirebaseService({
+const appFirebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
   authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
   databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
@@ -113,7 +113,15 @@ export const appFirebaseService = new FirebaseService({
   storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.VUE_APP_FIREBASE_APP_ID,
-}, process.env.VUE_APP_NAME);
+};
+const measurementId = process.env.VUE_APP_FIREBASE_MEASUREMENT_ID;
+if (measurementId) {
+  appFirebaseConfig.measurementId = measurementId;
+}
+export const appFirebaseService = new FirebaseService(
+  appFirebaseConfig,
+  process.env.VUE_APP_NAME
+);
 
 const userFirebaseService = (name = 'user') => {
   let service;

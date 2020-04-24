@@ -9,22 +9,22 @@
   >
     <template slot-scope="props">
       <b-table-column label="Account Name">
-        {{ props.row.accountName || '未選択' }}
+        {{ props.row.accountName || 'not selected' }}
       </b-table-column>
       <b-table-column label="Account ID">
-        {{ props.row.accountId || '未選択' }}
+        {{ props.row.accountId || 'not selected' }}
       </b-table-column>
       <b-table-column label="Property Name (Website Url)">
-        {{ props.row.propertyName || '未選択' }}
+        {{ props.row.propertyName || 'not selected' }}
       </b-table-column>
       <b-table-column label="Property ID">
-        {{ props.row.propertyId || '未選択' }}
+        {{ props.row.propertyId || 'not selected' }}
       </b-table-column>
       <b-table-column label="View Name">
-        {{ props.row.viewName || '未選択' }}
+        {{ props.row.viewName || 'not selected' }}
       </b-table-column>
       <b-table-column label="View ID">
-        {{ props.row.viewId || '未選択' }}
+        {{ props.row.viewId || 'not selected' }}
       </b-table-column>
       <b-table-column label="Actions">
         <pen-icon
