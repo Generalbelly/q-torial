@@ -15,8 +15,13 @@ export default class FirebaseService {
 
   auth;
 
+  analytics;
+
   constructor(config, name = null) {
     this.app = firebase.initializeApp(config, name);
+    if (config.measurementId) {
+      this.analytics = firebase.analytics();
+    }
     this.functions = this.app.functions();
     this.db = this.app.firestore();
     this.db.enablePersistence({ synchronizeTabs: true });
@@ -119,9 +124,10 @@ const measurementId = process.env.VUE_APP_FIREBASE_MEASUREMENT_ID;
 if (measurementId) {
   appFirebaseConfig.measurementId = measurementId;
 }
+
 export const appFirebaseService = new FirebaseService(
   appFirebaseConfig,
-  process.env.VUE_APP_NAME
+  process.env.VUE_APP_NAME,
 );
 
 const userFirebaseService = (name = 'user') => {
