@@ -20,7 +20,7 @@ export default class FirebaseService {
   constructor(config, name = null) {
     this.app = firebase.initializeApp(config, name);
     if (config.measurementId) {
-      this.analytics = firebase.analytics();
+      this.analytics = this.app.analytics();
     }
     this.functions = this.app.functions();
     this.db = this.app.firestore();
