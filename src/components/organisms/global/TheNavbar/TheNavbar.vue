@@ -53,7 +53,7 @@
                   >
                     <div class="is-flex has-cursor-pointer">
                       <base-icon icon="user-circle" />
-                      <span>Account</span>
+                      <span>{{ user.email }}</span>
                     </div>
                   </base-dropdown>
                 </template>
