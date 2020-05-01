@@ -13,10 +13,20 @@
     <template v-slot:empty>
       <section class="section">
         <div class="content has-text-grey has-text-centered">
-          <p>No {{ itemType }} found</p>
-          <create-first-button @click="$emit('click:create-first-item')">
-            Add your first {{ itemType }}
-          </create-first-button>
+          <div v-if="itemType === 'Google Analytics'">
+            <p>Add your first {{ itemType }}</p>
+            <google-button
+              @click="$emit('click:create-first-item')"
+            />
+          </div>
+          <div v-else>
+            <p>No {{ itemType }} found</p>
+            <create-first-button
+              @click="$emit('click:create-first-item')"
+            >
+              Add your first {{ itemType }}
+            </create-first-button>
+          </div>
         </div>
       </section>
     </template>
@@ -38,10 +48,12 @@
 <script>
 import CreateFirstButton from '../../atoms/buttons/CreateFirstButton';
 import ShowMoreButton from '../../atoms/buttons/ShowMoreButton';
+import GoogleButton from '../../atoms/buttons/GoogleButton/GoogleButton';
 
 export default {
   name: 'BaseTable',
   components: {
+    GoogleButton,
     ShowMoreButton,
     CreateFirstButton,
   },
