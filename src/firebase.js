@@ -3,6 +3,7 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/functions';
 import 'firebase/analytics';
+// import 'firebase/performance';
 
 export const { FieldValue, Timestamp } = firebase.firestore;
 
@@ -17,10 +18,13 @@ export default class FirebaseService {
 
   analytics;
 
+  // performance;
+
   constructor(config, name = null) {
     this.app = firebase.initializeApp(config, name);
     if (config.measurementId) {
       this.analytics = this.app.analytics();
+      // this.performance = this.app.performance();
     }
     this.functions = this.app.functions();
     this.db = this.app.firestore();
