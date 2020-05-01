@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="has-padding-3">Copy and paste this code into the &lt;HEAD&gt; of a webpage you want to show tutorials.</p>
+    <p class="has-padding-3">Insert this code into a page(s) of your website where you would like to show tutorials.</p>
     <b-tabs v-model="activeTab">
       <b-tab-item label="Standard">
         <textarea
