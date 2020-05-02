@@ -32,7 +32,7 @@
             Done
           </primary-button>
           <div class="help has-margin-top-4 has-text-centered">
-            If you encounter any problem, feel free to contact us by email: <span class="has-text-grey-darker">{{ supportEmail }}</span>
+            If you encounter any problem, feel free to contact us by chat or by email: <span class="has-text-grey-darker">{{ supportEmail }}</span>
           </div>
         </div>
       </template>
