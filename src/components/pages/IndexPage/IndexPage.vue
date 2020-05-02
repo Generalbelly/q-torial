@@ -4,10 +4,10 @@
       <base-columns>
         <base-column class="is-flex">
           <h1 class="has-text-weight-bold" style="font-size: 60px;">
-            Tutorial builder for indie hackers
+            Product tour builder for indie hackers
           </h1>
           <p class="has-margin-top-4 is-size-3">
-            Seamlessly integrates with Firebase<br />
+            Harness the power of Firebase<br />
           </p>
           <div class="has-margin-top-6 buttons">
             <primary-button size="is-large" @click="redirectToSignUp">
