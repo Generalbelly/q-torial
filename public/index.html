@@ -18,13 +18,14 @@
     <script async defer src="https://apis.google.com/js/client:platform.js"></script>
     <!-- Load Stripe.js on your website. -->
     <script src="https://js.stripe.com/v3"></script>
-    <%= htmlWebpackPlugin.options.qTorialScript %>
     <%= htmlWebpackPlugin.options.googleAnalyticsScript %>
+    <%= htmlWebpackPlugin.options.chatToolScript %>
   </head>
   <body>
     <noscript>
       <strong>We're sorry but q-torial doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
+    <%= htmlWebpackPlugin.options.qTorialScript %>
     <div id="app"></div>
   </body>
 </html>
