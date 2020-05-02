@@ -14,6 +14,7 @@ module.exports = {
           gtag('config', 'UA-71759040-1');
         </script>`;
         args[0].qTorialScript = '';
+        args[0].chatToolScript = '';
         return args;
       });
   },
