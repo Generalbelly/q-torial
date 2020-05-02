@@ -72,6 +72,7 @@ const routing = async (to, from, next, user = null, setupComplete = false) => {
 router.beforeEach(async (to, from, next) => {
   if (to.name === 'sign-in' && to.query.source === 'extension') {
     await store.dispatch('signOut');
+    await routing(to, from, next);
   }
   const user = await appFirebaseService.checkAuth();
   if (!user) {
