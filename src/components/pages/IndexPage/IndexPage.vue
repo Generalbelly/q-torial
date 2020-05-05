@@ -4,7 +4,8 @@
       <base-columns>
         <base-column class="is-flex">
           <h1 class="has-text-weight-bold" style="font-size: 60px;">
-            Product tour builder for indie hackers
+            Product tutorial builder<br />
+            for indie hackers
           </h1>
           <p class="has-margin-top-4 is-size-3">
             Harness the power of Firebase<br />
@@ -17,9 +18,6 @@
               Try the demo
             </base-button>
           </div>
-<!--          <span class="is-siz-5">-->
-<!--            Risk free 14-day trial • Cancel anytime-->
-<!--          </span>-->
         </base-column>
         <base-column>
           <img src="/img/screen.png" />
@@ -29,8 +27,18 @@
     <section class="section">
       <base-columns>
         <base-column>
-          <img src="/img/welcome.png" />
+          <img src="/img/firebase-integration.png" />
         </base-column>
+        <base-column class="is-flex">
+          <h2 class="is-size-1 has-text-weight-semibold has-margin-bottom-5">
+            Host at a reasonable price
+          </h2>
+          <p class="is-size-4">
+            We store tutorials you build in your firebase project, so that your can serve them from there.
+          </p>
+        </base-column>
+      </base-columns>
+      <base-columns>
         <base-column class="is-flex">
           <h2 class="is-size-1 has-text-weight-semibold has-margin-bottom-5">
             Build tutorials code-free
@@ -39,18 +47,8 @@
             Use Qtorial to easily build tutorials and to separate tutorial-related code from your product-related code.
           </p>
         </base-column>
-      </base-columns>
-      <base-columns>
-        <base-column class="is-flex">
-          <h2 class="is-size-1 has-text-weight-semibold has-margin-bottom-5">
-            Host tutorials at almost no cost or reasonable price
-          </h2>
-          <p class="is-size-4">
-            We store tutorials you build in your firebase project, so that your can serve them from there.
-          </p>
-        </base-column>
         <base-column>
-          <img src="/img/firebase-integration.png" />
+          <img src="/img/welcome.png" />
         </base-column>
       </base-columns>
       <base-columns>
