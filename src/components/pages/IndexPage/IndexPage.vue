@@ -1,77 +1,84 @@
 <template>
   <div class="container">
-    <section class="section">
-      <base-columns>
-        <base-column class="is-flex">
-          <h1 class="has-text-weight-bold" style="font-size: 60px;">
-            Product tour builder for indie hackers
+    <div class="basic-layout basic-layout--fv">
+      <div>
+        <div class="has-margin-bottom-5">
+          <h1 class="main-copy has-text-weight-bold is-size-1">
+            Product tutorial builder<br />
+            for indie hackers
           </h1>
           <p class="has-margin-top-4 is-size-3">
             Harness the power of Firebase<br />
           </p>
-          <div class="has-margin-top-6 buttons">
-            <primary-button size="is-large" @click="redirectToSignUp">
-              Start free
-            </primary-button>
-            <base-button size="is-large">
-              Try the demo
-            </base-button>
-          </div>
-<!--          <span class="is-siz-5">-->
-<!--            Risk free 14-day trial • Cancel anytime-->
-<!--          </span>-->
-        </base-column>
-        <base-column>
-          <img src="/img/screen.png" />
-        </base-column>
-      </base-columns>
-    </section>
-    <section class="section">
-      <base-columns>
-        <base-column>
-          <img src="/img/welcome.png" />
-        </base-column>
-        <base-column class="is-flex">
-          <h2 class="is-size-1 has-text-weight-semibold has-margin-bottom-5">
-            Build tutorials code-free
-          </h2>
-          <p class="is-size-4">
-            Use Qtorial to easily build tutorials and to separate tutorial-related code from your product-related code.
-          </p>
-        </base-column>
-      </base-columns>
-      <base-columns>
-        <base-column class="is-flex">
-          <h2 class="is-size-1 has-text-weight-semibold has-margin-bottom-5">
-            Host tutorials at almost no cost or reasonable price
-          </h2>
-          <p class="is-size-4">
-            We store tutorials you build in your firebase project, so that your can serve them from there.
-          </p>
-        </base-column>
-        <base-column>
-          <img src="/img/firebase-integration.png" />
-        </base-column>
-      </base-columns>
-      <base-columns>
-        <base-column>
-          <img src="/img/measure.png" />
-        </base-column>
-        <base-column class="is-flex">
-          <h2 class="is-size-1 has-text-weight-semibold has-margin-bottom-5">
-            Measure effectiveness
-          </h2>
-          <p class="is-size-4">
-            See how effective tutorials are.<br />
-            Google Analytics integration is also supported.
-          </p>
-        </base-column>
-      </base-columns>
-    </section>
-    <section class="section has-background-info">
-      <p class="has-padding-top-3 has-text-centered is-size-1 has-text-weight-semibold  has-text-grey">
-        Pricing
+        </div>
+        <div class="buttons">
+          <primary-button size="is-large" @click="redirectToSignUp">
+            Start free
+          </primary-button>
+          <base-button size="is-large">
+            Try the demo
+          </base-button>
+        </div>
+      </div>
+      <div>
+        <img
+          class="basic-img"
+          src="/img/screen.png"
+        />
+      </div>
+    </div>
+    <div class="basic-layout has-text-centered">
+        <h2 class="is-size-1 has-text-weight-semibold has-margin-bottom-5">
+          Host at a reasonable price
+        </h2>
+        <p class="is-size-4">
+          We store tutorials you build in your firebase project, so that your can serve them from there.
+        </p>
+        <div class="has-margin-top-6">
+          <img
+            class="basic-img"
+            src="/img/firebase-integration.png"
+          />
+        </div>
+    </div>
+    <div class="basic-layout has-text-centered">
+      <h2 class="is-size-1 has-text-weight-semibold has-margin-bottom-5">
+        Build tutorials code-free
+      </h2>
+      <p class="is-size-4">
+        Use Qtorial to easily build tutorials and to separate tutorial-related code from your product-related code.
       </p>
+      <base-columns class="has-margin-top-6">
+        <base-column>
+          <img
+            src="/img/extension1.png"
+          />
+        </base-column>
+        <base-column>
+          <img
+            src="/img/extension.png"
+          />
+        </base-column>
+      </base-columns>
+    </div>
+    <div class="basic-layout has-text-centered">
+      <h2 class="is-size-1 has-text-weight-semibold has-margin-bottom-5">
+        Measure effectiveness
+      </h2>
+      <p class="is-size-4">
+        See how effective tutorials are. Google Analytics integration is also supported.
+      </p>
+      <div>
+        <img
+          class="basic-img"
+          src="/img/measure.png"
+        />
+      </div>
+    </div>
+    <div class="basic-layout has-text-centered has-background-info">
+      <h2 class="is-size-1 has-text-weight-semibold has-margin-bottom-5">
+        Pricing
+      </h2>
       <base-columns class="has-padding-y-5">
         <base-column>
           <base-card class="has-text-centered">
@@ -108,51 +115,9 @@
         <base-column>
           <base-card class="has-text-centered has-background-grey" style="height: 100%;">
             <div class="is-size-5 has-text-grey-light">Advanced Plan</div>
-<!--            <div class="is-size-2">-->
-<!--              ???<span class="is-size-7">/Mo</span>-->
-<!--            </div>-->
             <div class="has-margin-top-6 is-size-2 has-text-grey-light">Coming soon</div>
           </base-card>
         </base-column>
-<!--        <base-column>-->
-<!--          <base-card class="has-text-centered">-->
-<!--            <div class="label is-size-5 has-padding-bottom-4">{{ commaSeparationFormatter(monthlyActiveUsers) }} Monthly Active Users</div>-->
-<!--            <base-slider-->
-<!--              size="is-medium"-->
-<!--              :min="0"-->
-<!--              :max="20000"-->
-<!--              v-model="monthlyActiveUsers"-->
-<!--              :items="[1000, 2500, 5000, 10000, 20000]"-->
-<!--            />-->
-<!--            <div class="has-margin-top-5 is-size-2">-->
-<!--              ${{ calculateBasicPrice(monthlyActiveUsers) }}-->
-<!--              <span class="is-size-6">-->
-<!--                /Mo-->
-<!--              </span>-->
-<!--            </div>-->
-<!--            <ul class="has-margin-top-4">-->
-<!--              <li>-->
-<!--                Code-free tutorials builder-->
-<!--              </li>-->
-<!--              <li>-->
-<!--                Unlimited number of tutorials-->
-<!--              </li>-->
-<!--              <li>-->
-<!--                Tutorials performance reporting-->
-<!--              </li>-->
-<!--              <li>-->
-<!--                Google Analytics Integration-->
-<!--              </li>-->
-<!--              <li>-->
-<!--                Email support-->
-<!--              </li>-->
-<!--            </ul>-->
-<!--            <p class="has-margin-top-4 help">-->
-<!--              Do you have more than 20,000 users?-->
-<!--              Contact us for a customized Enterprise plan-->
-<!--            </p>-->
-<!--          </base-card>-->
-<!--        </base-column>-->
       </base-columns>
       <div class="has-text-centered">
         <p>
@@ -162,22 +127,17 @@
           *Firebase plan limitations apply
         </p>
       </div>
-    </section>
-    <section class="has-text-centered section">
-<!--      <p class="has-padding-top-3 has-text-centered is-size-1 has-text-weight-semibold has-margin-bottom-5">30 Days Money-Back Guarantee</p>-->
-<!--      <p>Try Qtorial for free up to 14 Days now!</p>-->
-      <div class="has-margin-5">
-        <primary-button size="is-large" @click="redirectToSignUp">
-          Start free now !
-        </primary-button>
-      </div>
-    </section>
+    </div>
+    <div class="has-margin-6 has-text-centered">
+      <primary-button size="is-large" @click="redirectToSignUp">
+        Start free now !
+      </primary-button>
+    </div>
     <the-footer />
   </div>
 </template>
 
 <script>
-
 import BaseColumns from '../../atoms/BaseColumns';
 import BaseColumn from '../../atoms/BaseColumn';
 import BaseButton from '../../atoms/BaseButton';
@@ -236,30 +196,38 @@ export default {
 </script>
 
 <style scoped>
-  .columns > .column {
-    justify-content: center;
-    flex-direction: column;
+  .basic-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    padding: 2rem;
   }
-  .section {
-    padding-left: 4rem;
-    padding-right: 4rem;
+  .basic-layout--fv {
+    grid-template-columns: 1fr 1fr;
+    padding: 2.5rem 2rem 2rem 2rem;
   }
-  .section:nth-child(1) {
-    padding-top: 4rem;
-    padding-bottom: 4rem;
+  .basic-layout--fv .main-copy {
+    margin-top: 20px !important;
   }
-  @media only screen and (max-width: 600px) {
-    .section {
-      padding-left: 2rem;
-      padding-right: 2rem;
+  .basic-img {
+    max-width: 542px;
+  }
+  @media only screen and (max-width: 768px) {
+    .basic-layout {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
     }
-    .section:nth-child(1) {
-      padding-top: 2rem;
-      padding-bottom: 2rem;
+    .basic-layout div {
+      text-align: center;
     }
-    .section:nth-child(1) .buttons .button {
-      width: 100%;
-      margin-right: 0;
+    .basic-img {
+      margin-top: 2rem;
+    }
+    .basic-layout .buttons {
+      display: inline-flex;
+    }
+    .basic-layout div.has-margin-top-6 {
+      margin-top: 10px !important;
     }
   }
 </style>
