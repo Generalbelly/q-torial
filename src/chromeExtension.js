@@ -1,4 +1,3 @@
-const SELECT_TUTORIAL = 'SELECT_TUTORIAL';
 const SIGN_IN = 'SIGN_IN';
 const FIREBAE_SIGN_IN = 'FIREBAE_SIGN_IN';
 const SIGN_OUT = 'SIGN_OUT';
@@ -59,14 +58,6 @@ export default {
     }
     return version;
   },
-  // async selectTutorial(tutorial = {}) {
-  //   console.log(tutorial);
-  //   const response = await this.sendMessage({
-  //     command: SELECT_TUTORIAL,
-  //     data: tutorial,
-  //   });
-  //   return response && response.status === 'OK';
-  // },
   async checkAuth() {
     const response = await this.sendMessage({
       command: CHECK_AUTH,
