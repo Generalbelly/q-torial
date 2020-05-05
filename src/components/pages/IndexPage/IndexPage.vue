@@ -3,7 +3,7 @@
     <div class="basic-layout basic-layout--fv">
       <div>
         <div class="has-margin-bottom-5">
-          <h1 class="has-text-weight-bold is-size-1">
+          <h1 class="main-copy has-text-weight-bold is-size-1">
             Product tutorial builder<br />
             for indie hackers
           </h1>
@@ -20,8 +20,11 @@
           </base-button>
         </div>
       </div>
-      <div class="basic-img">
-        <img src="/img/screen.png" />
+      <div>
+        <img
+          class="basic-img"
+          src="/img/screen.png"
+        />
       </div>
     </div>
     <div class="basic-layout has-text-centered">
@@ -202,6 +205,9 @@ export default {
   .basic-layout--fv {
     grid-template-columns: 1fr 1fr;
     padding: 2.5rem 2rem 2rem 2rem;
+  }
+  .basic-layout--fv .main-copy {
+    margin-top: 20px !important;
   }
   .basic-img {
     max-width: 542px;
