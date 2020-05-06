@@ -173,15 +173,18 @@ const actions = {
     }
   },
   async signOut({ state }) {
+    if (!state.user) return;
     try {
-      await getUserFirebaseService(state.user.firebaseConfig).signOut();
+      if (state.user.firebaseConfig) {
+        await getUserFirebaseService(state.user.firebaseConfig).signOut();
+      }
       await appFirebaseService.signOut();
       const version = await chromeExtension.getVersion();
       if (version) {
         await chromeExtension.signOut();
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   },
 };

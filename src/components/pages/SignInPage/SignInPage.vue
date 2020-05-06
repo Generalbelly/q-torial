@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { ValidationObserver } from 'vee-validate';
 import { appFirebaseService, getUserFirebaseService } from '../../../firebase';
 import SignInTemplate from '../../templates/SignInTemplate';
@@ -38,15 +38,15 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'firebaseConfig',
+    ...mapState([
+      'user',
     ]),
   },
   watch: {
-    firebaseConfig: {
+    user: {
       immediate: true,
       handler(value) {
-        if (value) {
+        if (value && value.firebaseConfig) {
           this.shouldShowFirebaseSignInModal = true;
         }
       },
@@ -78,9 +78,16 @@ export default {
         }
         await this.getFirebaseConfig();
         this.requesting = false;
+        if (this.user.firebaseConfig) {
+          this.shouldShowFirebaseSignInModal = true;
+        } else {
+          await this.$router.push({
+            name: 'register-firebase',
+          });
+        }
       } catch (e) {
         this.requesting = false;
-        this.handleError(e);
+        await this.handleError(e);
       }
     },
     async onClickFirebaseSignIn() {
@@ -88,7 +95,7 @@ export default {
       if (!isValid) return;
       try {
         this.requesting = true;
-        await getUserFirebaseService(this.firebaseConfig).signIn(
+        await getUserFirebaseService(this.user.firebaseConfig).signIn(
           this.firebaseEmail,
           this.firebasePassword,
         );
@@ -108,7 +115,7 @@ export default {
           });
         }
       } catch (e) {
-        this.handleError(e);
+        await this.handleError(e);
       } finally {
         this.requesting = false;
       }
