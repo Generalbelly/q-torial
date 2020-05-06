@@ -39,7 +39,8 @@ export default class UserRepository {
     return this.db
       .collection('users')
       .doc(userId)
-      .collection('firebaseConfigs');
+      .collection('firebaseConfigs')
+      .orderBy('createdAt', 'desc');
   }
 
   async find(userId) {
