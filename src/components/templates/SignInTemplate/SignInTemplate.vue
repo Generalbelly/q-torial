@@ -42,6 +42,7 @@
           class="has-margin-top-5"
           :email.sync="innerFirebaseEmail"
           :password.sync="innerFirebasePassword"
+          user-firebase
         />
       </template>
       <template v-slot:primary-action-button>

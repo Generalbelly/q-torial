@@ -17,7 +17,7 @@
               We need you to create a new firebase project, so that we can store tutorials you make in the firebase project. <br />
               If you haven't created a firebase project yet, follow the instruction <span class="has-text-weight-semibold">Step1</span> and <span class="has-text-weight-semibold">Step2</span> of this <a href="https://firebase.google.com/docs/web/setup" target="_blank">page</a>
             </p>
-            <div class="has-text-centered">
+            <div class="has-padding-y-6">
               <img src="img/firebase-integration.png">
             </div>
           </base-column>
