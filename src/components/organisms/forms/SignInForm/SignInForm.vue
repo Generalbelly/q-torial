@@ -15,7 +15,14 @@
       />
     </form>
     <p v-if="hasForgetPasswordLink">
-      <router-link :to="{ name: 'password.forget', query: { appName: 'user' } }">
+      <router-link
+        v-if="userFirebase"
+        :to="{ name: 'password.forget', query: { appName: 'user' } }">
+        Forget your password?
+      </router-link>
+      <router-link
+        v-else
+        :to="{ name: 'password.forget' }">
         Forget your password?
       </router-link>
     </p>
@@ -43,6 +50,10 @@ export default {
     hasForgetPasswordLink: {
       type: Boolean,
       default: true,
+    },
+    userFirebase: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
