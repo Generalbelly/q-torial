@@ -3,11 +3,11 @@
     <div class="basic-layout basic-layout--fv">
       <div>
         <div class="has-margin-bottom-5">
-          <h1 class="main-copy has-text-weight-bold is-size-1">
+          <h1 class="main-copy has-text-weight-bold is-size-1 is-size-2-mobile">
             Product tutorial builder<br />
             for indie hackers
           </h1>
-          <p class="has-margin-top-4 is-size-3">
+          <p class="has-margin-top-4 is-size-3 is-size-4-mobile">
             Harness the power of Firebase<br />
           </p>
         </div>
@@ -28,10 +28,10 @@
       </div>
     </div>
     <div class="basic-layout has-text-centered">
-        <h2 class="is-size-1 has-text-weight-semibold has-margin-bottom-5">
+        <h2 class="is-size-1 is-size-2-mobile has-text-weight-semibold has-margin-bottom-5">
           Host at a reasonable price
         </h2>
-        <p class="is-size-4">
+        <p class="is-size-4 is-size-5-mobile">
           We store tutorials you build in your firebase project, so that your can serve them from there.
         </p>
         <div class="has-margin-top-6">
@@ -42,7 +42,7 @@
         </div>
     </div>
     <div class="basic-layout has-text-centered">
-      <h2 class="is-size-1 has-text-weight-semibold has-margin-bottom-5">
+      <h2 class="is-size-1 is-size-2-mobile has-text-weight-semibold has-margin-bottom-5">
         Build tutorials code-free
       </h2>
       <p class="is-size-4">
@@ -62,7 +62,7 @@
       </base-columns>
     </div>
     <div class="basic-layout has-text-centered">
-      <h2 class="is-size-1 has-text-weight-semibold has-margin-bottom-5">
+      <h2 class="is-size-1 is-size-2-mobile has-text-weight-semibold has-margin-bottom-5">
         Measure effectiveness
       </h2>
       <p class="is-size-4">
@@ -76,7 +76,7 @@
       </div>
     </div>
     <div class="basic-layout has-text-centered has-background-info">
-      <h2 class="is-size-1 has-text-weight-semibold has-margin-bottom-5">
+      <h2 class="is-size-1 is-size-2-mobile has-text-weight-semibold has-margin-bottom-5">
         Pricing
       </h2>
       <base-columns class="has-padding-y-5">
@@ -207,7 +207,7 @@ export default {
     padding: 2.5rem 2rem 2rem 2rem;
   }
   .basic-layout--fv .main-copy {
-    margin-top: 20px !important;
+    margin-top: 20px;
   }
   .basic-img {
     max-width: 542px;
@@ -225,10 +225,13 @@ export default {
       margin-top: 2rem;
     }
     .basic-layout .buttons {
-      display: inline-flex;
+      flex-wrap: nowrap;
     }
     .basic-layout div.has-margin-top-6 {
       margin-top: 10px !important;
+    }
+    .basic-layout--fv .main-copy {
+      margin-top: 0 !important;
     }
   }
 </style>
