@@ -211,6 +211,7 @@ export default {
   }
   .basic-img {
     max-width: 542px;
+    width: 100%;
   }
   @media only screen and (max-width: 768px) {
     .basic-layout {
