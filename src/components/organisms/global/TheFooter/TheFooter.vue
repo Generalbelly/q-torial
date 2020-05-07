@@ -1,5 +1,5 @@
 <template>
-  <footer class="container has-padding-y-5">
+  <footer class="container has-padding-y-5 has-text-centered-mobile">
     <base-level>
       <base-level-left>
         <base-level-item>
