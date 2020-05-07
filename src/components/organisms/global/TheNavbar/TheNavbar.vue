@@ -13,6 +13,7 @@
                 @click="onClickLogo"
                 :width="180"
                 :height="48"
+                view-box="60 0 257 100"
               />
             </base-navbar-item>
             <base-navbar-burger

@@ -13,7 +13,9 @@
         </base-level-item>
       </base-level-left>
       <base-level-right>
-        © 2020 Qtorial
+        <base-level-item>
+          © 2020 Qtorial
+        </base-level-item>
       </base-level-right>
     </base-level>
   </footer>
