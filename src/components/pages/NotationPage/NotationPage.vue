@@ -1,12 +1,12 @@
 <template>
   <div class="has-text-centered">
     <section class="section">
-      <h1 class="is-size-3 has-margin-bottom-3">
+      <h1 class="is-size-3 is-size-5-mobile">
         Notation based on the Specified Commercial Transaction Act
       </h1>
       <span>特定商取引法に基づく表記</span>
     </section>
-    <base-level>
+    <base-level class="has-margin-3">
       <base-level-item>
         <table class="table is-bordered">
           <tbody>
@@ -77,9 +77,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-  .footer--notation {
-    position: fixed; bottom: 0; left: 0; right: 0px;
-  }
-</style>

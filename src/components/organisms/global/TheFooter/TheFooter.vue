@@ -1,46 +1,41 @@
 <template>
-  <footer class="container has-padding-y-5 has-text-centered-mobile">
-    <base-level>
-      <base-level-left>
-        <base-level-item>
-          <router-link to="/terms-of-service">Terms Of Service</router-link>
-        </base-level-item>
-        <base-level-item>
-          <router-link to="/privacy-policy">Privacy Policy</router-link>
-        </base-level-item>
-        <base-level-item>
-          <router-link to="/notation">Notation based on the Specified Commercial Transaction Act</router-link>
-        </base-level-item>
-      </base-level-left>
-      <base-level-right>
-        <base-level-item>
-          © 2020 Qtorial
-        </base-level-item>
-      </base-level-right>
-    </base-level>
+  <footer class="footer has-text-centered">
+    <div class="link-container">
+      <router-link to="/terms-of-service">
+        Terms Of Service
+      </router-link>
+      <router-link to="/privacy-policy">
+        Privacy Policy
+      </router-link>
+      <router-link to="/notation">
+        Notation based on the Specified Commercial Transaction Act
+      </router-link>
+    </div>
+    <span class="has-margin-top-6 is-inline-block">© 2020 Qtorial</span>
   </footer>
 </template>
 
 <script>
-
-import BaseLevelItem from '../../../atoms/BaseLevelItem/BaseLevelItem';
-import BaseLevelRight from '../../../atoms/BaseLevelRight/BaseLevelRight';
-import BaseLevelLeft from '../../../atoms/BaseLevelLeft/BaseLevelLeft';
-import BaseLevel from '../../../atoms/BaseLevel/BaseLevel';
-
 export default {
   name: 'TheFooter',
-  components: {
-    BaseLevelItem,
-    BaseLevelRight,
-    BaseLevelLeft,
-    BaseLevel,
-  },
 };
 </script>
 <style scoped>
-  .level-left .level-item:not(:last-child) {
-    border-right: 1px #FF8CBA solid;
-    padding-right: 15px;
+.footer .link-container a {
+  border-right: 1px #FF8CBA solid;
+  padding: 0 15px;
+}
+.footer .link-container a:last-of-type {
+  border-right: none;
+}
+@media only screen and (max-width: 768px) {
+  .footer .link-container a {
+    border-right: none;
+    padding-right: unset;
   }
+  .link-container {
+    display: flex;
+    flex-direction: column;
+  }
+}
 </style>

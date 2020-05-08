@@ -1,12 +1,12 @@
 <template>
   <div class="container has-text-centered">
     <section class="section">
-      <h1 class="is-size-3 has-margin-bottom-3">
+      <h1 class="is-size-3 is-size-5-mobile has-margin-bottom-4">
         Terms Of Service
       </h1>
-    </section>
-    <section class="paragraph">
-      Last updated: 02/20/2020
+      <span>
+        Effective date: 02/20/2020
+      </span>
     </section>
     <section class="paragraph">
       <h3>1. Introduction</h3>
@@ -371,6 +371,7 @@ export default {
   .paragraph {
     text-align: left;
     margin-bottom: 25px;
+    padding: 0 2rem 2rem;
   }
   .paragraph > h3 {
     font-size: 1.3em;
