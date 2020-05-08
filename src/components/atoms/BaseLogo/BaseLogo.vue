@@ -17,7 +17,7 @@ export default {
     },
     viewBox: {
       type: String,
-      default: "0 0 257 100",
+      default: '0 0 257 100',
     },
   },
 };
