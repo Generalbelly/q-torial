@@ -3,7 +3,7 @@
 const path = require('path');
 const sharp = require('sharp');
 const input = path.join(__dirname, 'q-torial.svg');
-const output = path.join(__dirname, '../public/img/q-torial.png');
+const output = path.join(__dirname, '../public/img/q-torial@1200x630.png');
 
 
 function run() {
