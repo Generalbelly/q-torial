@@ -28,9 +28,23 @@
           <primary-button size="is-large" @click="redirectToSignUp">
             Start free
           </primary-button>
-          <base-button size="is-large">
-            Try the demo
-          </base-button>
+<!--          <base-button size="is-large">-->
+<!--            Try the demo-->
+<!--          </base-button>-->
+        </div>
+      </div>
+      <div class="basic-layout has-text-centered">
+        <h2 class="is-size-1 is-size-2-mobile has-text-weight-semibold has-margin-bottom-5">
+          Build tutorials code-free
+        </h2>
+        <p class="is-size-4 is-size-6-mobile">
+          Use Qtorial to easily build tutorials and to separate tutorial-related code from your product-related code.
+        </p>
+        <div class="has-margin-top-6">
+          <img
+            class="basic-img"
+            src="/img/extension.png"
+          />
         </div>
       </div>
       <div class="basic-layout has-text-centered">
@@ -46,20 +60,6 @@
               src="/img/firebase-integration.png"
             />
           </div>
-      </div>
-      <div class="basic-layout has-text-centered">
-        <h2 class="is-size-1 is-size-2-mobile has-text-weight-semibold has-margin-bottom-5">
-          Build tutorials code-free
-        </h2>
-        <p class="is-size-4 is-size-6-mobile">
-          Use Qtorial to easily build tutorials and to separate tutorial-related code from your product-related code.
-        </p>
-        <div class="has-margin-top-6">
-          <img
-            class="basic-img"
-            src="/img/extension.png"
-          />
-        </div>
       </div>
       <div class="basic-layout has-text-centered">
         <h2 class="is-size-1 is-size-2-mobile has-text-weight-semibold has-margin-bottom-5">
