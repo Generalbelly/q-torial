@@ -13,7 +13,7 @@
             <primary-button size="is-large" @click="redirectToSignUp">
               Start free
             </primary-button>
-            <base-button size="is-large">
+            <base-button id="demo-start-button" size="is-large">
               Try the demo
             </base-button>
           </div>
