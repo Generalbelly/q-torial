@@ -1,3 +1,4 @@
+import axios from 'axios';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
@@ -23,8 +24,13 @@ export default class FirebaseService {
   constructor(config, name = null) {
     this.app = firebase.initializeApp(config, name);
     if (config.measurementId) {
-      this.analytics = this.app.analytics();
-      // this.performance = this.app.performance();
+      (async () => {
+        const res = await axios.get('https://api.ipify.org?format=json');
+        if (res.data.ip !== '106.72.165.32') {
+          this.analytics = this.app.analytics();
+          // this.performance = this.app.performance();
+        }
+      })();
     }
     this.functions = this.app.functions();
     this.db = this.app.firestore();
