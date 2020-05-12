@@ -4,7 +4,7 @@
       <div class="basic-layout basic-layout--fv">
         <div class="fv__copy-action">
           <h1 class="has-text-weight-bold is-size-1 is-size-2-mobile">
-            Product tutorial builder for busy indie hackers
+            Product tutorial builder for indie hackers
           </h1>
           <p class="has-margin-top-4 is-size-3 is-hidden-mobile">
             Seamlessly integrates with Firebase<br />
@@ -38,7 +38,7 @@
           Build tutorials code-free
         </h2>
         <p class="is-size-4 is-size-6-mobile">
-          Use Qtorial to easily build tutorials and to separate tutorial-related code from your product-related code.
+          Use Qtorial to easily and quickly build tutorials, so that you can focus on your product code.
         </p>
         <div class="has-margin-top-6">
           <img
