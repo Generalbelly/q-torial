@@ -2,13 +2,13 @@
 
 const path = require('path');
 const sharp = require('sharp');
-const input = path.join(__dirname, 'q-torial.svg');
-const output = path.join(__dirname, '../public/img/q-torial@1200x630.png');
+const input = path.join(__dirname, 'icon.svg');
+const output = path.join(__dirname, 'icon@240x240.png');
 
 
 function run() {
   sharp(input)
-    .resize(1200, 630, {
+    .resize(240, 240, {
       fit: 'contain',
       background: { r: 255, g: 255, b: 255, alpha: 1 },
     })

@@ -4,7 +4,7 @@
       <div class="basic-layout basic-layout--fv">
         <div class="fv__copy-action">
           <h1 class="has-text-weight-bold is-size-1 is-size-2-mobile">
-            Dev-friendly product onboarding builder
+            Free product onboarding builder
           </h1>
           <p class="has-margin-top-4 is-size-3 is-hidden-mobile">
             Seamlessly integrates with Firebase<br />
@@ -49,10 +49,10 @@
       </div>
       <div class="basic-layout has-text-centered">
           <h2 class="is-size-1 is-size-2-mobile has-text-weight-semibold has-margin-bottom-5">
-            Host at a reasonable price
+            Host virtually free
           </h2>
           <p class="is-size-4 is-size-6-mobile">
-            We store tutorials in your firebase project, so that your can serve them from there.
+            We store tutorials in your firebase project, so that your can serve them from there, making it virtually free.
           </p>
           <div class="has-margin-top-6">
             <img
