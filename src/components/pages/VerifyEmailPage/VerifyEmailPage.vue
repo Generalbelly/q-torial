@@ -1,6 +1,7 @@
 <template>
   <verify-email-template
     :email="email"
+    :loading="requesting"
     @click:verify="onClickVerify"
     @click:resend="onClickResend"
     :email-verification-link-expired="emailVerificationLinkExpired"
@@ -23,6 +24,7 @@ export default {
       code: null,
       emailVerificationLinkExpired: false,
       emailVerificationLinkSent: false,
+      requesting: false,
     };
   },
   computed: {
@@ -42,10 +44,13 @@ export default {
   methods: {
     async onClickVerify() {
       try {
+        this.requesting = true;
         await this.$store.dispatch('resetServerSideErrors');
         await appFirebaseService.applyActionCode(this.code);
       } catch (e) {
         await this.handleError(e);
+      } finally {
+        this.requesting = false;
       }
       await this.$router.push({
         name: 'register-firebase',
