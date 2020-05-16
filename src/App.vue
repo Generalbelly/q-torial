@@ -124,16 +124,17 @@ export default {
     },
   },
   watch: {
-    serverSideErrors() {
-      if (this.serverSideErrors) {
-        return this.showSnackbar({
-          message: this.serverSideErrors,
-          position: 'is-top',
-          type: 'is-warning',
-          indefinite: true,
-        });
-      }
-      return [];
+    serverSideErrors: {
+      handler(value){
+        if (value) {
+          this.showSnackbar({
+            message: value,
+            position: 'is-top',
+            type: 'is-warning',
+            indefinite: true,
+          });
+        }
+      },
     },
   },
   async mounted() {

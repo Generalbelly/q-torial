@@ -106,26 +106,6 @@ export default class UserRepository {
       });
   }
 
-
-  /**
-   * @param {string} userId
-   * @param {function} handler
-   */
-  checkFirebaseConfig(userId, handler) {
-    return this.getFirebaseConfigCollection(userId)
-      .orderBy('createdAt', 'desc')
-      .limit(1)
-      .onSnapshot(snapshot => {
-        let firebaseConfig = null;
-        if (snapshot.docs.length > 0) {
-          firebaseConfig = snapshot.docs.map(
-            doc => new FirebaseConfigEntity(doc.data()),
-          )[0];
-        }
-        handler(firebaseConfig);
-      });
-  }
-
   /** @param {string} userId */
   async getUserPaymentInfo(userId) {
     const snapshot = await this.getStripeCustomerCollection(userId)

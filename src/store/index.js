@@ -149,6 +149,9 @@ const actions = {
   setServerSideErrors({ commit }, payload) {
     commit(SET_SERVER_SIDE_ERRORS, payload);
   },
+  resetServerSideErrors({ commit }) {
+    commit(SET_SERVER_SIDE_ERRORS, null);
+  },
   emailVerificationLinkSent({ commit }, value) {
     commit(UPDATE_AUTH, {
       emailVerificationLinkSent: value,

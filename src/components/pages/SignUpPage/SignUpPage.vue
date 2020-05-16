@@ -35,6 +35,7 @@ export default {
   },
   methods: {
     ...mapActions([
+      'resetServerSideErrors',
       'setServerSideErrors',
       'addUser',
     ]),
@@ -77,6 +78,7 @@ export default {
       const isValid = await this.$refs.observer.validate();
       if (!isValid) return;
       try {
+        await this.resetServerSideErrors();
         this.requesting = true;
         const appFirebaseUnsubscribe = await appFirebaseService
           .watchAuth(async user => {

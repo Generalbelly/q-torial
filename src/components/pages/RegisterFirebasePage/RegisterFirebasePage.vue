@@ -79,6 +79,7 @@ export default {
       'addFirebaseConfig',
       'updateFirebaseConfig',
       'updateUser',
+      'resetServerSideErrors',
     ]),
     ...mapActions('tutorial', [
       'testTutorial',
@@ -122,6 +123,7 @@ export default {
       }
     },
     async onClickRegister() {
+      await this.resetServerSideErrors();
       const isValid = await this.$refs.observer.validate();
       if (!isValid) return;
       try {
@@ -135,6 +137,7 @@ export default {
       }
     },
     async onClickCreate() {
+      await this.resetServerSideErrors();
       const isValid = await this.$refs.observer.validate();
       if (!isValid) return;
       try {
@@ -165,6 +168,7 @@ export default {
       }
     },
     async onClickDone() {
+      await this.resetServerSideErrors();
       const cloudFunctionValidation = await this.validateCloudFunctions();
       if (!cloudFunctionValidation.valid) {
         await this.setServerSideErrors(cloudFunctionValidation.message);

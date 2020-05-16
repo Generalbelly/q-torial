@@ -43,11 +43,12 @@ export default {
     ]),
     async onClickResetPassword({ password }) {
       try {
+        await this.$store.dispatch('resetServerSideErrors');
         this.requesting = true;
         await appFirebaseService.resetPassword(this.code, password);
         this.passwordResetComplete = true;
       } catch (e) {
-        this.handleError(e);
+        await this.handleError(e);
       } finally {
         this.requesting = false;
       }
