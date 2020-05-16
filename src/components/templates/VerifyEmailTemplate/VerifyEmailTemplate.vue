@@ -23,11 +23,13 @@
 import VerifyEmailMessage from '../../organisms/messages/VerifyEmailMessage';
 import EmailVerificationLinkSentMessage from '../../organisms/messages/EmailVerificationLinkSentMessage';
 import EmailVerificationLinkExpiredMessage from '../../organisms/messages/EmailVerificationLinkExpiredMessage';
-import BaseLogo from '../../atoms/BaseLogo/BaseLogo';
+import BaseLogo from '../../atoms/BaseLogo';
+import BaseLoading from '../../atoms/BaseLoading';
 
 export default {
   name: 'VerifyEmailTemplate',
   components: {
+    BaseLoading,
     BaseLogo,
     EmailVerificationLinkExpiredMessage,
     EmailVerificationLinkSentMessage,
