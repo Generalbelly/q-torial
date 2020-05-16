@@ -38,8 +38,9 @@ export default {
   },
   methods: {
     async onClickResetLink({ email }) {
-      this.requesting = true;
       try {
+        await this.$store.dispatch('resetServerSideErrors');
+        this.requesting = true;
         if (this.appName === 'user') {
           await getUserFirebaseService(this.firebaseConfig).sendPasswordResetEmail(email);
         } else {
@@ -47,7 +48,7 @@ export default {
         }
         this.passwordResetLinkSent = true;
       } catch (e) {
-        this.handleError(e);
+        await this.handleError(e);
       } finally {
         this.requesting = false;
       }

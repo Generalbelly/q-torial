@@ -42,9 +42,10 @@ export default {
   methods: {
     async onClickVerify() {
       try {
+        await this.$store.dispatch('resetServerSideErrors');
         await appFirebaseService.applyActionCode(this.code);
       } catch (e) {
-        this.handleError(e);
+        await this.handleError(e);
       }
       await this.$router.push({
         name: 'register-firebase',

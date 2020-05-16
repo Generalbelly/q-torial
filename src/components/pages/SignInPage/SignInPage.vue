@@ -55,12 +55,14 @@ export default {
   methods: {
     ...mapActions([
       'setServerSideErrors',
+      'resetServerSideErrors',
       'getFirebaseConfig',
     ]),
     async onClickSignIn() {
       const isValid = await this.$refs.observer.validate();
       if (!isValid) return;
       try {
+        await this.resetServerSideErrors();
         this.requesting = true;
         await appFirebaseService.signIn(this.email, this.password);
         const { redirect = '' } = this.$route.query;
