@@ -54,33 +54,25 @@ export default {
       }
     },
     async handleError({ message, code }) {
-      let field;
       let errorMessage;
       switch (code) {
         case 'auth/invalid-action-code':
-          field = 'general';
           errorMessage = 'The link you followed has already been used.';
           break;
         case 'auth/expired-action-code':
-          field = 'general';
           errorMessage = 'The link you followed has already expired.';
           break;
         case 'auth/user-not-found':
-          field = 'email';
           errorMessage = 'We couldn\'t find an account with the email.';
           break;
         case 'auth/weak-password':
-          field = 'password';
           errorMessage = 'The password is not strong enough.';
           break;
         default:
-          field = 'general';
           errorMessage = message;
           break;
       }
-      await this.$store.dispatch('setServerSideErrors', {
-        [field]: errorMessage,
-      });
+      await this.$store.dispatch('setServerSideErrors', errorMessage);
     },
   },
 };

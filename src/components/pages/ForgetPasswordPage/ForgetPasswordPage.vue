@@ -54,25 +54,19 @@ export default {
       }
     },
     async handleError({ message, code }) {
-      let field;
       let errorMessage;
       switch (code) {
         case 'auth/invalid-email':
-          field = 'email';
           errorMessage = 'The email is not valid.';
           break;
         case 'auth/user-not-found':
-          field = 'email';
           errorMessage = 'We couldn\'t find an account with the email.';
           break;
         default:
-          field = 'general';
           errorMessage = message;
           break;
       }
-      await this.$store.dispatch('setServerSideErrors', {
-        [field]: errorMessage,
-      });
+      await this.$store.dispatch('setServerSideErrors', errorMessage);
     },
   },
 };

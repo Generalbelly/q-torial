@@ -1,18 +1,21 @@
 <template>
-  <div class="form-container">
-    <base-logo class="has-margin-bottom-6" />
-    <email-verification-link-sent-message
-      v-if="emailVerificationLinkSent"
-    />
-    <email-verification-link-expired-message
-      v-else-if="emailVerificationLinkExpired"
-      @click:resend="$emit('click:resend', $event)"
-    />
-    <verify-email-message
-      v-else
-      :email="email"
-      @click:verify="$emit('click:verify', $event)"
-    />
+  <div>
+    <div class="form-container">
+      <base-logo class="has-margin-bottom-6" />
+      <email-verification-link-sent-message
+        v-if="emailVerificationLinkSent"
+      />
+      <email-verification-link-expired-message
+        v-else-if="emailVerificationLinkExpired"
+        @click:resend="$emit('click:resend', $event)"
+      />
+      <verify-email-message
+        v-else
+        :email="email"
+        @click:verify="$emit('click:verify', $event)"
+      />
+    </div>
+    <base-loading is-full-page :active="loading" />
   </div>
 </template>
 
@@ -40,6 +43,10 @@ export default {
       default: false,
     },
     emailVerificationLinkSent: {
+      type: Boolean,
+      default: false,
+    },
+    loading: {
       type: Boolean,
       default: false,
     },

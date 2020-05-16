@@ -1,6 +1,7 @@
 <template>
   <verify-email-template
     :email="email"
+    :loading="requesting"
     @click:verify="onClickVerify"
     @click:resend="onClickResend"
     :email-verification-link-expired="emailVerificationLinkExpired"
@@ -23,6 +24,7 @@ export default {
       code: null,
       emailVerificationLinkExpired: false,
       emailVerificationLinkSent: false,
+      requesting: false,
     };
   },
   computed: {
@@ -42,39 +44,35 @@ export default {
   methods: {
     async onClickVerify() {
       try {
+        this.requesting = true;
         await this.$store.dispatch('resetServerSideErrors');
         await appFirebaseService.applyActionCode(this.code);
       } catch (e) {
         await this.handleError(e);
+      } finally {
+        this.requesting = false;
       }
       await this.$router.push({
         name: 'register-firebase',
       });
     },
     async handleError({ message, code }) {
-      let field;
       let errorMessage;
       switch (code) {
         case 'auth/user-not-found':
-          field = 'general';
           errorMessage = 'We couldn\'t find an account with the email.';
           break;
         case 'auth/invalid-action-code':
-          field = 'general';
           errorMessage = 'The link you followed has already been used.';
           break;
         case 'auth/expired-action-code':
-          field = 'general';
           errorMessage = 'The link you followed has already expired.';
           break;
         default:
-          field = 'general';
           errorMessage = message;
           break;
       }
-      await this.$store.dispatch('setServerSideErrors', {
-        [field]: errorMessage,
-      });
+      await this.$store.dispatch('setServerSideErrors', errorMessage);
     },
     async onClickResend({ email }) {
       await appFirebaseService.sendPasswordResetEmail(email);
