@@ -113,6 +113,7 @@ export default class UserRepository {
    */
   checkFirebaseConfig(userId, handler) {
     return this.getFirebaseConfigCollection(userId)
+      .orderBy('createdAt', 'desc')
       .limit(1)
       .onSnapshot(snapshot => {
         let firebaseConfig = null;
@@ -139,6 +140,7 @@ export default class UserRepository {
   /** @param {string} userId */
   async getFirebaseConfig(userId) {
     const snapshot = await this.getFirebaseConfigCollection(userId)
+      .orderBy('createdAt', 'desc')
       .limit(1)
       .get();
     return snapshot.docs.length > 0
