@@ -55,6 +55,7 @@ export default {
   watch: {
     user: {
       immediate: true,
+      deep: true,
       async handler(value) {
         if (value && value.firebaseConfig) {
           if (value.setupComplete) {
