@@ -45,9 +45,15 @@ export default {
   watch: {
     user: {
       immediate: true,
-      handler(value) {
+      async handler(value) {
         if (value && value.firebaseConfig) {
-          this.shouldShowFirebaseSignInModal = true;
+          if (value.firebaseConfig.uid) {
+            this.shouldShowFirebaseSignInModal = true;
+          } else {
+            await this.$router.push({
+              name: 'register-firebase',
+            });
+          }
         }
       },
     },
@@ -80,7 +86,7 @@ export default {
         }
         await this.getFirebaseConfig();
         this.requesting = false;
-        if (this.user.firebaseConfig) {
+        if (this.user.firebaseConfig.uid) {
           this.shouldShowFirebaseSignInModal = true;
         } else {
           await this.$router.push({

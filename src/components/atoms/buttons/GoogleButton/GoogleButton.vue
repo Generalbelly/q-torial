@@ -3,6 +3,7 @@
     src="/img/btn_google_signin.png"
     alt="sign-in-with-google"
     :width="width"
+    class="has-cursor-pointer"
     @click="$emit('click', $event)"
   />
 </template>
