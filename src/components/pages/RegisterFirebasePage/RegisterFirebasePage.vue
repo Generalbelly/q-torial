@@ -183,7 +183,7 @@ export default {
           email,
           code,
         });
-        // await this.onClickDone();
+        this.requesting = false;
       } else {
         await this.setServerSideErrors('It looks like you already did sign-in with Google. Click the "Done" button below.');
       }
