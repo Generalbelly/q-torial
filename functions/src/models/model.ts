@@ -1,15 +1,17 @@
-import admin from '../admin';
+import {
+  firestore,
+} from 'firebase-admin';
 
 interface IndexableInterface {
   [key: string]: any;
 }
 
 export default class Model {
-  id:string|null = null;
+  id: string = '';
 
-  createdAt: admin.firestore.FieldValue|null = null;
+  createdAt: firestore.FieldValue|null = null;
 
-  updatedAt: admin.firestore.FieldValue|null = null;
+  updatedAt: firestore.FieldValue|null = null;
 
   toPlainObject(excludes: string[] = ['createdAt', 'updatedAt']) {
     const object: IndexableInterface = {};

@@ -114,7 +114,10 @@
               </ul>
             </li>
             <li>
-              Follow the instruction of this <a href="https://github.com/Qtorial/firebase" target="_blank">repository</a> to complete the setup.
+              Allow us to complete the setup by signing in with Google Account.
+              <div class="has-margin-top-4">
+                <google-button @click="onClickSignInWithGoogle"/>
+              </div>
             </li>
           </ol>
           <primary-button
@@ -148,10 +151,12 @@ import BaseColumns from '../../atoms/BaseColumns/BaseColumns';
 import BaseColumn from '../../atoms/BaseColumn/BaseColumn';
 import BaseModal from '../../molecules/BaseModal/BaseModal';
 import SignInForm from '../../organisms/forms/SignInForm/SignInForm';
+import GoogleButton from '../../atoms/buttons/GoogleButton/GoogleButton';
 
 export default {
   name: 'RegisterFirebaseTemplate',
   components: {
+    GoogleButton,
     SignInForm,
     BaseModal,
     BaseColumn,
@@ -159,11 +164,9 @@ export default {
     BaseHeading,
     BaseLoading,
     BaseSubHeading,
-    BaseButton,
     FirebaseConfigForm,
     PrimaryButton,
     CenteringLayout,
-    BaseLogo,
     SignUpForm,
   },
   props: {
@@ -247,7 +250,7 @@ export default {
       set(newValue) {
         this.$emit('update:use-existing-user', newValue);
       },
-    }
+    },
   },
   methods: {
     onClickRegister() {
@@ -258,6 +261,9 @@ export default {
     },
     onClickDone() {
       this.$emit('click:done');
+    },
+    onClickSignInWithGoogle() {
+      this.$emit('click:sign-in-with-google');
     },
   },
 };

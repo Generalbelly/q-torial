@@ -92,6 +92,9 @@ router.beforeEach(async (to, from, next) => {
   if (!store.state.user.firebaseConfig) {
     await store.dispatch('getFirebaseConfig');
   }
+  if (!store.state.user.gcp) {
+    await store.dispatch('getGcp');
+  }
   if (!user.emailVerified && from.name === 'email.verify') {
     await user.reload();
   }

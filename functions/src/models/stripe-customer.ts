@@ -1,4 +1,6 @@
-import admin from '../admin';
+import {
+  firestore,
+} from 'firebase-admin';
 import Model from './model';
 
 export default class StripeCustomer extends Model {
@@ -6,10 +8,21 @@ export default class StripeCustomer extends Model {
 
   subscriptionId: string = '';
 
-  deletedAt: admin.firestore.FieldValue|null = null;
+  deletedAt: firestore.FieldValue|null = null;
+
+  canceledAt: firestore.FieldValue|null = null;
 
   constructor(init?: Partial<StripeCustomer>) {
     super();
     Object.assign(this, init);
+  }
+
+  toPlainObject() {
+    return super.toPlainObject([
+      'createdAt',
+      'updatedAt',
+      'deletedAt',
+      'canceledAt',
+    ]);
   }
 }

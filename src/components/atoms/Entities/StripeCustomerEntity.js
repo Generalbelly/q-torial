@@ -9,8 +9,19 @@ export default class StripeCustomerEntity extends Entity {
 
   deletedAt = null
 
+  canceledAt = null
+
   constructor(data = {}) {
     super();
     this.fill(data);
+  }
+
+  toPlainObject() {
+    return super.toPlainObject([
+      'createdAt',
+      'updatedAt',
+      'deletedAt',
+      'canceledAt',
+    ]);
   }
 }

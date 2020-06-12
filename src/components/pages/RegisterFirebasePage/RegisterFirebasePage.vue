@@ -12,6 +12,7 @@
       @click:create="onClickCreate"
       @click:register="onClickRegister"
       @click:done="onClickDone"
+      @click:sign-in-with-google="onClickSignInWithGoogle"
     />
   </validation-observer>
 </template>
@@ -24,7 +25,7 @@ import chromeExtension from '../../../chromeExtension';
 import FirebaseConfigEntity from '../../atoms/Entities/FirebaseConfigEntity';
 import RegisterFirebaseTemplate from '../../templates/RegisterFirebaseTemplate';
 import UserEntity from '../../atoms/Entities/UserEntity';
-import axios from 'axios';
+import { getGoogleOauthService } from '../../../getGoogleOauthService';
 
 export default {
   name: 'RegisterFirebasePage',
@@ -62,6 +63,9 @@ export default {
             await this.$router.push({
               name: 'tutorials.index',
             });
+          } else if (value.gcp) {
+            this.shouldShowInstructionModal = true;
+            this.shouldShowCreateUserModal = false;
           } else if (value.firebaseConfig.uid) {
             this.shouldShowInstructionModal = true;
             this.shouldShowCreateUserModal = false;
@@ -80,12 +84,16 @@ export default {
       'updateFirebaseConfig',
       'updateUser',
       'resetServerSideErrors',
+      'addGcp',
+      'getGcp',
+      'setup',
     ]),
     ...mapActions('tutorial', [
       'testTutorial',
       'initRepository',
     ]),
-    async handleError({ message, code }) {
+    async handleError({ message, code } = {}) {
+      if (!message || !code) return;
       let errorMessage;
       switch (code) {
         case 'auth/email-already-in-use':
@@ -133,7 +141,7 @@ export default {
         this.shouldShowCreateUserModal = true;
       } catch (e) {
         this.requesting = false;
-        this.handleError(e);
+        await this.handleError(e);
       }
     },
     async onClickCreate() {
@@ -162,74 +170,55 @@ export default {
           await getUserFirebaseService(this.user.firebaseConfig).signUp(this.email, this.password);
         }
       } catch (e) {
-        this.handleError(e);
+        await this.handleError(e);
       } finally {
         this.requesting = false;
       }
     },
+    async onClickSignInWithGoogle() {
+      if (!this.user.gcp) {
+        const { email, code } = await getGoogleOauthService().signIn('https://www.googleapis.com/auth/cloud-platform');
+        this.requesting = true;
+        await this.addGcp({
+          email,
+          code,
+        });
+        // await this.onClickDone();
+      } else {
+        await this.setServerSideErrors('It looks like you already did sign-in with Google. Click the "Done" button below.');
+      }
+    },
     async onClickDone() {
       await this.resetServerSideErrors();
-      const cloudFunctionValidation = await this.validateCloudFunctions();
-      if (!cloudFunctionValidation.valid) {
-        await this.setServerSideErrors(cloudFunctionValidation.message);
-        return;
-      }
-      const storageValidation = await this.validateCloudStorage();
-      if (!storageValidation.valid) {
-        await this.setServerSideErrors(storageValidation.message);
-        return;
-      }
       try {
         this.requesting = true;
-        await this.updateUser(new UserEntity({
-          ...this.user,
-          setupComplete: true,
-        }));
-        this.requesting = false;
-        await this.$router.push({
-          name: 'tutorials.index',
-        });
-      } catch (error) {
-        console.error(error);
-        this.requesting = false;
-      }
-    },
-    async validateCloudFunctions() {
-      let valid = false;
-      let message = 'It looks like that you haven\'t finished the setup yet.';
-      try {
-        await axios.post(
-          `https://us-central1-${this.user.firebaseConfig.projectId}.cloudfunctions.net/getTutorial`,
-          {},
+        await this.setup();
+        // await new Promise(r => setTimeout(r, 30000));
+        await this.getGcp();
+        const setupComplete = (
+          this.user.gcp.functionsVersion
+          && this.user.gcp.firestoreRulesVersion
+          && this.user.gcp.firestoreIndexesVersion
+          && this.user.gcp.tagVersion
         );
-      } catch (error) {
-        const { response } = error;
-        if (response) {
-          const { status } = response;
-          if (status === 422) {
-            valid = true;
-            message = 'ok';
-          }
+        if (setupComplete) {
+          await this.updateUser(new UserEntity({
+            ...this.user,
+            setupComplete: true,
+          }));
+        } else {
+          await this.setServerSideErrors('It looks like the setup hasn\'t been finished yet.<br /> Make sure you enable Firestore and Storage.');
         }
-      }
-      return {
-        valid,
-        message,
-      };
-    },
-    async validateCloudStorage() {
-      let valid = true;
-      let message = 'ok';
-      try {
-        await getUserFirebaseService(this.firebaseConfig).updateAssets();
+        this.requesting = false;
+        if (setupComplete) {
+          await this.$router.push({
+            name: 'tutorials.index',
+          });
+        }
       } catch (error) {
-        valid = false;
-        message = 'It looks like that Cloud Storage hasn\'t been correctly set up.';
+        this.requesting = false;
+        await this.setServerSideErrors(error);
       }
-      return {
-        valid,
-        message,
-      };
     },
   },
 };

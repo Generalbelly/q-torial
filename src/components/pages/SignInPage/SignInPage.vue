@@ -19,7 +19,6 @@ import { ValidationObserver } from 'vee-validate';
 import { appFirebaseService, getUserFirebaseService } from '../../../firebase';
 import SignInTemplate from '../../templates/SignInTemplate';
 import chromeExtension from '../../../chromeExtension';
-import store from '../../../store';
 
 export default {
   name: 'SignInPage',
@@ -45,9 +44,15 @@ export default {
   watch: {
     user: {
       immediate: true,
-      handler(value) {
+      async handler(value) {
         if (value && value.firebaseConfig) {
-          this.shouldShowFirebaseSignInModal = true;
+          if (value.firebaseConfig.uid) {
+            this.shouldShowFirebaseSignInModal = true;
+          } else {
+            await this.$router.push({
+              name: 'register-firebase',
+            });
+          }
         }
       },
     },
@@ -80,7 +85,7 @@ export default {
         }
         await this.getFirebaseConfig();
         this.requesting = false;
-        if (this.user.firebaseConfig) {
+        if (this.user.firebaseConfig.uid) {
           this.shouldShowFirebaseSignInModal = true;
         } else {
           await this.$router.push({
@@ -104,6 +109,7 @@ export default {
         if (await chromeExtension.getVersion()) {
           await chromeExtension.firebaseSignIn(this.firebaseEmail, this.firebasePassword);
         }
+        this.requesting = false;
         const { redirect = '' } = this.$route.query;
         if (this.$route.query.redirect) {
           if (redirect.includes(process.env.VUE_APP_URL)) {
@@ -117,12 +123,12 @@ export default {
           });
         }
       } catch (e) {
-        await this.handleError(e);
-      } finally {
         this.requesting = false;
+        await this.handleError(e);
       }
     },
-    async handleError({ message, code }) {
+    async handleError({ message, code } = {}) {
+      if (!message || !code) return;
       let errorMessage;
       switch (code) {
         case 'auth/invalid-email':
