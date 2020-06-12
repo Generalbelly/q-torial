@@ -131,8 +131,18 @@ const actions = {
     dispatch('updateLocalUser', user);
   },
   async updateUser({ dispatch }, payload) {
-    const user = await userRepository.update(payload);
-    dispatch('updateLocalUser', user);
+    const {
+      setupComplete,
+      tosAgreed,
+      privacyPolicyAgreed,
+      updatedAt,
+    } = await userRepository.update(payload);
+    dispatch('updateLocalUser', {
+      setupComplete,
+      tosAgreed,
+      privacyPolicyAgreed,
+      updatedAt,
+    });
   },
   async updateLocalUser({ commit }, payload) {
     commit(UPDATE_USER, payload);
