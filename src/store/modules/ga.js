@@ -1,7 +1,6 @@
 import {
   appFirebaseService,
 } from '../../firebase';
-import gapi from '../../google-analytics';
 import { QUERY_LIMIT } from '../../utils/constants';
 import {
   SET_ALL_FETCHED,
@@ -18,6 +17,7 @@ import {
 import GaEntity from '../../components/atoms/Entities/GaEntity';
 import GoogleAnalyticsAccount from '../../components/atoms/Entities/GoogleAnalyticsAccount';
 import repositoryFactory from '../../repository';
+import { getGoogleOauthService } from '../../getGoogleOauthService';
 
 const gaRepository = repositoryFactory.get('ga')(appFirebaseService.getDB(), appFirebaseService.getFunctions());
 
@@ -151,10 +151,15 @@ const actions = {
   addGa: async ({ commit, dispatch }) => new Promise(async (resolve, reject) => {
     commit(SET_REQUESTING, true);
     try {
-      const response = await gapi.oauth2SignIn();
-      commit(ADD_GA, response.data);
-      await dispatch('selectGa', response.data);
-      resolve(response.data);
+      const { email, code } = await getGoogleOauthService().signIn('https://www.googleapis.com/auth/analytics.readonly');
+      const add = appFirebaseService.getFunctions().httpsCallable('addGa');
+      const { data } = await add({
+        code,
+        email,
+      });
+      commit(ADD_GA, data);
+      await dispatch('selectGa', data);
+      resolve(data);
     } catch (e) {
       reject(e);
     } finally {

@@ -20,20 +20,6 @@ export default {
       'user',
     ]),
   },
-  async mounted() {
-    let valid = true;
-    let message = 'ok';
-    try {
-      await getUserFirebaseService(this.user.firebaseConfig).updateAssets();
-    } catch (error) {
-      valid = false;
-      message = 'It looks like that Cloud Storage hasn\'t been correctly set up.';
-    }
-    return {
-      valid,
-      message,
-    };
-  }
 };
 </script>
 

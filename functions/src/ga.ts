@@ -4,9 +4,9 @@ import { GaxiosError } from 'gaxios';
 import { Credentials } from 'google-auth-library';
 import { google } from 'googleapis';
 
-import admin from './admin';
 import functions from './functions';
 import Ga from './models/ga';
+import UserRepository from "./repositories/user";
 
 // oauth for google analytics
 const { credentials } = functions.config().ga;
@@ -33,101 +33,87 @@ const getToken = (code: string): Promise<Credentials> => new Promise((resolve: (
   });
 });
 
-export const addGa = functions.https.onCall((data: any, context: functions.https.CallableContext) => new Promise(async (resolve, reject) => {
-  const { auth } = context;
-  if (!auth) {
-    throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
-  }
+export const addGa = (userRepository: UserRepository) => {
+  functions.https.onCall((data: any, context: functions.https.CallableContext) => new Promise(async (resolve, reject) => {
+    const { auth } = context;
+    if (!auth) {
+      throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
+    }
 
-  const { code, email } = data;
-  if (!code) {
-    throw new functions.https.HttpsError('invalid-argument', 'The function must be called with one arguments "code" for getting access token.');
-  }
+    const { code, email } = data;
+    if (!code) {
+      throw new functions.https.HttpsError('invalid-argument', 'The function must be called with one arguments "code" for getting access token.');
+    }
 
-  if (!email) {
-    throw new functions.https.HttpsError('invalid-argument', 'The function must be called with one arguments "email".');
-  }
+    if (!email) {
+      throw new functions.https.HttpsError('invalid-argument', 'The function must be called with one arguments "email".');
+    }
 
-  const { refresh_token } = await getToken(code);
+    const { refresh_token } = await getToken(code);
 
-  oauth2Client.setCredentials({ refresh_token });
+    oauth2Client.setCredentials({ refresh_token });
 
-  try {
-    const ref = admin.firestore().collection('users')
-      .doc(auth.uid)
-      .collection('gas')
-      .doc();
-    await ref.set({
-      id: ref.id,
+    await userRepository.addGa(auth.uid, new Ga({
       email,
       refreshToken: refresh_token,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
-    const unsubscribe = ref.onSnapshot(doc => {
-      resolve(new Ga(doc.data()));
-      unsubscribe();
-    });
-  } catch (error) {
-    reject(error);
-  }
-}));
+    }));
+  }));
+};
 
-export const queryAccounts = functions.https.onCall((data: any, context: functions.https.CallableContext) => new Promise(async resolve => {
-  const { auth } = context;
-  if (!auth) {
-    throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
-  }
-
-  const { id } = data;
-  if (!id) {
-    throw new functions.https.HttpsError('invalid-argument', 'The function must be called with one arguments "id".');
-  }
-  const snap = await admin.firestore().collection('users').doc(auth.uid).collection('gas')
-    .doc(id)
-    .get();
-  if (!snap.exists) {
-    throw new functions.https.HttpsError('not-found', `ga(id:${id}) not found.`);
-  }
-  const ga = new Ga(snap.data());
-  oauth2Client.setCredentials({ refresh_token: ga.refreshToken });
-
-  let accounts: any[] = [];
-  try {
-    const apiClient = google.analytics({
-      auth: oauth2Client,
-      version: 'v3',
-    });
-    const accountsRes = await apiClient.management.accounts.list();
-    if (accountsRes && accountsRes.data && accountsRes.data.items) {
-      accounts = await Promise.all(accountsRes.data.items.map(async account => {
-        const webPropertiesRes = await apiClient.management.webproperties.list({
-          accountId: account.id,
-        });
-        let webProperties: any[] = [];
-        if (webPropertiesRes && webPropertiesRes.data && webPropertiesRes.data.items) {
-          webProperties = await Promise.all(webPropertiesRes.data.items.map(async webProperty => {
-            const profilesRes = await apiClient.management.profiles.list({
-              accountId: account.id,
-              webPropertyId: webProperty.id,
-            });
-            return {
-              ...webProperty,
-              profiles: profilesRes.data.items,
-            };
-          }));
-        }
-        return {
-          ...account,
-          webProperties,
-        };
-      }));
+export const queryAccounts = (userRepository: UserRepository) => {
+  return functions.https.onCall((data: any, context: functions.https.CallableContext) => new Promise(async resolve => {
+    const { auth } = context;
+    if (!auth) {
+      throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
     }
-  } catch (error) {
-    console.error(error);
-  }
-  resolve(accounts);
-}));
+
+    const { id } = data;
+    if (!id) {
+      throw new functions.https.HttpsError('invalid-argument', 'The function must be called with one arguments "id".');
+    }
+    const ga = await userRepository.getGa(auth.uid, id);
+    if (!ga) {
+      throw new functions.https.HttpsError('not-found', `ga(id:${id}) not found.`);
+    }
+    oauth2Client.setCredentials({ refresh_token: ga.refreshToken });
+
+    let accounts: any[] = [];
+    try {
+      const apiClient = google.analytics({
+        auth: oauth2Client,
+        version: 'v3',
+      });
+      const accountsRes = await apiClient.management.accounts.list();
+      if (accountsRes && accountsRes.data && accountsRes.data.items) {
+        accounts = await Promise.all(accountsRes.data.items.map(async account => {
+          const webPropertiesRes = await apiClient.management.webproperties.list({
+            accountId: account.id,
+          });
+          let webProperties: any[] = [];
+          if (webPropertiesRes && webPropertiesRes.data && webPropertiesRes.data.items) {
+            webProperties = await Promise.all(webPropertiesRes.data.items.map(async webProperty => {
+              const profilesRes = await apiClient.management.profiles.list({
+                accountId: account.id,
+                webPropertyId: webProperty.id,
+              });
+              return {
+                ...webProperty,
+                profiles: profilesRes.data.items,
+              };
+            }));
+          }
+          return {
+            ...account,
+            webProperties,
+          };
+        }));
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    resolve(accounts);
+  }));
+}
 
 // developerのtutorials.gaはきれいにはならない。。。
 export const onGaDelete = functions.firestore

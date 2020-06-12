@@ -19,6 +19,8 @@ export default class UserEntity extends Entity {
 
   privacyPolicyAgreed = false;
 
+  gcp = null;
+
   constructor(data = {}) {
     super();
     this.fill(data);
@@ -32,6 +34,7 @@ export default class UserEntity extends Entity {
       'firebaseConfig',
       'emailVerified',
       'displayName',
+      'gcp',
       'email',
     ]);
   }

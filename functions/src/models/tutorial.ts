@@ -73,7 +73,8 @@ export default class Tutorial extends Model {
     return super.toPlainObject([
       'createdAt',
       'updatedAt',
-      'steps'
+      'performances',
+      'steps',
     ]);
   }
 }

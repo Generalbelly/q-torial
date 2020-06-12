@@ -1,5 +1,6 @@
 import { FieldValue } from '../../firebase';
 import FirebaseConfigEntity from '../../components/atoms/Entities/FirebaseConfigEntity';
+import GcpEntity from '../../components/atoms/Entities/GcpEntity';
 import UserEntity from '../../components/atoms/Entities/UserEntity';
 import StripeCustomerEntity from '../../components/atoms/Entities/StripeCustomerEntity';
 
@@ -40,6 +41,17 @@ export default class UserRepository {
       .collection('users')
       .doc(userId)
       .collection('firebaseConfigs');
+  }
+
+  /**
+   * @return {firebase.firestore.CollectionReference}
+   *
+   */
+  getGcpCollection(userId) {
+    return this.db
+      .collection('users')
+      .doc(userId)
+      .collection('gcps');
   }
 
   async find(userId) {
@@ -175,5 +187,18 @@ export default class UserRepository {
         }
       });
     });
+  }
+
+  /**
+   * @param {string} userId
+   * @return {import('../../components/atoms/Entities/GcpEntity').default|null}
+   */
+  async getGcp(userId) {
+    const snapshot = await this.getGcpCollection(userId)
+      .limit(1)
+      .get();
+    return snapshot.docs.length > 0
+      ? new GcpEntity(snapshot.docs[0].data())
+      : null;
   }
 }

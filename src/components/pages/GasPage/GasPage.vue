@@ -18,7 +18,6 @@
 import { debounce } from 'debounce';
 import { mapState, mapActions } from 'vuex';
 import { QUERY_LIMIT } from '../../../utils/constants';
-import gapi from '../../../google-analytics';
 import GasTemplate from '../../templates/GasTemplate/GasTemplate';
 
 export default {
@@ -40,13 +39,6 @@ export default {
   },
   created() {
     this.listGas();
-  },
-  mounted() {
-    gapi.init(
-      process.env.VUE_APP_GOOGLE_ANALYTICS_CLIENT_ID,
-      process.env.VUE_APP_GOOGLE_ANALYTICS_API_KEY,
-      'email https://www.googleapis.com/auth/analytics.readonly',
-    );
   },
   methods: {
     ...mapActions('tutorial', [

@@ -19,6 +19,8 @@ export default class FirebaseConfigEntity extends Entity {
 
   uid = null
 
+  locationId = null
+
   constructor(data = {}) {
     super();
     this.fill(data);

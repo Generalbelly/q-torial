@@ -53,7 +53,8 @@ export default {
         this.requesting = false;
       }
     },
-    async handleError({ message, code }) {
+    async handleError({ message, code } = {}) {
+      if (!message || !code) return;
       let errorMessage;
       switch (code) {
         case 'auth/invalid-email':

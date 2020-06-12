@@ -1,25 +1,24 @@
-import * as https from 'https';
-import * as http from 'http';
+import axios, { AxiosResponse, Method, ResponseType } from 'axios';
 
 interface requestOptions {
-  protocol: string,
-  method: string,
-  hostname: string,
-  path: string,
+  method: Method,
+  url: string,
+  baseURL?: string,
+  headers?: Object,
+  responseType?: ResponseType,
+  data?: any,
 }
 
-export const makeRequest = async (options: requestOptions): Promise<http.IncomingMessage> => new Promise(
-  (resolve, reject) => {
-    const req = https.request({
-      protocol: options.protocol,
-      method: options.method,
-      hostname: options.hostname,
-      path: options.path,
-    }, (res) => {
-      resolve(res);
-    });
-    req.on('error', (e) => {
-      reject(e);
-    });
-    req.end();
+export const GET_METHOD = 'GET';
+export const POST_METHOD = 'POST';
+export const PUT_METHOD = 'PUT';
+
+export const makeRequest = async (options: requestOptions): Promise<AxiosResponse> => {
+  return axios.request({
+    method: options.method,
+    baseURL: options.baseURL,
+    url: options.url,
+    headers: options.headers,
+    data: options.data,
   });
+};

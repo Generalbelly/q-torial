@@ -1,10 +1,11 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { v4 as uuidv4 } from 'uuid';
 import modules from './modules';
 import {
   UPDATE_USER,
   SET_SERVER_SIDE_ERRORS,
-  UPDATE_AUTH,
+  UPDATE_AUTH, SET_REQUESTING, ADD_GCP,
 } from './mutation-types';
 import UserEntity from '../components/atoms/Entities/UserEntity';
 import {
@@ -175,19 +176,53 @@ const actions = {
       await dispatch('tutorial/initRepository');
     }
   },
+  async getGcp({ state, dispatch }) {
+    const gcp = await userRepository.getGcp(state.user.uid);
+    if (gcp) {
+      await dispatch('updateLocalUser', { gcp });
+    }
+  },
+  async addGcp({ dispatch }, { email, code }) {
+    const add = appFirebaseService.getFunctions()
+      .httpsCallable('addGcp');
+    const { data } = await add({
+      code,
+      email,
+    });
+    await dispatch('updateLocalUser', { gcp: data });
+  },
+  async setup() {
+    const setupFunc = appFirebaseService.getFunctions().httpsCallable('setup');
+    await setupFunc({
+      setupType: 'firestore.rules',
+      id: uuidv4(),
+    });
+    await setupFunc({
+      setupType: 'functions',
+      id: uuidv4(),
+    });
+    // // await setupFunc({
+    // //   setupType: 'storage.rules',
+    // //   id: uuidv4(),
+    // // });
+    await setupFunc({
+      setupType: 'tag',
+      id: uuidv4(),
+    });
+    await setupFunc({
+      setupType: 'firestore.indexes',
+      id: uuidv4(),
+    });
+  },
   async signOut({ state }) {
     if (!state.user) return;
-    try {
-      if (state.user.firebaseConfig) {
-        await getUserFirebaseService(state.user.firebaseConfig).signOut();
-      }
-      await appFirebaseService.signOut();
-      const version = await chromeExtension.getVersion();
-      if (version) {
-        await chromeExtension.signOut();
-      }
-    } catch (e) {
-      console.error(e);
+    if (state.user.firebaseConfig) {
+      await getUserFirebaseService(state.user.firebaseConfig).signOut();
+    }
+    await appFirebaseService.signOut();
+    const version = await chromeExtension.getVersion();
+    if (version) {
+      await chromeExtension.signOut();
     }
   },
 };

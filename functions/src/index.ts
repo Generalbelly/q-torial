@@ -1,18 +1,13 @@
 import admin from './admin';
 import functions from './functions';
-import {
-  onTutorialDelete,
-  onTutorialCreate,
-  onTutorialUpdate,
-  getTutorial,
-  storePerformance,
-  logError,
-} from './tutorial';
+import UserRepository from './repositories/user';
+import TaskRepository from './repositories/task';
 import { addGa, queryAccounts, onGaDelete } from './ga';
+import { addGcp, onGcpDelete, setup } from './gcp';
 import { stripeWebhook, cancelSubscription } from './stripe';
-import {
-  updateAssets,
-} from './asset';
+
+const userRepository = new UserRepository(admin.firestore());
+const taskRepository = new TaskRepository(admin.firestore());
 
 if (functions.config().app.env !== 'production') {
   const express = require('express');
@@ -25,21 +20,13 @@ if (functions.config().app.env !== 'production') {
   exports.staging = functions.https.onRequest(app);
 }
 
-admin.initializeApp(functions.config().firebase);
-
-exports.onTutorialDelete = onTutorialDelete;
-exports.onTutorialCreate = onTutorialCreate;
-exports.onTutorialUpdate = onTutorialUpdate;
-
-exports.addGa = addGa;
-exports.queryAccounts = queryAccounts;
+exports.addGa = addGa(userRepository);
+exports.queryAccounts = queryAccounts(userRepository);
 exports.onGaDelete = onGaDelete;
 
-exports.getTutorial = getTutorial;
-exports.storePerformance = storePerformance;
-exports.logError = logError;
+exports.addGcp = addGcp(userRepository);
+exports.onGcpDelete = onGcpDelete;
+exports.setup = setup(userRepository, taskRepository);
 
-exports.stripeWebhook = stripeWebhook;
-exports.cancelSubscription = cancelSubscription;
-
-exports.updateAssets = updateAssets;
+exports.stripeWebhook = stripeWebhook(userRepository);;
+exports.cancelSubscription = cancelSubscription(userRepository);;
