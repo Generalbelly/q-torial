@@ -111,7 +111,7 @@ service cloud.firestore {
       return request.resource.data;
     }
     function signedIn() {
-    \treturn authData().uid != null;
+      return authData().uid != null;
     }
     function isOwner(userId) {
       return authData().uid == userId;
@@ -128,21 +128,6 @@ service cloud.firestore {
 }
 `);
 };
-
-// export const uploadStorageRules = async (firebaseConfig: FirebaseConfig) => {
-//   try {
-//     const userFirebaseAdmin = createUserFirebaseAdmin(firebaseConfig);
-//     const name = 'storage.rules';
-//     const filePath = `/tmp/${name}`;
-//     // @ts-ignore
-//     await downloadFile(process.env.GCLOUD_PROJECT, name, filePath);
-//     const source = fs.readFileSync(filePath, 'utf8');
-//     await userFirebaseAdmin.securityRules().releaseStorageRulesetFromSource(source);
-//     fs.unlinkSync(filePath);
-//   } catch (e) {
-//     console.error(e);
-//   }
-// };
 
 interface FunctionSetting {
   name: string,
@@ -298,7 +283,6 @@ export const uploadFunctions = async (firebaseConfig: FirebaseConfig) => {
 };
 
 const SETUP_TYPE_FIRESTORE_RULES = 'firestore.rules';
-// const SETUP_TYPE_STORAGE_RULES = 'storage.rules';
 const SETUP_TYPE_FUNCTIONS = 'functions';
 const SETUP_TYPE_TAG = 'tag';
 const SETUP_TYPE_FIRESTORE_INDEXES = 'firestore.indexes';
@@ -316,7 +300,7 @@ export const setup = (userRepository: UserRepository, taskRepository: TaskReposi
 
   const isTriggered = await taskRepository.exists(id);
   if (isTriggered) return;
-  await taskRepository.add(new Task({ id, name: 'setup' }));
+  await taskRepository.add(new Task({ id, name: 'setup', payload: JSON.stringify(data) }));
 
   const gcp = await userRepository.getGcp(uid);
   if (!gcp) {
@@ -328,9 +312,6 @@ export const setup = (userRepository: UserRepository, taskRepository: TaskReposi
   }
   oauth2Client.setCredentials({ refresh_token: gcp.refreshToken });
 
-  // if (setupType === SETUP_TYPE_STORAGE_RULES) {
-  //   await uploadStorageRules(firebaseConfig);
-  // }
   try {
     if (setupType === SETUP_TYPE_FIRESTORE_RULES) {
       if (version !== gcp.firestoreRulesVersion) {
