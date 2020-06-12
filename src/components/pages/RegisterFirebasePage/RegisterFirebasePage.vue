@@ -185,7 +185,7 @@ export default {
         });
         // await this.onClickDone();
       } else {
-        await this.setServerSideErrors( 'It looks like you already did sign-in with Google. Click the "Done" button below.');
+        await this.setServerSideErrors('It looks like you already did sign-in with Google. Click the "Done" button below.');
       }
     },
     async onClickDone() {
@@ -207,7 +207,7 @@ export default {
             setupComplete: true,
           }));
         } else {
-          await this.setServerSideErrors( 'It looks like the setup hasn\'t been finished yet.<br /> Make sure you enable Firestore and Storage.');
+          await this.setServerSideErrors('It looks like the setup hasn\'t been finished yet.<br /> Make sure you enable Firestore and Storage.');
         }
         this.requesting = false;
         if (setupComplete) {

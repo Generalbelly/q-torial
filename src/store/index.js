@@ -5,7 +5,7 @@ import modules from './modules';
 import {
   UPDATE_USER,
   SET_SERVER_SIDE_ERRORS,
-  UPDATE_AUTH, SET_REQUESTING, ADD_GCP,
+  UPDATE_AUTH,
 } from './mutation-types';
 import UserEntity from '../components/atoms/Entities/UserEntity';
 import {
@@ -115,7 +115,11 @@ const mutations = {
 
 const actions = {
   async getUser({ dispatch, state }) {
-    const { setupComplete, tosAgreed, privacyPolicyAgreed } = await userRepository.get(state.user.uid);
+    const {
+      setupComplete,
+      tosAgreed,
+      privacyPolicyAgreed,
+    } = await userRepository.get(state.user.uid);
     dispatch('updateLocalUser', {
       setupComplete,
       tosAgreed,
@@ -164,7 +168,7 @@ const actions = {
     });
   },
   async getUserPaymentInfo({ state, dispatch }) {
-    const stripeCustomer = await userRepository.getUserPaymentInfo(state.user.uid,);
+    const stripeCustomer = await userRepository.getUserPaymentInfo(state.user.uid);
     if (stripeCustomer) {
       await dispatch('updateLocalUser', { stripeCustomer });
     }
