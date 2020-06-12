@@ -36,8 +36,7 @@ const routing = async (to, from, next, user = null, setupComplete = false) => {
         name: 'register-firebase',
       });
     } else if (
-      (
-        setupComplete && (to.name === 'register-firebase' || to.name === 'instruction'))
+      (setupComplete && to.name === 'register-firebase')
       || to.name === 'sign-in'
       || to.name === 'sign-up'
       || to.name === 'email.verify'

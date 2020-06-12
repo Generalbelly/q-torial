@@ -100,8 +100,7 @@ export const uploadFirestoreRules = async (firebaseConfig: FirebaseConfig) => {
     projectId: firebaseConfig.projectId,
     databaseURL: firebaseConfig.databaseURL,
   }, 'user'));
-  await securityRules.releaseFirestoreRulesetFromSource(`
-rules_version = '2';
+  await securityRules.releaseFirestoreRulesetFromSource(`rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function authData() {
