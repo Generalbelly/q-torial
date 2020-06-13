@@ -19,7 +19,6 @@ import { ValidationObserver } from 'vee-validate';
 import { appFirebaseService, getUserFirebaseService } from '../../../firebase';
 import SignInTemplate from '../../templates/SignInTemplate';
 import chromeExtension from '../../../chromeExtension';
-import store from '../../../store';
 
 export default {
   name: 'SignInPage',
@@ -95,7 +94,6 @@ export default {
         }
       } catch (e) {
         this.requesting = false;
-        await this.handleError(e);
       }
     },
     async onClickFirebaseSignIn() {
@@ -110,6 +108,7 @@ export default {
         if (await chromeExtension.getVersion()) {
           await chromeExtension.firebaseSignIn(this.firebaseEmail, this.firebasePassword);
         }
+        this.requesting = false;
         const { redirect = '' } = this.$route.query;
         if (this.$route.query.redirect) {
           if (redirect.includes(process.env.VUE_APP_URL)) {
@@ -123,12 +122,12 @@ export default {
           });
         }
       } catch (e) {
-        await this.handleError(e);
-      } finally {
         this.requesting = false;
+        await this.handleError(e);
       }
     },
-    async handleError({ message, code }) {
+    async handleError({ message, code } = {}) {
+      if (!message || !code) return;
       let errorMessage;
       switch (code) {
         case 'auth/invalid-email':

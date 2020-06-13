@@ -56,7 +56,8 @@ export default {
         name: 'register-firebase',
       });
     },
-    async handleError({ message, code }) {
+    async handleError({ message, code } = {}) {
+      if (!message || !code) return;
       let errorMessage;
       switch (code) {
         case 'auth/user-not-found':
