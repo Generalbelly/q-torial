@@ -67,5 +67,7 @@ workflows:
     jobs:
       - deploy_job:
           filters:
+            tags:
+              only: /^v.*/
             branches:
               only: master
