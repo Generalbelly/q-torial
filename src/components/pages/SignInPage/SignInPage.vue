@@ -94,6 +94,7 @@ export default {
         }
       } catch (e) {
         this.requesting = false;
+        await this.handleError(e);
       }
     },
     async onClickFirebaseSignIn() {
