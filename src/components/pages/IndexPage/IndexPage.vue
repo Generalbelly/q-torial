@@ -4,7 +4,7 @@
       <div class="basic-layout basic-layout--fv">
         <div class="fv__copy-action">
           <h1 class="has-text-weight-bold is-size-1 is-size-2-mobile">
-            Free product onboarding builder
+            Free product onboarding builder for developers
           </h1>
           <p class="has-margin-top-4 is-size-3 is-hidden-mobile">
             Seamlessly integrates with Firebase<br />
