@@ -18,8 +18,8 @@ if (functions.config().app.env !== 'production') {
   const express = require('express');
   const basicAuth = require('basic-auth-connect');
   const app = express();
-  const USERNAME = 'q';
-  const PASSWORD = 'torial';
+  const USERNAME = functions.config().app.basic_auth_username;
+  const PASSWORD = functions.config().app.basic_auth_password;
   app.use(basicAuth(USERNAME, PASSWORD));
   app.use(express.static( __dirname + '/dist/'));
   exports.staging = functions.https.onRequest(app);
