@@ -17,7 +17,7 @@
     "@google-cloud/storage": "^5.0.1",
     "axios": "^0.19.2",
     "basic-auth-connect": "^1.0.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "firebase-admin": "^8.6.1",
     "firebase-functions": "^3.6.2",
     "google-auth-library": "^6.0.0",
